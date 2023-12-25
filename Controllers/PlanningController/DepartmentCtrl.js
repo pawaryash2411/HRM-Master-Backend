@@ -40,7 +40,7 @@ const putdata = async (req, res) => {
         res.status(404).json(error.message);
     }
 };
-
+ 
 const deletedata = async (req, res) => {
     try {
         let result = await db.deleteMany(
