@@ -2,7 +2,7 @@ const db = require("../../Models/userModel/userModel");
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-// const sendEmail = require('../../Controllers/emailController');
+const sendEmail = require('../../Controllers/emailController');
 
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -72,29 +72,29 @@ const loginUser = async (req, res) => {
 };
 
 
-// const forgotPassword = async (req, res) => {
-//   const { email } = req.body;
-//   const user = await db.findOne({ email });
-//   if (!user) throw new Error("User not found with this email");
-//   try {
-//     const token = await user.createPasswordResetToken();
-//     await user.save();
-//     const resetURL = `Hi, Please follow this link to reset Your Password. This link is valid till 10 minutes from now. <a href='http://localhost:5000/api/user/reset-password/${token}'>Click Here</>`;
-//     const data = {
-//       to: email,
-//       text: "Hey User",
-//       subject: "Forgot Password Link",
-//       htm: resetURL,
-//     };
-//     sendEmail(data);
-//     res.json(token);
-//   } catch (error) {
-//     throw new Error(error);
-//   }
-// };
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  const user = await db.findOne({ email });
+  if (!user) throw new Error("User not found with this email");
+  try {
+    const token = await user.createPasswordResetToken();
+    await user.save();
+    const resetURL = `Hi, Please follow this link to reset Your Password. This link is valid till 10 minutes from now. <a href='http://localhost:5000/api/user/reset-password/${token}'>Click Here</>`;
+    const data = {
+      to: email,
+      text: "Hey User",
+      subject: "Forgot Password Link",
+      htm: resetURL,
+    };
+    sendEmail(data);
+    res.json(token);
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 
 
 
 
 
-module.exports = { registerUser, loginUser };
+module.exports = { registerUser, loginUser, forgotPassword };
