@@ -4,11 +4,11 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const registerUser = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { firstname, lastname, email, password, gender, contact } = req.body;
 
     try {
         // Check if all required fields are present and not empty
-        if (!name || !email || !password ) {
+        if (!firstname || !lastname || !email || !password || !gender || !contact) {
             return res.status(400).json({ message: "Please enter all fields" });
         }
 
@@ -30,9 +30,12 @@ const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = new db({
-            name,
+            firstname,
+            lastname,
             email,
             password: hashedPassword,
+            gender,
+            contact,
         });
 
         const userRegister = await newUser.save();
@@ -50,7 +53,6 @@ const createToken = (id) => {
   };
 
 const loginUser = async (req, res) => {
-    // console.log("data", req.body);
     const { email, password } = req.body;
     try {
       if (!email || !password) {
