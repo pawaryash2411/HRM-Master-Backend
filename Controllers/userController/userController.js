@@ -4,6 +4,15 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sendEmail = require('../../Controllers/emailController');
 
+const getuser = async (req, res) => {
+  try {
+      data = await db.find();
+      res.status(200).json(data);
+  } catch (error) {
+      res.status(404).json(error.message);
+  }
+};
+
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -93,8 +102,4 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-
-
-
-
-module.exports = { registerUser, loginUser, forgotPassword };
+module.exports = { registerUser, loginUser, forgotPassword, getuser };
