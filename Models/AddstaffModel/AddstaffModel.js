@@ -38,12 +38,12 @@ const data = mongoose.Schema({
     },
     display_frontmonitor:
     {
-        type: String,
+        type: Boolean,
         required: true,
     },
     attendense_calculation:
     {
-        type: String,
+        type: Boolean,
         required: true,
     },
     department:
