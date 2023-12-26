@@ -27,6 +27,10 @@ const leaveSchema = mongoose.Schema({
     },
     total_days:{
         type: String,
+    },
+    status:{
+        type: Boolean,
+        default: true
     }
 },
 
