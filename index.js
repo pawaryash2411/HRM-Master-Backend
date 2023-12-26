@@ -21,6 +21,7 @@ app.use(cookieParser());
 app.use("/api/department", require('./Routes/PlanningRoute/DepartmentRoute'));
 app.use("/api/designation", require('./Routes/PlanningRoute/DesignationRoute'));
 app.use("/api/addstaff", require('./Routes/AddstaffRoute/AddstaffRoute'));
+app.use("/api/leave", require('./Routes/LeaveRouter/LeaveRouter'));
 
 app.use(notFound);
 app.use(errorHandler);
