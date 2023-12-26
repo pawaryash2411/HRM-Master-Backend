@@ -8,9 +8,9 @@ const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "Please enter all fields" });
-    }
+  //   if (!name || !email || !password) {
+  //     return res.status(400).json({ message: "Please enter all fields" });
+  //   }
 
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Please enter a valid email" });
