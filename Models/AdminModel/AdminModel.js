@@ -11,6 +11,11 @@ const userSchema = mongoose.Schema({
         type: String,
         required: false,
     },
+    pending_leave:
+    {
+        type: String,
+        required: false,
+    },
     notifications: [
         { type: String }
     ],
