@@ -23,14 +23,13 @@ const postdata = async (req, res) => {
 };
 
 const putdata = async (req, res) => {
+  const { department, designations } = req.body;
   try {
-    let result = await db.updateMany(
-      { _id: req.params.id },
-      {
-        $set: req.body,
-      }
-    );
-    res.status(200).JSON.parse(result);
+    let result = await db.findByIdAndUpdate(req.params.id, {
+      department,
+      designations,
+    });
+    res.status(200).json(result);
   } catch (error) {
     res.status(404).json(error.message);
   }
