@@ -1,13 +1,6 @@
-const db = require("../../Models/PlanningModel/DepartmentModel");
+const db = require("../../Models/PlanningModel/DpartmntDesigntionModel");
 
-const getdata = async (req, res) => {
-    try {
-        const data = await db.find({ _id: req.params._id })
-        res.json(data)
-    } catch (error) {
-        res.status(404).json(error.message)
-    }
-}
+
 const getalldata = async (req, res) => {
     try {
         const result = await db.find();
@@ -55,4 +48,4 @@ const deletedata = async (req, res) => {
     }
 };
 
-module.exports = { getdata, getalldata, postdata, putdata, deletedata };
+module.exports = { getalldata, postdata, putdata, deletedata };

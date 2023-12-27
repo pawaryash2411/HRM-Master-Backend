@@ -19,8 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/api/user", require('./Routes/userRouter/userRouter'));
-app.use("/api/department", require('./Routes/PlanningRoute/DepartmentRoute'));
-app.use("/api/designation", require('./Routes/PlanningRoute/DesignationRoute'));
+app.use("/api/department", require('./Routes/PlanningRoute/DpartmntDesigntionRoute'));
 app.use("/api/addstaff", require('./Routes/AddstaffRoute/AddstaffRoute'));
 app.use("/api/leave", require('./Routes/LeaveRouter/LeaveRouter'));
 app.use("/api/clock", require('./Routes/ClockIn-OutRoute/ClockIn-OutRoute'));
