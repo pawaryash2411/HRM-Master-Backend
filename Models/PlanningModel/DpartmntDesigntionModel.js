@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const department = mongoose.Schema({
 
-  title: {
+  department: {
     type: String,
     required: true,
   },
-  designation:[]
+  designation: []
 },
   {
     timestamps: true,
