@@ -1,8 +1,8 @@
 const db = require("../../Models/userModel/userModel");
-const validator = require('validator');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const sendEmail = require('../../Controllers/emailController');
+const validator = require("validator");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const sendEmail = require("../../Controllers/emailController");
 
 const getuser = async (req, res) => {
   try {
@@ -14,9 +14,27 @@ const getuser = async (req, res) => {
 };
 
 const registerUser = async (req, res) => {
-  const { supervisor_name, mobile_no, name, present_address, user_id, role, permanent_address, display_frontmonitor, attendense_calculation, department, designation, weekday_shift, both_shift, joindate, email, password, location } = req.body;
+  const {
+    supervisor_name,
+    mobile_no,
+    name,
+    present_address,
+    user_id,
+    role,
+    permanent_address,
+    display_frontmonitor,
+    attendense_calculation,
+    department,
+    designation,
+    weekday_shift,
+    both_shift,
+    joindate,
+    email,
+    password,
+    location,
+  } = req.body;
 
-  const uploadimg = req.uploadedImageUrl
+  const uploadimg = req.uploadedImageUrl;
 
   try {
     if (!req.body) {
@@ -28,7 +46,9 @@ const registerUser = async (req, res) => {
     }
 
     if (!validator.isStrongPassword(password)) {
-      return res.status(400).json({ message: "Please enter a strong password" });
+      return res
+        .status(400)
+        .json({ message: "Please enter a strong password" });
     }
 
     const exists = await db.findOne({ email });
@@ -42,7 +62,8 @@ const registerUser = async (req, res) => {
     const newUser = new db({
       supervisor_name,
       mobile_no,
-      name, present_address,
+      name,
+      present_address,
       user_id,
       role,
       permanent_address,
@@ -60,12 +81,11 @@ const registerUser = async (req, res) => {
     });
 
     const userRegister = await newUser.save();
-    res.status(200).json({ userRegister });
+    res.status(200).json({ userRegister, message: "Staff Created" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
