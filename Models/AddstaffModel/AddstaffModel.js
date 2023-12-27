@@ -97,20 +97,3 @@ const data = mongoose.Schema({
 })
 module.exports = mongoose.model("staff", data);
 
-// ProductName:jkgjhg
-// ProductType:uyfhfhc
-// ProdcutPrice:633
-// Quantity:363
-// QuantityLimition:63
-// StockAlert:3636
-// ExpiryDate:6363
-// SkuNumber:36363
-// AddOption:36363
-// Category:3636
-// Unit:363
-// Brand:3636
-// Supplier:36363
-// TaxType:635
-// ProductTax:563563
-// Description:563653
-// Seo:536536

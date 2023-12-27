@@ -14,7 +14,7 @@ const postdata = async (req, res) => {
 
     try {
         const data = await db.create(req.body);
-        res.status(201).json(data);
+        res.status(201).JSON.parse(data);
     } catch (error) {
         res.status(404).json(error.message)
     }
@@ -28,12 +28,12 @@ const putdata = async (req, res) => {
                 $set: req.body,
             }
         );
-        res.status(200).json(result);
+        res.status(200).JSON.parse(result);
     } catch (error) {
         res.status(404).json(error.message);
     }
 };
- 
+
 const deletedata = async (req, res) => {
     try {
         let result = await db.deleteMany(
