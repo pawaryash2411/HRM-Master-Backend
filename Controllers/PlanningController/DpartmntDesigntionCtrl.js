@@ -24,12 +24,17 @@ const postdata = async (req, res) => {
 
 const putdata = async (req, res) => {
   const { department, designations } = req.body;
+  console.log(department, JSON.parse(designations), req.params.id);
   try {
-    let result = await db.findByIdAndUpdate(req.params.id, {
-      department,
-      designations,
-    });
-    res.status(200).json({ result, message: "Delete successful" });
+    let result = await db.findByIdAndUpdate(
+      req.params.id,
+      {
+        department,
+        designations: JSON.parse(designations),
+      },
+      { new: true }
+    );
+    res.status(200).json({ result, message: "Update successful" });
   } catch (error) {
     res.status(404).json(error.message);
   }
