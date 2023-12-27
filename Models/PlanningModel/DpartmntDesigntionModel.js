@@ -1,14 +1,15 @@
 const mongoose = require("mongoose");
 
-const department = mongoose.Schema({
-
-  department: {
-    type: String,
-    required: true,
+const department = mongoose.Schema(
+  {
+    department: {
+      type: String,
+      required: true,
+    },
+    designation: [],
   },
-  designations: []
-},
   {
     timestamps: true,
-  })
+  }
+);
 module.exports = mongoose.model("departments", department);
