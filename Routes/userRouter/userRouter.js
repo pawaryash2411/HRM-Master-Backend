@@ -14,7 +14,7 @@ const router = express.Router();
 
 
 router.post("/login", loginUser)
-router.post("/register", upload.single('picture'), uploadedcloudinaryImages, registerUser)
+router.post("/addstaff", upload.single('picture'), uploadedcloudinaryImages, registerUser)
 
 router.get('/getuser', getuser)
 router.post("/forgot-password", forgotPassword);
