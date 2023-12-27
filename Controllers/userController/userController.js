@@ -6,18 +6,20 @@ const sendEmail = require('../../Controllers/emailController');
 
 const getuser = async (req, res) => {
   try {
-      data = await db.find();
-      res.status(200).json(data);
+    data = await db.find();
+    res.status(200).json(data);
   } catch (error) {
-      res.status(404).json(error.message);
+    res.status(404).json(error.message);
   }
 };
 
 const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { supervisor_name, mobile_no, name, present_address, user_id, role, permanent_address, display_frontmonitor, attendense_calculation, department, designation, weekday_shift, both_shift, joindate, email, password, location } = req.body;
+
+  const uploadimg = req.uploadedImageUrl
 
   try {
-    if (!name || !email || !password) {
+    if (!req.body) {
       return res.status(400).json({ message: "Please enter all fields" });
     }
 
@@ -38,8 +40,22 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = new db({
-      name,
+      supervisor_name,
+      mobile_no,
+      name, present_address,
+      user_id,
+      role,
+      permanent_address,
+      display_frontmonitor,
+      attendense_calculation,
+      department,
+      designation,
+      weekday_shift,
+      both_shift,
+      picture: uploadimg,
+      joindate,
       email,
+      location,
       password: hashedPassword,
     });
 
@@ -79,7 +95,6 @@ const loginUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
