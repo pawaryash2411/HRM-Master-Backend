@@ -73,4 +73,22 @@ const loginadmin = async (req, res) => {
 
 
 
-module.exports = { createadmin, loginadmin};
+const createnotification = async (req, res) => {
+    try {
+      const admindata = await db.findOne({ email: req.body.email });
+      console.log(admindata);
+      admindata.notifications.push(req.body.notifications[0]);
+      await admindata.save();
+      res.status(200).send({
+        success: true,
+        admindata,
+      });
+    } catch (error) {
+      res
+        .status(500)
+        .send({ success: false, message: "internal server Error" + error });
+    }
+  };
+
+
+module.exports = { createadmin, loginadmin, createnotification};
