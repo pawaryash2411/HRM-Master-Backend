@@ -29,7 +29,7 @@ const putdata = async (req, res) => {
       department,
       designations,
     });
-    res.status(200).json(result);
+    res.status(200).json({ result, message: "Delete successful" });
   } catch (error) {
     res.status(404).json(error.message);
   }
@@ -37,13 +37,8 @@ const putdata = async (req, res) => {
 
 const deletedata = async (req, res) => {
   try {
-    let result = await db.deleteMany(
-      { _id: req.params.id },
-      {
-        $set: req.body,
-      }
-    );
-    res.status(200).json(result);
+    let result = await db.findByIdAndDelete(req.params.id);
+    res.status(200).json({ result, message: "Delete successful" });
   } catch (error) {
     res.status(404).json(error.message);
   }
