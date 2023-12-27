@@ -97,3 +97,21 @@ const data = mongoose.Schema({
 })
 module.exports = mongoose.model("staff", data);
 
+
+// supervisor_name:rehan
+// mobile_no:123654
+// name:rehan
+// present_address:indore
+// user_id:8520258
+// role:user
+// permanent_address:indore
+// display_frontmonitor:false
+// attendense_calculation:true
+// department:developer
+// designation:developer
+// weekday_shift:night
+// both_shift:day
+// email:xyz@gmail.com
+// password:123654
+// location:indore
+// joindate:14
