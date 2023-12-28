@@ -35,3 +35,4 @@ const isAdmin = asyncHandler(async (req, res, next) => {
 });
 
 // module.exports = { authMiddleware, isAdmin };
+module.exports = { requireAuth, isAdmin };
