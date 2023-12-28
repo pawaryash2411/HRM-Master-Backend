@@ -1,6 +1,12 @@
 const express = require("express");
-const {getdata, getalldata, postdata, putdata, deletedata } =
- require('../../Controllers/LeaveController/LeaveController')
+const {
+  getdata,
+  getalldata,
+  postdata,
+  putdata,
+  deletedata,
+} = require("../../Controllers/LeaveController/LeaveController");
+const { authMiddleware } = require("../../Middlewares/requireAuth");
 const router = express.Router();
 
 router.get("/",getalldata)
