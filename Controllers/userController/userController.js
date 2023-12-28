@@ -1,6 +1,7 @@
 const db = require("../../Models/userModel/userModel");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("../../Controllers/emailController");
 
@@ -238,11 +239,46 @@ const forgotPassword = async (req, res) => {
   }
 };
 
+const resetPassword = async (req, res) => {
+  const { newPassword, confirmNewPassword } = req.body;
+  console.log(req.body, "userdata")
+  const { token } = req.params;
+  console.log(req.params, "token")
+
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  
+  try {
+    const user = await db.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+    console.log("user", user)
+
+    if (!user) {
+      return res.status(400).json({ error: 'Token Expired or Invalid. Please try again.' });
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      return res.status(400).json({ error: 'Passwords do not match.' });
+    }
+
+    user.password = newPassword; 
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    
+    await user.save();
+    res.json({ message: 'Password reset successfully.' });
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   forgotPassword,
   getuser,
   updateuser,
+  resetPassword,
   deleteuser,
 };

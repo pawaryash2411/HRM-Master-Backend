@@ -10,6 +10,7 @@ const {
   forgotPassword,
   getuser,
   updateuser,
+  resetPassword,
   deleteuser,
 } = require("../../Controllers/userController/userController");
 
@@ -28,6 +29,7 @@ router.put("/:id", upload.single("picture"), updateuser);
 
 router.get("/getuser", getuser);
 router.post("/forgot-password", forgotPassword);
+router.put("/reset-password/:token", resetPassword);
 router.delete("/:id", deleteuser);
 
 module.exports = router;
