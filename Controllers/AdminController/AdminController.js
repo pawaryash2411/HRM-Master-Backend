@@ -41,7 +41,6 @@ const createadmin = async (req, res) => {
     }
   };
 
-
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "1d",
