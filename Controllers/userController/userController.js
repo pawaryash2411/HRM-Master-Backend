@@ -1,15 +1,21 @@
 const db = require("../../Models/userModel/userModel");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("../../Controllers/emailController");
 
 const getuser = async (req, res) => {
   try {
-    data = await db.find();
-    res.status(200).json(data);
+    const users = await db.find();
+
+    if (!users || users.length === 0) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    res.status(200).json(users);
   } catch (error) {
-    res.status(404).json(error.message);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -87,6 +93,86 @@ const registerUser = async (req, res) => {
   }
 };
 
+const updateuser = async (req, res) => {
+  const {
+    supervisor_name,
+    mobile_no,
+    name,
+    present_address,
+    user_id,
+    role,
+    permanent_address,
+    display_frontmonitor,
+    attendense_calculation,
+    department,
+    designation,
+    weekday_shift,
+    both_shift,
+    joindate,
+    email,
+    password,
+    location,
+    picture,
+  } = req.body;
+  try {
+    let uploadimg;
+    if (req.file) {
+      const dataUrl = `data:${
+        req.file.mimetype
+      };base64,${req.file.buffer.toString("base64")}`;
+      const result = await cloudinary.uploader.upload(dataUrl);
+
+      uploadimg = result.secure_url;
+    }
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({ message: "Please enter a valid email" });
+    }
+
+    if (!validator.isStrongPassword(password)) {
+      return res
+        .status(400)
+        .json({ message: "Please enter a strong password" });
+    }
+
+    const exists = await db.findOne({ email });
+    if (exists) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const updateuser = await db.findByIdAndUpdate(
+      { _id: req.params.id },
+      {
+        $set: {
+          supervisor_name,
+          mobile_no,
+          name,
+          present_address,
+          user_id,
+          role,
+          permanent_address,
+          display_frontmonitor,
+          attendense_calculation,
+          department,
+          designation,
+          weekday_shift,
+          both_shift,
+          picture: uploadimg ?? picture,
+          joindate,
+          email,
+          location,
+          password: hashedPassword,
+        },
+      }
+    );
+    res.status(200).json({ updateuser, message: "User updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "1yr",
@@ -116,6 +202,22 @@ const loginUser = async (req, res) => {
   }
 };
 
+const deleteuser = async (req, res) => {
+  try {
+    let result = await db.deleteOne({ _id: req.params.id });
+    if (result.deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+    res
+      .status(200)
+      .json({ success: true, message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
   const user = await db.findOne({ email });
@@ -137,4 +239,46 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, forgotPassword, getuser };
+const resetPassword = async (req, res) => {
+  const { newPassword, confirmNewPassword } = req.body;
+  console.log(req.body, "userdata")
+  const { token } = req.params;
+  console.log(req.params, "token")
+
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  
+  try {
+    const user = await db.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+    console.log("user", user)
+
+    if (!user) {
+      return res.status(400).json({ error: 'Token Expired or Invalid. Please try again.' });
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      return res.status(400).json({ error: 'Passwords do not match.' });
+    }
+
+    user.password = newPassword; 
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    
+    await user.save();
+    res.json({ message: 'Password reset successfully.' });
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  forgotPassword,
+  getuser,
+  updateuser,
+  resetPassword,
+  deleteuser,
+};
