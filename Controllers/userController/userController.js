@@ -87,6 +87,79 @@ const registerUser = async (req, res) => {
   }
 };
 
+const updateuser = async (req, res) => {
+  const {
+    supervisor_name,
+    mobile_no,
+    name,
+    present_address,
+    user_id,
+    role,
+    permanent_address,
+    display_frontmonitor,
+    attendense_calculation,
+    department,
+    designation,
+    weekday_shift,
+    both_shift,
+    joindate,
+    email,
+    password,
+    location,
+  } = req.body;
+
+  const uploadimg = req.uploadedImageUrl;
+
+  try {
+
+
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({ message: "Please enter a valid email" });
+    }
+
+    if (!validator.isStrongPassword(password)) {
+      return res
+        .status(400)
+        .json({ message: "Please enter a strong password" });
+    }
+
+    const exists = await db.findOne({ email });
+    if (exists) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const updateuser = await db.findByIdAndUpdate({ _id: req.params.id },
+      {
+        $set: {
+          supervisor_name,
+          mobile_no,
+          name,
+          present_address,
+          user_id,
+          role,
+          permanent_address,
+          display_frontmonitor,
+          attendense_calculation,
+          department,
+          designation,
+          weekday_shift,
+          both_shift,
+          picture: uploadimg,
+          joindate,
+          email,
+          location,
+          password: hashedPassword,
+        }
+      })
+    res.status(200).json({ updateuser,  message: "User updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "1yr",
@@ -116,6 +189,18 @@ const loginUser = async (req, res) => {
   }
 };
 
+const deleteuser = async (req, res) => {
+  try {
+    let result = await db.deleteOne({ _id: req.params.id });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    res.status(200).json({ success: true, message: "User deleted successfully" });
+  } catch (error) {
+    res.status(404).json({ success: false, message: error.message });
+  }
+};
+
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
   const user = await db.findOne({ email });
@@ -137,4 +222,4 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, forgotPassword, getuser };
+module.exports = { registerUser, loginUser, forgotPassword, getuser, updateuser, deleteuser };
