@@ -36,7 +36,7 @@ const leaveSchema = mongoose.Schema({
     user_id: {
 
         type: Schema.Types.ObjectId,
-        default: () => new mongoose.Types.ObjectId()
+        ref : "user"
     },
 },
     { timestamps: true }
