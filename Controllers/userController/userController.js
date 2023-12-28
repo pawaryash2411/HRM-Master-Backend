@@ -18,7 +18,6 @@ const getuser = async (req, res) => {
   }
 };
 
-
 const registerUser = async (req, res) => {
   const {
     supervisor_name,
@@ -112,13 +111,18 @@ const updateuser = async (req, res) => {
     email,
     password,
     location,
+    picture,
   } = req.body;
-
-  const uploadimg = req.uploadedImageUrl;
-
   try {
+    let uploadimg;
+    if (req.file) {
+      const dataUrl = `data:${
+        req.file.mimetype
+      };base64,${req.file.buffer.toString("base64")}`;
+      const result = await cloudinary.uploader.upload(dataUrl);
 
-
+      uploadimg = result.secure_url;
+    }
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Please enter a valid email" });
     }
@@ -137,7 +141,8 @@ const updateuser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const updateuser = await db.findByIdAndUpdate({ _id: req.params.id },
+    const updateuser = await db.findByIdAndUpdate(
+      { _id: req.params.id },
       {
         $set: {
           supervisor_name,
@@ -153,14 +158,15 @@ const updateuser = async (req, res) => {
           designation,
           weekday_shift,
           both_shift,
-          picture: uploadimg,
+          picture: uploadimg ?? picture,
           joindate,
           email,
           location,
           password: hashedPassword,
-        }
-      })
-    res.status(200).json({ updateuser,  message: "User updated successfully" });
+        },
+      }
+    );
+    res.status(200).json({ updateuser, message: "User updated successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -199,9 +205,13 @@ const deleteuser = async (req, res) => {
   try {
     let result = await db.deleteOne({ _id: req.params.id });
     if (result.deletedCount === 0) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
-    res.status(200).json({ success: true, message: "User deleted successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "User deleted successfully" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -228,4 +238,11 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, forgotPassword, getuser, updateuser, deleteuser };
+module.exports = {
+  registerUser,
+  loginUser,
+  forgotPassword,
+  getuser,
+  updateuser,
+  deleteuser,
+};
