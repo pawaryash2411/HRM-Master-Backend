@@ -27,7 +27,7 @@ router.post(
 );
 router.put("/:id", upload.single("picture"), updateuser);
 
-router.get("/getuser", getuser);
+router.get("/getuser", requireAuth, getuser);
 router.get("/getusers", getusers);
 router.post("/forgot-password", forgotPassword);
 router.put("/reset-password/:token", resetPassword);
