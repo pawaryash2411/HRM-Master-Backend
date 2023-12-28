@@ -18,6 +18,19 @@ const getuser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const getusers = async (req, res) => {
+  try {
+    const user = await db.find();
+
+    if (user.length === 0) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    res.status(200).json({ users });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 const registerUser = async (req, res) => {
   const {
@@ -241,33 +254,35 @@ const forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   const { newPassword, confirmNewPassword } = req.body;
-  console.log(req.body, "userdata")
+  console.log(req.body, "userdata");
   const { token } = req.params;
-  console.log(req.params, "token")
+  console.log(req.params, "token");
 
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-  
+
   try {
     const user = await db.findOne({
       passwordResetToken: hashedToken,
       passwordResetExpires: { $gt: Date.now() },
     });
-    console.log("user", user)
+    console.log("user", user);
 
     if (!user) {
-      return res.status(400).json({ error: 'Token Expired or Invalid. Please try again.' });
+      return res
+        .status(400)
+        .json({ error: "Token Expired or Invalid. Please try again." });
     }
 
     if (newPassword !== confirmNewPassword) {
-      return res.status(400).json({ error: 'Passwords do not match.' });
+      return res.status(400).json({ error: "Passwords do not match." });
     }
 
-    user.password = newPassword; 
+    user.password = newPassword;
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
-    
+
     await user.save();
-    res.json({ message: 'Password reset successfully.' });
+    res.json({ message: "Password reset successfully." });
   } catch (err) {
     res.status(500).json({ err: err.message });
   }
@@ -281,4 +296,5 @@ module.exports = {
   updateuser,
   resetPassword,
   deleteuser,
+  getusers,
 };

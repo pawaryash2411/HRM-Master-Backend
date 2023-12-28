@@ -12,9 +12,9 @@ const {
   updateuser,
   resetPassword,
   deleteuser,
+  getusers,
 } = require("../../Controllers/userController/userController");
 const { requireAuth } = require("../../Middlewares/requireAuth");
-
 
 const router = express.Router();
 
@@ -27,7 +27,8 @@ router.post(
 );
 router.put("/:id", upload.single("picture"), updateuser);
 
-router.get("/getuser", requireAuth, getuser);
+router.get("/getuser", getuser);
+router.get("/getusers", getusers);
 router.post("/forgot-password", forgotPassword);
 router.put("/reset-password/:token", resetPassword);
 router.delete("/:id", deleteuser);
