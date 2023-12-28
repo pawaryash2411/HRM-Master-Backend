@@ -4,7 +4,7 @@ const {getdata, getalldata, postdata, putdata, deletedata } =
 const router = express.Router();
 
 router.get("/",getalldata)
-router.get("/:_id",getdata)
+router.get("/:id",getdata)
 router.post("/", postdata)
 router.put("/:id",putdata)
 router.delete("/:id",deletedata)
