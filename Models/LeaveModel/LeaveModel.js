@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const leaveSchema = mongoose.Schema({
 
@@ -22,18 +23,22 @@ const leaveSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    last_modified_date:{
+    last_modified_date: {
         type: String,
     },
-    total_days:{
+    total_days: {
         type: String,
     },
-    status:{
+    status: {
         type: String,
         default: true
-    }
-},
+    },
+    user_id: {
 
-{   timestamps: true}
+        type: Schema.Types.ObjectId,
+        default: () => new mongoose.Types.ObjectId()
+    },
+},
+    { timestamps: true }
 );
 module.exports = mongoose.model("leave", leaveSchema);

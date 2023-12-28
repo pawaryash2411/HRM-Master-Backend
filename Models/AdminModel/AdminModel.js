@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const userSchema = mongoose.Schema({
     email:
     {
@@ -11,11 +10,12 @@ const userSchema = mongoose.Schema({
         type: String,
         required: false,
     },
-    pending_leave:
-    {
-        type: String,
-        required: false,
-    },
+    pending_leave: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'leave'
+        }
+    ],
     notifications: [
         { type: String }
     ],

@@ -18,7 +18,6 @@ const getalldata = async (req, res) => {
     }
 };
 
-
 const postdata = async (req, res) => {
     try {
         const startDate = new Date(req.body.start_date);
