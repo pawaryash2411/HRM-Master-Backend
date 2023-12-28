@@ -40,7 +40,7 @@ const postdata = async (req, res) => {
 
         res.status(201).json(data);
     } catch (error) {
-        res.status(404).json(error.message);
+        res.status(404).json({message: error.message });
     }
 };
 
@@ -105,7 +105,7 @@ const putdata = async (req, res) => {
 
         res.status(200).json(result);
     } catch (error) {
-        res.status(404).json(error.message);
+        res.status(404).json({message: error.message });
     }
 };
 
@@ -120,7 +120,7 @@ const deletedata = async (req, res) => {
         );
         res.status(200).json(result);
     } catch (error) {
-        res.status(404).json(error.message);
+        res.status(404).json({message: error.message });
     }
 };
 
