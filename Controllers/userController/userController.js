@@ -20,9 +20,9 @@ const getuser = async (req, res) => {
 };
 const getusers = async (req, res) => {
   try {
-    const user = await db.find();
+    const users = await db.find();
 
-    if (user.length === 0) {
+    if (users.length === 0) {
       return res.status(404).json({ message: "No users found" });
     }
 
