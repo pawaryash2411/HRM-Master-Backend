@@ -1,9 +1,6 @@
 const User = require("../Models/userModel/userModel");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
-const User = require("../Models/userModel/userModel");
-const jwt = require("jsonwebtoken");
-const asyncHandler = require("express-async-handler");
 
 const requireAuth = asyncHandler(async (req, res, next) => {
   let token;
@@ -34,5 +31,4 @@ const isAdmin = asyncHandler(async (req, res, next) => {
   }
 });
 
-// module.exports = { authMiddleware, isAdmin };
 module.exports = { requireAuth, isAdmin };

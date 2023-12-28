@@ -15,7 +15,6 @@ const {
 } = require("../../Controllers/userController/userController");
 const { requireAuth } = require("../../Middlewares/requireAuth");
 
-// const {requireAuth} = require('../../Middlewares/requireAuth')
 
 const router = express.Router();
 
