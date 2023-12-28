@@ -23,6 +23,7 @@ app.use("/api/admin", require('./Routes/AdminRouter/AdminRouter'));
 app.use("/api/department", require('./Routes/PlanningRoute/DpartmntDesigntionRoute'));
 app.use("/api/leave", require('./Routes/LeaveRouter/LeaveRouter'));
 app.use("/api/clock", require('./Routes/ClockIn-OutRoute/ClockIn-OutRoute'));
+app.use("/api/holiday", require('./Routes/HolidayRouter/HolidayRouter'));
 
 app.use(notFound);
 app.use(errorHandler);
