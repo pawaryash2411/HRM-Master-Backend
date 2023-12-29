@@ -283,6 +283,20 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const changepassword = async (req, res) => {
+  const { _id } = req.user._id;
+  const { password } = req.body;
+  const user = await db.findById(_id);
+  if (password) {
+    user.password = password;
+    const updatedPassword = await user.save();
+    res.json({ updatedPassword, message: "update password success " });
+  } else {
+    res.json(user);
+  }
+}
+
+
 module.exports = {
   registerUser,
   loginUser,
@@ -292,4 +306,5 @@ module.exports = {
   resetPassword,
   deleteuser,
   getusers,
+  changepassword
 };
