@@ -6,12 +6,12 @@ const {
   putdata,
   deletedata,
 } = require("../../Controllers/LeaveController/LeaveController");
-const { authMiddleware } = require("../../Middlewares/requireAuth");
+const { authMiddleware, requireAuth } = require("../../Middlewares/requireAuth");
 const router = express.Router();
 
 router.get("/",getalldata)
 router.get("/:id",getdata)
-router.post("/", postdata)
+router.post("/", requireAuth, postdata)
 router.put("/:id",putdata)
 router.delete("/:id",deletedata)
 

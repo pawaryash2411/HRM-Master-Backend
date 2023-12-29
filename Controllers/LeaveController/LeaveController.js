@@ -3,21 +3,21 @@ const db = require("../../Models/LeaveModel/LeaveModel");
 const userModel = require("../../Models/userModel/userModel");
 
 const getdata = async (req, res) => {
-    try {
-        data = await db.find({ _id: req.params.id });
-        res.status(200).json(data);
-    } catch (error) {
-        res.status(404).json({message: error.message });
-    }
+  try {
+    data = await db.find({ _id: req.params.id });
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
 };
 
 const getalldata = async (req, res) => {
-    try {
-        data = await db.find();
-        res.status(200).json(data);
-    } catch (error) {
-        res.status(404).json({message: error.message });
-    }
+  try {
+    data = await db.find();
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
 };
 
 const postdata = async (req, res) => {
@@ -43,18 +43,19 @@ const postdata = async (req, res) => {
       ...req.body,
     });
     const user = await userModel.findOne({ _id: req.user._id });
-    console.log(user);
     user.leave = data._Id;
-    user.save();
+    await user.save();
+    console.log(user);
 
-    const admin = await AdminModel.find({});
+    const admin = await AdminModel.findOne({});
     admin.leave.push(data._id);
-    admin.save();
+    await admin.save();
+    // console.log(admin);
 
-        res.status(201).json(data);
-    } catch (error) {
-        res.status(404).json({message: error.message });
-    }
+    res.status(201).json(data);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
 };
 
 // const putdata = async (req, res) => {
@@ -116,24 +117,24 @@ const putdata = async (req, res) => {
       }
     );
 
-        res.status(200).json(result);
-    } catch (error) {
-        res.status(404).json({message: error.message });
-    }
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
 };
 
 const deletedata = async (req, res) => {
-    try {
-        let result = await db.deleteMany(
-            { _id: req.params.id },
-            {
-                $set: req.body,
-            }
-        );
-        res.status(200).json(result);
-    } catch (error) {
-        res.status(404).json({message: error.message });
-    }
+  try {
+    let result = await db.deleteMany(
+      { _id: req.params.id },
+      {
+        $set: req.body,
+      }
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
 };
 
 module.exports = { getalldata, putdata, getdata, postdata, deletedata };

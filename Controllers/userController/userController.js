@@ -75,8 +75,7 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+
 
     const newUser = new db({
       supervisor_name,
@@ -96,7 +95,7 @@ const registerUser = async (req, res) => {
       joindate,
       email,
       location,
-      password: hashedPassword,
+      password,
     });
 
     const userRegister = await newUser.save();
@@ -199,11 +198,12 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Please enter all fields" });
     }
     const user = await db.findOne({ email });
-    console.log(user);
+    // console.log(user);
     if (!user) {
       return res.status(400).json({ message: "User does not exist" });
     }
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log(isMatch);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
