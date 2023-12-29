@@ -30,8 +30,8 @@ const leaveSchema = mongoose.Schema(
       type: Number,
     },
     status: {
-      type: Boolean,
-      default: false,
+      type: String,
+      default: "pending",
     },
     user_id: {
       type: Schema.Types.ObjectId,
