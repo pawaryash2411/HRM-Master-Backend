@@ -9,6 +9,6 @@ const router = express.Router();
 
 router.get("/", getalldata)
 router.post("/", upload.single("logo_img"), uploadedcloudinaryImages, addcompany);
-router.put("/:id", upload.single("logo_img"), updateuser);
+router.put("/:id", upload.single("logo_img"), uploadedcloudinaryImages, updateuser);
 
 module.exports = router;
