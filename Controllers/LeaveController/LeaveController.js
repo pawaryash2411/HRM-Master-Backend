@@ -30,12 +30,13 @@ const postdata = async (req, res) => {
     const durationInDays = Math.ceil(
       durationInMilliseconds / (1000 * 60 * 60 * 24)
     );
+    console.log(durationInDays);
     const lastModifiedDate = new Date();
 
     const data = await LeaveModel.create({
       start_date: startDate,
       end_date: endDate,
-      total_days: durationInDays,
+      total_days: durationInDays + 1,
       last_modified_date: lastModifiedDate,
       user_id: req.user._id,
       ...req.body,
@@ -110,7 +111,7 @@ const putdata = async (req, res) => {
         $set: {
           start_date: updatedStartDate,
           end_date: endDate,
-          total_days: durationInDays,
+          total_days: durationInDays + 1,
           last_modified_date: lastModifiedDate,
           ...req.body,
         },
