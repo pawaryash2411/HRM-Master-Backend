@@ -1,4 +1,5 @@
 const AdminModel = require("../../Models/AdminModel/AdminModel");
+const LeaveModel = require("../../Models/LeaveModel/LeaveModel");
 const db = require("../../Models/LeaveModel/LeaveModel");
 const userModel = require("../../Models/userModel/userModel");
 
@@ -22,19 +23,16 @@ const getalldata = async (req, res) => {
 
 const postdata = async (req, res) => {
   try {
-    // console.log(req.body);
     const startDate = new Date(req.body.start_date);
     const endDate = new Date(req.body.end_date);
 
     const durationInMilliseconds = endDate.getTime() - startDate.getTime();
-
     const durationInDays = Math.ceil(
       durationInMilliseconds / (1000 * 60 * 60 * 24)
     );
-
     const lastModifiedDate = new Date();
 
-    const data = await db.create({
+    const data = await LeaveModel.create({
       start_date: startDate,
       end_date: endDate,
       total_days: durationInDays,
@@ -42,15 +40,17 @@ const postdata = async (req, res) => {
       user_id: req.user._id,
       ...req.body,
     });
-    const user = await userModel.findOne({ _id: req.user._id });
-    user.leave = data._Id;
-    await user.save();
-    console.log(user);
 
+    // insert  leave in userModel
+    const user = await userModel.findOne({ _id: req.user._id });
+    user.leave.push(data._id);
+    await user.save();
+
+    // insert  leave in adminmodel
     const admin = await AdminModel.findOne({});
+    console.log(admin);
     admin.leave.push(data._id);
     await admin.save();
-    // console.log(admin);
 
     res.status(201).json(data);
   } catch (error) {
