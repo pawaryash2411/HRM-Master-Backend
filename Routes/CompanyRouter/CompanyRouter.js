@@ -4,7 +4,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const uploadedcloudinaryImages = require("../../Middlewares/singleImgUpload");
 
-const { getalldata, addcompany, updateuser } =require("../../Controllers/CompanyController/CompanyController");
+const { getalldata, addcompany, updateuser } = require("../../Controllers/CompanyController/CompanyController");
 const router = express.Router();
 
 router.get("/", getalldata)
