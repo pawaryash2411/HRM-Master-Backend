@@ -20,7 +20,6 @@ app.use(cookieParser());
 
 // super admin 
 app.use("/api/superadmin", require('./Routes/SuperAdminRouter/SuperAdminRouter'));
-
 app.use("/api/user", require('./Routes/userRouter/userRouter'));
 app.use("/api/admin", require('./Routes/AdminRouter/AdminRouter'));
 app.use("/api/department", require('./Routes/PlanningRoute/DpartmntDesigntionRoute'));

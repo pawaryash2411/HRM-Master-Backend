@@ -30,13 +30,13 @@ const leaveSchema = mongoose.Schema({
         type: String,
     },
     status: {
-        type: String,
-        default: true
+        type: Boolean,
+        default: false
     },
     user_id: {
 
         type: Schema.Types.ObjectId,
-        ref : "user"
+        ref: "user"
     },
 },
     { timestamps: true }
