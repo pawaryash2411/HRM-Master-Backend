@@ -251,11 +251,11 @@ const forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   const { newPassword, confirmNewPassword } = req.body;
-  console.log(req.body, "userdata");
   const { token } = req.params;
   console.log(req.params, "token");
 
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  console.log(hashedToken, "hashedToken")
 
   try {
     const user = await db.findOne({
