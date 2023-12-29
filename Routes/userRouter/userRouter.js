@@ -13,6 +13,7 @@ const {
   resetPassword,
   deleteuser,
   getusers,
+  changepassword
 } = require("../../Controllers/userController/userController");
 const { requireAuth } = require("../../Middlewares/requireAuth");
 
@@ -32,5 +33,6 @@ router.get("/getusers", requireAuth, getusers);
 router.post("/forgot-password", forgotPassword);
 router.put("/reset-password/:token", resetPassword);
 router.delete("/:id", deleteuser);
+router.put("/change-password",requireAuth, changepassword);
 
 module.exports = router;
