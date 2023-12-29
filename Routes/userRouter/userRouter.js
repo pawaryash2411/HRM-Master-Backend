@@ -23,7 +23,7 @@ router.post("/addstaff", upload.single("picture"), uploadedcloudinaryImages, reg
 router.put("/addstaff/:id", upload.single("picture"), uploadedcloudinaryImages, updateuser);
 
 router.get("/getuser", requireAuth, getuser);
-router.get("/getusers", getusers);
+router.get("/getusers", requireAuth, getusers);
 router.post("/forgot-password", forgotPassword);
 router.put("/reset-password/:token", resetPassword);
 router.delete("/:id", deleteuser);
