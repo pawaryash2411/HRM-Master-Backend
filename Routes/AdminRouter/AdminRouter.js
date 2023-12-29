@@ -1,16 +1,18 @@
 const express = require("express");
 
-const { createadmin, loginadmin, createnotification} =
- require('../../Controllers/AdminController/AdminController')
-
+const {
+  createadmin,
+  loginadmin,
+  createnotification,
+  getadmin,
+} = require("../../Controllers/AdminController/AdminController");
+const { requireAuth } = require("../../Middlewares/requireAuth");
 
 const router = express.Router();
 
-
 router.post("/login", loginadmin);
-router.post("/createadmin",createadmin);
+router.get("/getalldata", getadmin);
+router.post("/createadmin", createadmin);
 router.post("/createnotification", createnotification);
 
 module.exports = router;
-
-
