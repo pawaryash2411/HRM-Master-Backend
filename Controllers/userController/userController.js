@@ -7,7 +7,7 @@ const sendEmail = require("../../Controllers/emailController");
 
 const getuser = async (req, res) => {
   try {
-    const user = await db.findById(req.user);
+    const user = await db.findById(req.user).populate("leave");
 
     if (!user) {
       return res.status(404).json({ message: "No users found" });
@@ -20,7 +20,7 @@ const getuser = async (req, res) => {
 };
 const getusers = async (req, res) => {
   try {
-    const users = await db.find();
+    const users = await db.find().populate("leave");
 
     if (users.length === 0) {
       return res.status(404).json({ message: "No users found" });
@@ -74,8 +74,6 @@ const registerUser = async (req, res) => {
     if (exists) {
       return res.status(400).json({ message: "User already exists" });
     }
-
-
 
     const newUser = new db({
       supervisor_name,
@@ -255,7 +253,7 @@ const resetPassword = async (req, res) => {
   console.log(req.params, "token");
 
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-  console.log(hashedToken, "hashedToken")
+  console.log(hashedToken, "hashedToken");
 
   try {
     const user = await db.findOne({
