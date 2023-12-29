@@ -19,8 +19,13 @@ const { requireAuth } = require("../../Middlewares/requireAuth");
 const router = express.Router();
 
 router.post("/login", loginUser);
-router.post("/addstaff", upload.single("picture"), uploadedcloudinaryImages, registerUser);
-router.put("/addstaff/:id", upload.single("picture"), uploadedcloudinaryImages, updateuser);
+router.post(
+  "/addstaff",
+  upload.single("picture"),
+  uploadedcloudinaryImages,
+  registerUser
+);
+router.put("/addstaff/:id", upload.single("picture"), updateuser);
 
 router.get("/getuser", requireAuth, getuser);
 router.get("/getusers", requireAuth, getusers);

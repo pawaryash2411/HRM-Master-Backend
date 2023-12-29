@@ -124,7 +124,14 @@ const updateuser = async (req, res) => {
     location,
   } = req.body;
 
-  const uploadimg = req.uploadedImageUrl;
+  let picture;
+  if (req.file) {
+    const dataUrl = `data:${
+      req.file.mimetype
+    };base64,${req.file.buffer.toString("base64")}`;
+    const result = await cloudinary.uploader.upload(dataUrl);
+    picture = result.secure_url;
+  }
 
   try {
     if (!req.body) {

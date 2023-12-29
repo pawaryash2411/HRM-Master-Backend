@@ -60,11 +60,15 @@ const updateuser = async (req, res) => {
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Please enter a valid email" });
     }
-
-    const exists = await db.findOne({ email });
-    if (exists) {
-      return res.status(400).json({ message: "User already exists" });
+    let logo_img;
+    if (req.file) {
+      const dataUrl = `data:${
+        req.file.mimetype
+      };base64,${req.file.buffer.toString("base64")}`;
+      const result = await cloudinary.uploader.upload(dataUrl);
+      logo_img = result.secure_url;
     }
+
     const updatecompany = await db.findByIdAndUpdate(
       { _id: req.params.id },
       {
@@ -73,7 +77,7 @@ const updateuser = async (req, res) => {
           email,
           phone_no,
           address,
-          logo_img: uploadedImages,
+          logo_img,
         },
       }
     );
