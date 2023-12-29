@@ -24,21 +24,17 @@ const addcompany = async (req, res) => {
     } = req.body;
 
     const uploadimg = req.uploadedImageUrl;
-
     try {
         if (!req.body) {
             return res.status(400).json({ message: "Please provide all required fields" });
         }
-
         if (!validator.isEmail(email)) {
             return res.status(400).json({ message: "Please enter a valid email" });
         }
-
         const exists = await db.findOne({ email });
         if (exists) {
             return res.status(400).json({ message: "User with this email already exists" });
         }
-
         const newCompany = new db({
             company_name,
             email,
@@ -55,22 +51,14 @@ const addcompany = async (req, res) => {
 };
 
 const updateuser = async (req, res) => {
-    const {
-        company_name,
-        email,
-        phone_no,
-        address,
-        logo_img,
-    } = req.body;
     try {
-        let uploadimg;
-        if (req.file) {
-            const dataUrl = `data:${req.file.mimetype
-                };base64,${req.file.buffer.toString("base64")}`;
-            const result = await cloudinary.uploader.upload(dataUrl);
-
-            uploadimg = result.secure_url;
-        }
+        const uploadedImages = req.uploadedImageUrl;
+        const {
+            company_name,
+            email,
+            phone_no,
+            address
+        } = req.body;
         if (!validator.isEmail(email)) {
             return res.status(400).json({ message: "Please enter a valid email" });
         }
@@ -79,8 +67,6 @@ const updateuser = async (req, res) => {
         if (exists) {
             return res.status(400).json({ message: "User already exists" });
         }
-
-
         const updatecompany = await db.findByIdAndUpdate(
             { _id: req.params.id },
             {
@@ -89,11 +75,11 @@ const updateuser = async (req, res) => {
                     email,
                     phone_no,
                     address,
-                    logo_img: uploadimg ?? logo_img,
+                    logo_img: uploadedImages,
                 },
             }
         );
-        res.status(200).json({ updatecompany, message: "company updated successfully" });
+        res.status(200).json({message: "company updated successfully" });
     } catch (error) {
         res.status(500).json({ message: "Failed to update company", error: error.message });
     }

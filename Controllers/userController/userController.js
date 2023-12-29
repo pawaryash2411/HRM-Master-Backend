@@ -124,18 +124,15 @@ const updateuser = async (req, res) => {
     email,
     password,
     location,
-    picture,
   } = req.body;
-  try {
-    let uploadimg;
-    if (req.file) {
-      const dataUrl = `data:${
-        req.file.mimetype
-      };base64,${req.file.buffer.toString("base64")}`;
-      const result = await cloudinary.uploader.upload(dataUrl);
 
-      uploadimg = result.secure_url;
+  const uploadimg = req.uploadedImageUrl;
+
+  try {
+    if (!req.body) {
+      return res.status(400).json({ message: "Please enter all fields" });
     }
+
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Please enter a valid email" });
     }
@@ -171,7 +168,7 @@ const updateuser = async (req, res) => {
           designation,
           weekday_shift,
           both_shift,
-          picture: uploadimg ?? picture,
+          picture: uploadimg,
           joindate,
           email,
           location,
@@ -179,7 +176,7 @@ const updateuser = async (req, res) => {
         },
       }
     );
-    res.status(200).json({ updateuser, message: "User updated successfully" });
+    res.status(200).json({ success: true, message: "update staff" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
