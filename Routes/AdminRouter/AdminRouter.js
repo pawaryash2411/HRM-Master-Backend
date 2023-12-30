@@ -6,7 +6,8 @@ const {
   createnotification,
   getadmin,
   registerAdmin,
-  updateAdmin
+  updateAdmin,
+  addbranch
 } = require("../../Controllers/AdminController/AdminController");
 const { requireAuth } = require("../../Middlewares/requireAuth");
 
@@ -25,6 +26,8 @@ router.post(
 router.put("/addadmin/:id", upload.single("picture"), updateAdmin);
 
 router.post("/login", loginadmin);
+
+router.post("/addbranch",addbranch);
 router.get("/getalldata", getadmin);
 // router.post("/createadmin", createadmin);
 router.post("/createnotification", createnotification);

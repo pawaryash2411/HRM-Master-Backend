@@ -2,6 +2,7 @@ const db = require("../../Models/AdminModel/AdminModel");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const branchModel = require("../../Models/BranchModel/branchModel");
 
 const registerAdmin = async (req, res) => {
   const {
@@ -120,7 +121,7 @@ const createnotification = async (req, res) => {
 
 const getadmin = async (req, res) => {
   try {
-    const admindata = await db.findOne().populate("leave");
+    const admindata = await db.findOne().populate("leave").populate("branch");
     console.log(admindata);
     res.status(200).send({
       success: true,
@@ -132,6 +133,36 @@ const getadmin = async (req, res) => {
       .send({ success: false, message: "internal server Error" + error });
   }
 };
+
+const addbranch = async (req, res) => {
+  try {
+    const admindata = await db.findById(req.body.id);
+
+    
+    const branchdata = new branchModel({
+      branch_name: req.body.branch_name,
+      location: req.body.location,
+      admin_id: admindata._id,
+    });
+
+    let data = await branchdata.save();
+
+    const adminupdate = await db.findByIdAndUpdate(req.body.id, {
+      branch_id: data._id,
+    });
+
+    console.log(adminupdate);
+    res.status(200).send({
+      success: true,
+      adminupdate,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ success: false, message: "Internal server error: " + error });
+  }
+};
+
 
 const updateAdmin = async (req, res) => {
   const {
@@ -177,7 +208,6 @@ const updateAdmin = async (req, res) => {
           name,
           present_address,
           user_id,
-
           permanent_address,
           display_frontmonitor,
           attendense_calculation,
@@ -205,4 +235,5 @@ module.exports = {
   createnotification,
   getadmin,
   updateAdmin,
+  addbranch,
 };
