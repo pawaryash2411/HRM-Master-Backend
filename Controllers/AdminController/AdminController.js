@@ -294,7 +294,8 @@ const updateAdmin = async (req, res) => {
 };
 
 const approveLeave = async (req, res) => {
-  const { id, status } = req.params;
+  const { id } = req.params;
+  const { status } = req.body;
   await LeaveModel.findByIdAndUpdate(id, {
     status: status === "approve" ? "pending" : "approve",
   });

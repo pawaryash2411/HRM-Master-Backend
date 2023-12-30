@@ -12,6 +12,7 @@ const {
   updateBranch,
   deleteBranch,
   deleteAdmin,
+  approveLeave,
 } = require("../../Controllers/AdminController/AdminController");
 const { requireAuth } = require("../../Middlewares/requireAuth");
 
