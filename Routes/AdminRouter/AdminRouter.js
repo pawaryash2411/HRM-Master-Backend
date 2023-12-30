@@ -5,14 +5,28 @@ const {
   loginadmin,
   createnotification,
   getadmin,
+  registerAdmin,
+  updateAdmin
 } = require("../../Controllers/AdminController/AdminController");
 const { requireAuth } = require("../../Middlewares/requireAuth");
 
+const multer = require("multer"); // For handling file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+const uploadedcloudinaryImages = require("../../Middlewares/singleImgUpload");
 const router = express.Router();
+
+router.post(
+  "/addadmin",
+  upload.single("picture"),
+  uploadedcloudinaryImages,
+  registerAdmin
+);
+router.put("/addadmin/:id", upload.single("picture"), updateAdmin);
 
 router.post("/login", loginadmin);
 router.get("/getalldata", getadmin);
-router.post("/createadmin", createadmin);
+// router.post("/createadmin", createadmin);
 router.post("/createnotification", createnotification);
 
 module.exports = router;
