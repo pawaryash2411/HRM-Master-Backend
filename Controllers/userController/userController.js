@@ -288,15 +288,29 @@ const resetPassword = async (req, res) => {
 };
 
 const changepassword = async (req, res) => {
-  const { _id } = req.user._id;
-  const { password } = req.body;
-  const user = await db.findById(_id);
-  if (password) {
+  try {
+    const userId = req.user._id;
+    const { password } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ error: "User ID not provided." });
+    }
+
+    if (!password) {
+      return res.status(400).json({ error: "New password not provided." });
+    }
+
+    const user = await db.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
     user.password = password;
-    const updatedPassword = await user.save();
-    res.json({ updatedPassword, message: "update password success " });
-  } else {
-    res.json(user);
+    const updatedUser = await user.save();
+
+    res.json({ message: "Password updated successfully.", user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error." });
   }
 };
 
