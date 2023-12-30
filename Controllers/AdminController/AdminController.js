@@ -121,7 +121,10 @@ const createnotification = async (req, res) => {
 
 const getadmin = async (req, res) => {
   try {
-    const admindata = await db.findOne().populate("leave").populate("branch");
+    const admindata = await db
+      .findOne()
+      .populate("leave")
+      .populate("branch_id");
     console.log(admindata);
     res.status(200).send({
       success: true,
@@ -138,7 +141,6 @@ const addbranch = async (req, res) => {
   try {
     const admindata = await db.findById(req.body.id);
 
-    
     const branchdata = new branchModel({
       branch_name: req.body.branch_name,
       location: req.body.location,
@@ -163,7 +165,6 @@ const addbranch = async (req, res) => {
   }
 };
 
-
 const updateAdmin = async (req, res) => {
   const {
     mobile_no,
@@ -185,8 +186,9 @@ const updateAdmin = async (req, res) => {
 
   let picture;
   if (req.file) {
-    const dataUrl = `data:${req.file.mimetype
-      };base64,${req.file.buffer.toString("base64")}`;
+    const dataUrl = `data:${
+      req.file.mimetype
+    };base64,${req.file.buffer.toString("base64")}`;
     const result = await cloudinary.uploader.upload(dataUrl);
     picture = result.secure_url;
   }
