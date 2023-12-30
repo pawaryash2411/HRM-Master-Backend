@@ -173,7 +173,7 @@ const updateAdmin = async (req, res) => {
     user_id,
     permanent_address,
     display_frontmonitor,
-    attendense_calculation,
+    attendance_calculation,
     department,
     designation,
     weekday_shift,
@@ -186,9 +186,8 @@ const updateAdmin = async (req, res) => {
 
   let picture;
   if (req.file) {
-    const dataUrl = `data:${
-      req.file.mimetype
-    };base64,${req.file.buffer.toString("base64")}`;
+    const dataUrl = `data:${req.file.mimetype
+      };base64,${req.file.buffer.toString("base64")}`;
     const result = await cloudinary.uploader.upload(dataUrl);
     picture = result.secure_url;
   }
@@ -212,7 +211,7 @@ const updateAdmin = async (req, res) => {
           user_id,
           permanent_address,
           display_frontmonitor,
-          attendense_calculation,
+          attendance_calculation,
           department,
           designation,
           weekday_shift,
