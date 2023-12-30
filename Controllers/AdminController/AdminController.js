@@ -2,7 +2,7 @@ const db = require("../../Models/AdminModel/AdminModel");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const branchModel = require("../../Models/BranchModel/branchModel");
+const branchModel = require("../../Models/BranchModel/branchModel");                  
 
 const registerAdmin = async (req, res) => {
   const {
