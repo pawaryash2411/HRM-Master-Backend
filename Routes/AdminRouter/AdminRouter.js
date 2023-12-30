@@ -7,7 +7,10 @@ const {
   getadmin,
   registerAdmin,
   updateAdmin,
-  addbranch
+  addbranch,
+  getBranch,
+  updateBranch,
+  deleteBranch,
 } = require("../../Controllers/AdminController/AdminController");
 const { requireAuth } = require("../../Middlewares/requireAuth");
 
@@ -27,7 +30,11 @@ router.put("/addadmin/:id", upload.single("picture"), updateAdmin);
 
 router.post("/login", loginadmin);
 
-router.post("/addbranch",addbranch);
+router.post("/addbranch", addbranch);
+router.get("/branch", getBranch);
+router.put("/branch/:id", updateBranch);
+router.delete("/branch/:id", deleteBranch);
+
 router.get("/getalldata", getadmin);
 // router.post("/createadmin", createadmin);
 router.post("/createnotification", createnotification);
