@@ -3,6 +3,7 @@ const validator = require("validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const branchModel = require("../../Models/BranchModel/branchModel");
+const LeaveModel = require("../../Models/LeaveModel/LeaveModel");
 
 const registerAdmin = async (req, res) => {
   const {
@@ -247,8 +248,9 @@ const updateAdmin = async (req, res) => {
 
   let picture;
   if (req.file) {
-    const dataUrl = `data:${req.file.mimetype
-      };base64,${req.file.buffer.toString("base64")}`;
+    const dataUrl = `data:${
+      req.file.mimetype
+    };base64,${req.file.buffer.toString("base64")}`;
     const result = await cloudinary.uploader.upload(dataUrl);
     picture = result.secure_url;
   }
@@ -291,6 +293,14 @@ const updateAdmin = async (req, res) => {
   }
 };
 
+const approveLeave = async (req, res) => {
+  const { id, status } = req.params;
+  await LeaveModel.findByIdAndUpdate(id, {
+    status: status === "approve" ? "pending" : "approve",
+  });
+  res.status(200).json({ message: "Status changed successfully" });
+};
+
 module.exports = {
   registerAdmin,
   loginadmin,
@@ -302,4 +312,5 @@ module.exports = {
   updateBranch,
   deleteBranch,
   deleteAdmin,
+  approveLeave,
 };

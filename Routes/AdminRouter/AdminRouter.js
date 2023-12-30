@@ -42,4 +42,6 @@ router.post("/createnotification", createnotification);
 
 router.delete("/:id", deleteAdmin);
 
+router.put("/approve/:id", approveLeave);
+
 module.exports = router;
