@@ -122,7 +122,7 @@ const createnotification = async (req, res) => {
 const getadmin = async (req, res) => {
   try {
     const admindata = await db
-      .findOne()
+      .find()
       .populate("leave")
       .populate("branch_id");
     console.log(admindata);
