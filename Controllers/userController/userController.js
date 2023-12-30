@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("../../Controllers/emailController");
+const cloudinary = require("cloudinary").v2;
 
 const getuser = async (req, res) => {
   try {
@@ -141,20 +142,16 @@ const updateuser = async (req, res) => {
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Please enter a valid email" });
     }
-
-    if (!validator.isStrongPassword(password)) {
-      return res
-        .status(400)
-        .json({ message: "Please enter a strong password" });
+    let hashedPassword;
+    if (password) {
+      if (!validator.isStrongPassword(password)) {
+        return res
+          .status(400)
+          .json({ message: "Please enter a strong password" });
+      }
+      const salt = await bcrypt.genSalt(10);
+      hashedPassword = await bcrypt.hash(password, salt);
     }
-
-    const exists = await db.findOne({ email });
-    if (exists) {
-      return res.status(400).json({ message: "User already exists" });
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
 
     const updateuser = await db.findByIdAndUpdate(
       { _id: req.params.id },
@@ -173,7 +170,7 @@ const updateuser = async (req, res) => {
           designation,
           weekday_shift,
           both_shift,
-          picture: uploadimg,
+          picture,
           joindate,
           email,
           location,
@@ -301,8 +298,7 @@ const changepassword = async (req, res) => {
   } else {
     res.json(user);
   }
-}
-
+};
 
 module.exports = {
   registerUser,
@@ -313,5 +309,5 @@ module.exports = {
   resetPassword,
   deleteuser,
   getusers,
-  changepassword
+  changepassword,
 };

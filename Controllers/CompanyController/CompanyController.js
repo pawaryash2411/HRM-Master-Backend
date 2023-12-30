@@ -1,5 +1,6 @@
 const db = require("../../Models/CompanyModel/CompanyModel");
 const validator = require("validator");
+const cloudinary = require("cloudinary").v2;
 
 const getalldata = async (req, res) => {
   try {
