@@ -121,10 +121,7 @@ const createnotification = async (req, res) => {
 
 const getadmin = async (req, res) => {
   try {
-    const admindata = await db
-      .find()
-      .populate("leave")
-      .populate("branch_id");
+    const admindata = await db.find().populate("leave").populate("branch_id");
     console.log(admindata);
     res.status(200).send({
       success: true,
@@ -164,6 +161,57 @@ const addbranch = async (req, res) => {
       .send({ success: false, message: "Internal server error: " + error });
   }
 };
+const updateBranch = async (req, res) => {
+  const { id: branchId } = req.params;
+  try {
+    const admindata = await db.findById(req.body.id);
+
+    const branchData = branchModel.findByIdAndUpdate(
+      branchId,
+      {
+        branch_name: req.body.branch_name,
+        location: req.body.location,
+        admin_id: admindata._id,
+      },
+      { new: true }
+    );
+
+    let data = await branchData.save();
+
+    admindata.branch_id = data._id;
+    await admindata.save();
+    res.status(200).send({
+      success: true,
+      branch: branchData,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ success: false, message: "Internal server error: " + error });
+  }
+};
+const deleteBranch = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await branchModel.findByIdAndDelete(id);
+    res.status(200).json({ message: "Deleted succesfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ success: false, message: "Internal server error: " + error });
+  }
+};
+
+const getBranch = async (req, res) => {
+  try {
+    const branches = await branchModel.find();
+    res.status(200).json({ branches });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ success: false, message: "Internal server error: " + error });
+  }
+};
 
 const updateAdmin = async (req, res) => {
   const {
@@ -186,8 +234,9 @@ const updateAdmin = async (req, res) => {
 
   let picture;
   if (req.file) {
-    const dataUrl = `data:${req.file.mimetype
-      };base64,${req.file.buffer.toString("base64")}`;
+    const dataUrl = `data:${
+      req.file.mimetype
+    };base64,${req.file.buffer.toString("base64")}`;
     const result = await cloudinary.uploader.upload(dataUrl);
     picture = result.secure_url;
   }
@@ -237,4 +286,7 @@ module.exports = {
   getadmin,
   updateAdmin,
   addbranch,
+  getBranch,
+  updateBranch,
+  deleteBranch,
 };
