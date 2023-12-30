@@ -66,6 +66,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    branch_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "branch",
+    },
     leave: [
       {
         type: mongoose.Schema.Types.ObjectId,
