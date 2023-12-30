@@ -290,7 +290,7 @@ const resetPassword = async (req, res) => {
 const changepassword = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { password } = req.body;
+    const { password, oldPW } = req.body;
 
     if (!userId) {
       return res.status(400).json({ error: "User ID not provided." });
@@ -304,6 +304,11 @@ const changepassword = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ error: "User not found." });
+    }
+    const comparePW = await bcrypt.compare(oldPW, user.password);
+    console.log(comparePW);
+    if (!comparePW) {
+      return res.status(404).json({ error: "Old password did not match" });
     }
     user.password = password;
     const updatedUser = await user.save();
