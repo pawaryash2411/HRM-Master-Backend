@@ -2,7 +2,7 @@ const db = require("../../Models/AdminModel/AdminModel");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const branchModel = require("../../Models/BranchModel/branchModel");                  
+const branchModel = require("../../Models/BranchModel/branchModel");
 
 const registerAdmin = async (req, res) => {
   const {
@@ -173,28 +173,28 @@ const addbranch = async (req, res) => {
       .send({ success: false, message: "Internal server error: " + error });
   }
 };
+
 const updateBranch = async (req, res) => {
   const { id: branchId } = req.params;
   try {
     const admindata = await db.findById(req.body.id);
 
-    const branchData = branchModel.findByIdAndUpdate(
+    const updatedBranchData = await branchModel.findByIdAndUpdate(
       branchId,
       {
         branch_name: req.body.branch_name,
         location: req.body.location,
         admin_id: admindata._id,
       },
-      { new: true }
+      { new: true } // This option returns the updated document
     );
 
-    let data = await branchData.save();
-
-    admindata.branch_id = data._id;
+    admindata.branch_id = updatedBranchData._id;
     await admindata.save();
+
     res.status(200).send({
       success: true,
-      branch: branchData,
+      branch: updatedBranchData,
     });
   } catch (error) {
     res
@@ -202,6 +202,7 @@ const updateBranch = async (req, res) => {
       .send({ success: false, message: "Internal server error: " + error });
   }
 };
+
 const deleteBranch = async (req, res) => {
   try {
     const { id } = req.params;
@@ -246,9 +247,8 @@ const updateAdmin = async (req, res) => {
 
   let picture;
   if (req.file) {
-    const dataUrl = `data:${
-      req.file.mimetype
-    };base64,${req.file.buffer.toString("base64")}`;
+    const dataUrl = `data:${req.file.mimetype
+      };base64,${req.file.buffer.toString("base64")}`;
     const result = await cloudinary.uploader.upload(dataUrl);
     picture = result.secure_url;
   }
