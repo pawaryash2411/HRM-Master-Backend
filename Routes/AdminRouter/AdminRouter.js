@@ -11,6 +11,7 @@ const {
   getBranch,
   updateBranch,
   deleteBranch,
+  deleteAdmin,
 } = require("../../Controllers/AdminController/AdminController");
 const { requireAuth } = require("../../Middlewares/requireAuth");
 
@@ -38,5 +39,7 @@ router.delete("/branch/:id", deleteBranch);
 router.get("/getalldata", getadmin);
 // router.post("/createadmin", createadmin);
 router.post("/createnotification", createnotification);
+
+router.delete("/:id", deleteAdmin);
 
 module.exports = router;

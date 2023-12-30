@@ -134,6 +134,18 @@ const getadmin = async (req, res) => {
   }
 };
 
+const deleteAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await db.findByIdAndDelete(id);
+    res.status(200).json({ message: "deleted successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ success: false, message: "internal server Error" + error });
+  }
+};
+
 const addbranch = async (req, res) => {
   try {
     const admindata = await db.findById(req.body.id);
@@ -289,4 +301,5 @@ module.exports = {
   getBranch,
   updateBranch,
   deleteBranch,
+  deleteAdmin,
 };
