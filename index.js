@@ -28,6 +28,7 @@ app.use("/api/clock", require('./Routes/ClockIn-OutRoute/ClockIn-OutRoute'));
 app.use("/api/holiday", require('./Routes/HolidayRouter/HolidayRouter'));
 app.use("/api/company", require('./Routes/CompanyRouter/CompanyRouter'));
 app.use("/api/rota", require('./Routes/RotaRouter/RotaRouter'));
+app.use("/api/leavecategory", require('./Routes/LeaveCategoryRoute/LeaveCategoryRouter'));
 
 app.use(notFound);
 app.use(errorHandler);
