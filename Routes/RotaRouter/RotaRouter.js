@@ -5,7 +5,7 @@ const { requireAuth } = require("../../Middlewares/requireAuth")
 
 router.get("/", getData)
 router.get("/filter", filterData);
-router.post("/", requireAuth, postData)
+router.post("/", postData)
 router.put("/:id", updateData)
 router.delete("/:id", deleteData)
 
