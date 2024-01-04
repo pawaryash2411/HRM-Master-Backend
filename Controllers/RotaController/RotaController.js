@@ -2,24 +2,14 @@ const rotaModal = require("../../Models/RotaModel/RotaModel");
 
 const postData = async (req, res) => {
     try {
-        const { employeename, date, starttime, endtime, employeeid, rota } = req.body;
-        const existingData = await rotaModal.findOne({ employeeid });
+        const { employeeid, rota } = req.body;
 
-        if (existingData) {
-            existingData.rota.push({ employeeid, employeename, date, starttime, endtime }); // Assuming you want to add the date, starttime, and endtime to the existing rota
-            await existingData.save();
-            res.status(200).json({ success: true, message: "Rota Data Updated successfully" });
-        } else {
-            const newRotaData = await rotaModal.create({
-                employeename,
-                date,
-                starttime,
-                endtime,
-                employeeid,
-                rota// Assuming rota is an array of objects containing date, starttime, and endtime
-            });
-            res.status(201).json({ success: true, rotaData: newRotaData, message: "Rota Data Added successfully" });
-        }
+        const newRotaData = await rotaModal.create({
+            employeeid,
+            rota
+        });
+        res.status(201).json({ success: true, rotaData: newRotaData, message: "Rota Data Added successfully" });
+
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
