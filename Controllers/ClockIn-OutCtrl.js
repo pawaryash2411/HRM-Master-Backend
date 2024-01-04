@@ -1,3 +1,5 @@
+const db = require('../Models/Clockin-OutModel/Clockin-OutModel');
+
 const fetch = require('node-fetch');
 const axios = require('axios');
 const apiKey = 'AIzaSyBpcBi67uEbAIQTdShuxektx1E_v38CTHI';
@@ -42,4 +44,38 @@ const getlocation = (req, res) => {
 
 }
 
-module.exports = { getlocation }
+
+//----------------------------------------
+
+const postdata = async (req, res) => {
+    try {
+
+        const newData = await db.create(req.body);
+        res.status(200).json(newData);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+const getdata = async (req, res) => {
+    try {
+
+        const getalldata = await db.find();
+        res.status(200).json(getalldata)
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const getsingle = async (req, res) => {
+    try {
+        const getsingledata = await db.findOne({ userid: req.params.userid });
+        res.status(200).json(getsingledata)
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+module.exports = { getlocation, postdata, getdata, getsingle };

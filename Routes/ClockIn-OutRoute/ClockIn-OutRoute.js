@@ -1,8 +1,13 @@
 const express = require("express");
-const {getlocation } =
- require('../../Controllers/ClockIn-Out')
+const { getlocation, postdata, getdata, getsingle } =
+    require('../../Controllers/ClockIn-OutCtrl')
 const router = express.Router();
 
-router.get("/",getlocation)
+router.get("/loaction", getlocation)
+
+router.get("/", getdata)
+router.get("/:userid", getsingle)
+router.post("/", postdata)
+
 
 module.exports = router;
