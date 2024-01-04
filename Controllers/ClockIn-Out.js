@@ -1,4 +1,3 @@
-const express = require('express');
 const fetch = require('node-fetch');
 const axios = require('axios');
 const apiKey = 'AIzaSyBpcBi67uEbAIQTdShuxektx1E_v38CTHI';
