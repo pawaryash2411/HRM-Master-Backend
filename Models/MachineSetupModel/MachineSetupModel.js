@@ -31,7 +31,7 @@ const MachineSetupSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    country:
+    timezone:
     {
         type: String,
         required: true,

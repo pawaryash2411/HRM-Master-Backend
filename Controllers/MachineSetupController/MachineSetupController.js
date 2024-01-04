@@ -9,7 +9,7 @@ const postData = async (req, res) => {
             port_no,
             machine_name,
             branch_name,
-            company,
+            timezone,
             access_control
         } = req.body;
         const machineSetupData = await MachineSetupModel.create({
@@ -19,7 +19,7 @@ const postData = async (req, res) => {
             port_no,
             machine_name,
             branch_name,
-            company,
+            timezone,
             access_control
         });
 
@@ -53,7 +53,7 @@ const updateData = async (req, res) => {
             port_no,
             machine_name,
             branch_name,
-            company,
+            timezone,
             access_control
         } = req.body;
 
@@ -64,7 +64,7 @@ const updateData = async (req, res) => {
             port_no,
             machine_name,
             branch_name,
-            company,
+            timezone,
             access_control
         }, { new: true });
 
