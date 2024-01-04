@@ -29,6 +29,7 @@ app.use("/api/holiday", require('./Routes/HolidayRouter/HolidayRouter'));
 app.use("/api/company", require('./Routes/CompanyRouter/CompanyRouter'));
 app.use("/api/rota", require('./Routes/RotaRouter/RotaRouter'));
 app.use("/api/leavecategory", require('./Routes/LeaveCategoryRoute/LeaveCategoryRouter'));
+app.use("/api/machinesetup", require('./Routes/MachineSetupRoute/MachineSetupRoute'));
 
 app.use(notFound);
 app.use(errorHandler);
