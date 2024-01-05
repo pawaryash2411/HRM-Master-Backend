@@ -8,7 +8,11 @@ const postData = async (req, res) => {
             employeeid,
             rota
         });
-        res.status(201).json({ success: true, rotaData: newRotaData, message: "Rota Data Added successfully" });
+
+        res.status(201).json({
+            success: true, rotaData: newRotaData,
+            message: "Rota Data Added successfully"
+        });
 
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -18,7 +22,10 @@ const postData = async (req, res) => {
 const getData = async (req, res) => {
     try {
         const rotaData = await rotaModal.find();
-        res.status(200).json({ success: true, rotaData, message: "Rota Data Fetched successfully" });
+        res.status(200).json({
+            success: true, rotaData,
+            message: "Rota Data Fetched successfully"
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
