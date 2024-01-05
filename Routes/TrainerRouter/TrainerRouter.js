@@ -11,7 +11,7 @@ router.put("/:id", updateData)
 router.delete("/:id", deleteData)
 router.get("/trainingtype/", getTrainingTypeAllData)
 router.post("/trainingtype/", requireAuth, postTrainingTypeData)
-router.put("/trainingtype/:id", updateData, updateTrainingTypeData)
-router.delete("/trainingtype/:id", deleteData, deleteTrainingTypeData)
+router.put("/trainingtype/:id", updateTrainingTypeData)
+router.delete("/trainingtype/:id", deleteTrainingTypeData)
 
 module.exports = router;
