@@ -10,7 +10,7 @@ const leaveSchema = mongoose.Schema({
         type: String,
         required: true,
     }
-},
+}, 
 
 {   timestamps: true}
 );

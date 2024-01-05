@@ -2,6 +2,7 @@ const db = require("../Models/Clockin-OutModel/Clockin-OutModel");
 
 const fetch = require("node-fetch");
 const axios = require("axios");
+const UserTimeRegistor = require("../Models/UserTimeRegistor/UserTimeRegistor");
 const apiKey = "AIzaSyBpcBi67uEbAIQTdShuxektx1E_v38CTHI";
 const address = "tajmahal";
 const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
@@ -60,6 +61,37 @@ const postdata = async (req, res) => {
   }
 };
 
+const putdata = async (req, res) => {
+  try {
+    const { id: userid } = req.user;
+    const { clockouttime, totaltime } = req.body;
+    const userdata = await db.findOne({ userid });
+
+    if (!userdata) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const clockintime = userdata.time;
+
+    let userTimeRegistorData = await UserTimeRegistor.findOne({ userid });
+
+    if (!userTimeRegistorData) {
+      userTimeRegistorData = new UserTimeRegistor({ userid, clock: [] });
+    }
+
+    userTimeRegistorData.clock.push({ clockintime, clockouttime, totaltime });
+
+    await userTimeRegistorData.save();
+
+    await db.findByIdAndDelete(userid);
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 const getdata = async (req, res) => {
   try {
     const getalldata = await db.find();
@@ -82,4 +114,4 @@ const getsingle = async (req, res) => {
   }
 };
 
-module.exports = { getlocation, postdata, getdata, getsingle };
+module.exports = { getlocation, postdata, getdata, getsingle, putdata };
