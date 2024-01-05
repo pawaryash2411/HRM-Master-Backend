@@ -84,16 +84,16 @@ const deleteData = async (req, res) => {
 
         const deletedData = await db.findByIdAndDelete(id);
 
-        res.status(200).json({ success: true, deletedData, message: "Complaint Removed successfully" });
+        res.status(200).json({ success: true, message: "Complaint Removed successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
 };
 
 module.exports = {
-    postData, 
-    getAllData, 
-    updateData, 
+    postData,
+    getAllData,
+    updateData,
     deleteData,
     getSingleData
 };

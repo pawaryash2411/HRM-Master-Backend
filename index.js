@@ -35,6 +35,9 @@ app.use("/api/traininglist", require('./Routes/TrainingRouter/TrainingRouter'));
 app.use("/api/award", require('./Routes/CoreHRRouter/AwardRouter'));
 app.use("/api/complaint", require('./Routes/CoreHRRouter/ComplaintRouter'));
 app.use("/api/promotion", require('./Routes/CoreHRRouter/PromotionRouter'));
+app.use("/api/resignation", require('./Routes/CoreHRRouter/ResignationRouter'));
+app.use("/api/termination", require('./Routes/CoreHRRouter/TerminationRouter'));
+app.use("/api/transfer", require('./Routes/CoreHRRouter/TransferRouter'));
 
 app.use(notFound);
 app.use(errorHandler);

@@ -5,7 +5,7 @@ const {
     updateData,
     deleteData,
     getSingleData
-} = require("../../Controllers/CoreHRController/PromotionController");
+} = require("../../Controllers/CoreHRController/TerminationController");
 const router = express.Router();
 
 router.get("/", getAllData)

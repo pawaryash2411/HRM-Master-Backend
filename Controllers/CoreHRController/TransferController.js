@@ -1,26 +1,28 @@
-const db = require("../../Models/CoreHRModel/PromotionModel");
+const db = require("../../Models/CoreHRModel/TransferModel");
 
 const postData = async (req, res) => {
     try {
         const {
             company,
             employee,
-            title,
-            promotion_date,
+            from_department,
+            to_department,
+            date,
             description
         } = req.body;
-        const Promotiondata = await db.create({
+        const Transferdata = await db.create({
             company,
             employee,
-            title,
-            promotion_date,
+            from_department,
+            to_department,
+            date,
             description
         });
 
         res.status(201).json({
             success: true,
-            Promotiondata,
-            message: " Promotion Created successfully"
+            Transferdata,
+            message: " Transfer Created successfully"
         });
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -29,8 +31,8 @@ const postData = async (req, res) => {
 
 const getAllData = async (req, res) => {
     try {
-        const PromotionAllData = await db.find();
-        res.status(200).json({ success: true, PromotionAllData, message: "All Promotion Data Fetched successfully" });
+        const TransferAllData = await db.find();
+        res.status(200).json({ success: true, TransferAllData, message: "All Transfer Data Fetched successfully" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -40,9 +42,9 @@ const getSingleData = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const PromotionData = await db.findById(id);
+        const TransferData = await db.findById(id);
 
-        res.status(200).json({ success: true, PromotionData, message: "Promotion Single Data Fetched successfully" });
+        res.status(200).json({ success: true, TransferData, message: "Transfer Single Data Fetched successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -55,20 +57,22 @@ const updateData = async (req, res) => {
         const {
             company,
             employee,
-            title,
-            promotion_date,
+            from_department,
+            to_department,
+            date,
             description
         } = req.body;
 
         const updatedData = await db.findByIdAndUpdate(id, {
             company,
             employee,
-            title,
-            promotion_date,
+            from_department,
+            to_department,
+            date,
             description
         }, { new: true });
 
-        res.status(200).json({ success: true, message: "Promotion Updated successfully" });
+        res.status(200).json({ success: true, message: "Transfer Updated successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -80,7 +84,7 @@ const deleteData = async (req, res) => {
 
         await db.findByIdAndDelete(id);
 
-        res.status(200).json({ success: true, message: "Promotion Removed successfully" });
+        res.status(200).json({ success: true, message: "Transfer Removed successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }

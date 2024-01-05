@@ -1,8 +1,8 @@
 const express = require("express");
 const {
-    postData, 
-    getAllData, 
-    updateData, 
+    postData,
+    getAllData,
+    updateData,
     deleteData,
     getSingleData
 } = require("../../Controllers/CoreHRController/ComplaintController");
@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.get("/", getAllData)
 router.get("/:id", getSingleData)
-router.post("/",  postData)
+router.post("/", postData)
 router.put("/:id", updateData)
 router.delete("/:id", deleteData)
 

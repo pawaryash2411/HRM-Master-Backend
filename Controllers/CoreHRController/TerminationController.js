@@ -1,26 +1,28 @@
-const db = require("../../Models/CoreHRModel/PromotionModel");
+const db = require("../../Models/CoreHRModel/TerminationModel");
 
 const postData = async (req, res) => {
     try {
         const {
             company,
-            employee,
-            title,
-            promotion_date,
+            termination_to,
+            termination_type,
+            termination_date,
+            notice_date,
             description
         } = req.body;
-        const Promotiondata = await db.create({
+        const Terminationdata = await db.create({
             company,
-            employee,
-            title,
-            promotion_date,
+            termination_to,
+            termination_type,
+            termination_date,
+            notice_date,
             description
         });
 
         res.status(201).json({
             success: true,
-            Promotiondata,
-            message: " Promotion Created successfully"
+            Terminationdata,
+            message: " Termination Created successfully"
         });
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -29,8 +31,8 @@ const postData = async (req, res) => {
 
 const getAllData = async (req, res) => {
     try {
-        const PromotionAllData = await db.find();
-        res.status(200).json({ success: true, PromotionAllData, message: "All Promotion Data Fetched successfully" });
+        const TerminationAllData = await db.find();
+        res.status(200).json({ success: true, TerminationAllData, message: "All Termination Data Fetched successfully" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -40,9 +42,9 @@ const getSingleData = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const PromotionData = await db.findById(id);
+        const TerminationData = await db.findById(id);
 
-        res.status(200).json({ success: true, PromotionData, message: "Promotion Single Data Fetched successfully" });
+        res.status(200).json({ success: true, TerminationData, message: "Termination Single Data Fetched successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -54,21 +56,21 @@ const updateData = async (req, res) => {
         const { id } = req.params;
         const {
             company,
+            department,
             employee,
-            title,
-            promotion_date,
+            notice_date,
             description
         } = req.body;
 
         const updatedData = await db.findByIdAndUpdate(id, {
             company,
+            department,
             employee,
-            title,
-            promotion_date,
+            notice_date,
             description
         }, { new: true });
 
-        res.status(200).json({ success: true, message: "Promotion Updated successfully" });
+        res.status(200).json({ success: true, message: "Termination Updated successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -80,7 +82,7 @@ const deleteData = async (req, res) => {
 
         await db.findByIdAndDelete(id);
 
-        res.status(200).json({ success: true, message: "Promotion Removed successfully" });
+        res.status(200).json({ success: true, message: "Termination Removed successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }

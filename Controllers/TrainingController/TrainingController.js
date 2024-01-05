@@ -99,9 +99,9 @@ const deleteData = async (req, res) => {
 };
 
 module.exports = {
-    postData, 
-    getAllData, 
-    updateData, 
+    postData,
+    getAllData,
+    updateData,
     deleteData,
     getSingleData
 };
