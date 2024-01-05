@@ -1,32 +1,24 @@
 const mongoose = require("mongoose");
 
-const TrainingSchema = mongoose.Schema(
+const ComplaintSchema = mongoose.Schema(
     {
         company: {
             type: String,
             required: true,
         },
-        training_type: {
+        complaintForm: {
             type: String,
             required: true,
         },
-        trainer: {
+        complaintAgainst: {
             type: String,
             required: true,
         },
-        employee: {
+        complaintTitle: {
             type: String,
             required: true,
         },
-        startdate: {
-            type: String,
-            required: true,
-        },
-        enddate: {
-            type: String,
-            required: true,
-        },
-        training_cost: {
+        complaintDate: {
             type: String,
             required: true,
         },
@@ -37,4 +29,4 @@ const TrainingSchema = mongoose.Schema(
     },
     { timestamps: true }
 );
-module.exports = mongoose.model("traininglist", TrainingSchema);
+module.exports = mongoose.model("complaint", ComplaintSchema);

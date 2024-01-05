@@ -31,8 +31,9 @@ app.use("/api/rota", require('./Routes/RotaRouter/RotaRouter'));
 app.use("/api/leavecategory", require('./Routes/LeaveCategoryRoute/LeaveCategoryRouter'));
 app.use("/api/machinesetup", require('./Routes/MachineSetupRoute/MachineSetupRoute'));
 app.use("/api/trainer", require('./Routes/TrainerRouter/TrainerRouter'));
-app.use("/api/training", require('./Routes/TrainingRouter/TrainingRouter'));
+app.use("/api/traininglist", require('./Routes/TrainingRouter/TrainingRouter'));
 app.use("/api/award", require('./Routes/CoreHRRouter/AwardRouter'));
+app.use("/api/complaint", require('./Routes/CoreHRRouter/ComplaintRouter'));
 
 app.use(notFound);
 app.use(errorHandler);

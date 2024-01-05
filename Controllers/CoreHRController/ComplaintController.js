@@ -1,32 +1,28 @@
-const db = require("../../Models/TrainingModel/TrainingModel");
+const db = require("../../Models/CoreHRModel/ComplaintModel");
 
 const postData = async (req, res) => {
     try {
         const {
             company,
-            training_type,
-            trainer,
-            employee,
-            startdate,
-            enddate,
-            training_cost,
+            complaintForm,
+            complaintAgainst,
+            complaintTitle,
+            complaintDate,
             description
         } = req.body;
-        const trainingdata = await db.create({
+        const Complaintdata = await db.create({
             company,
-            training_type,
-            trainer,
-            employee,
-            startdate,
-            enddate,
-            training_cost,
+            complaintForm,
+            complaintAgainst,
+            complaintTitle,
+            complaintDate,
             description
         });
 
         res.status(201).json({
             success: true,
-            trainingdata,
-            message: " Training Created successfully"
+            Complaintdata,
+            message: " Complaint Created successfully"
         });
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -35,8 +31,8 @@ const postData = async (req, res) => {
 
 const getAllData = async (req, res) => {
     try {
-        const trainingAllData = await db.find();
-        res.status(200).json({ success: true, trainingAllData, message: "All Training Data Fetched successfully" });
+        const ComplaintAllData = await db.find();
+        res.status(200).json({ success: true, ComplaintAllData, message: "All Complaint Data Fetched successfully" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -46,9 +42,9 @@ const getSingleData = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const trainingData = await db.findById(id);
+        const ComplaintData = await db.findById(id);
 
-        res.status(200).json({ success: true, trainingData, message: "Training Single Data Fetched successfully" });
+        res.status(200).json({ success: true, ComplaintData, message: "Complaint Single Data Fetched successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -60,27 +56,23 @@ const updateData = async (req, res) => {
         const { id } = req.params;
         const {
             company,
-            training_type,
-            trainer,
-            employee,
-            startdate,
-            enddate,
-            training_cost,
+            complaintForm,
+            complaintAgainst,
+            complaintTitle,
+            complaintDate,
             description
         } = req.body;
 
         const updatedData = await db.findByIdAndUpdate(id, {
             company,
-            training_type,
-            trainer,
-            employee,
-            startdate,
-            enddate,
-            training_cost,
+            complaintForm,
+            complaintAgainst,
+            complaintTitle,
+            complaintDate,
             description
         }, { new: true });
 
-        res.status(200).json({ success: true, message: "Training Updated successfully" });
+        res.status(200).json({ success: true, message: "Complaint Updated successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -92,7 +84,7 @@ const deleteData = async (req, res) => {
 
         const deletedData = await db.findByIdAndDelete(id);
 
-        res.status(200).json({ success: true, deletedData, message: "Training Removed successfully" });
+        res.status(200).json({ success: true, deletedData, message: "Complaint Removed successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
