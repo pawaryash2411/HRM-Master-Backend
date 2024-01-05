@@ -1,7 +1,7 @@
-
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const userModel = require("../Models/userModel/userModel");
+const AdminModel = require("../Models/AdminModel/AdminModel");
 
 const requireAuth = asyncHandler(async (req, res, next) => {
   let token;
@@ -10,8 +10,14 @@ const requireAuth = asyncHandler(async (req, res, next) => {
     try {
       if (token) {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await userModel.findById(decoded?.id);
-        req.user = user;
+        let finalUser;
+        // const user = await userModel.findById(decoded?.id);
+        // if (!user) {
+        //   finalUser = await AdminModel.findById(decoded?.id);
+        // } else {
+        //   finalUser = user;
+        // }
+        req.user = decoded;
         next();
       }
     } catch (error) {

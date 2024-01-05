@@ -9,10 +9,11 @@ const cloudinary = require("cloudinary").v2;
 
 const getuser = async (req, res) => {
   try {
-    const user = await db.findById(req.user).populate("leave");
+    console.log(req.user.id);
+    const user = await db.findById(req.user.id).populate("leave");
 
     if (!user) {
-      const admin = await AdminModel.findById(req.user);
+      const admin = await AdminModel.findById(req.user.id);
       if (!admin) {
         return res.status(404).json({ message: "No users found" });
       }
