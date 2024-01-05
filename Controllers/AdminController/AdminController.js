@@ -153,7 +153,7 @@ const addbranch = async (req, res) => {
 
     const branchdata = new branchModel({
       branch_name: req.body.branch_name,
-      location: req.body.location,
+      location: JSON.parse(req.body.location),
       admin_id: admindata._id,
     });
 

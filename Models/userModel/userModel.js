@@ -77,6 +77,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    adminId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "admin",
+    },
     leave: [
       {
         type: mongoose.Schema.Types.ObjectId,

@@ -7,7 +7,8 @@ const BranchSchema = mongoose.Schema(
       type: String,
     },
     location: {
-      type: String,
+      latitude: String,
+      longitude: String,
     },
     admin_id: {
       type: Schema.Types.ObjectId,

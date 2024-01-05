@@ -52,6 +52,7 @@ const registerUser = async (req, res) => {
     email,
     password,
     location,
+    adminId,
   } = req.body;
 
   const uploadimg = req.uploadedImageUrl;
@@ -95,6 +96,7 @@ const registerUser = async (req, res) => {
       email,
       location,
       password,
+      adminId,
     });
 
     const userRegister = await newUser.save();
