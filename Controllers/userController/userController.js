@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("../../Controllers/emailController");
+const AdminModel = require("../../Models/AdminModel/AdminModel");
 const cloudinary = require("cloudinary").v2;
 
 const getuser = async (req, res) => {
@@ -199,9 +200,18 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Please enter all fields" });
     }
     const user = await db.findOne({ email });
-    // console.log(user);
+    console.log(user);
     if (!user) {
-      return res.status(400).json({ message: "User does not exist" });
+      const admin = await AdminModel.findOne({ email });
+      if (!admin) {
+        return res.status(400).json({ message: "User does not exist" });
+      }
+      const isMatch = await bcrypt.compare(password, admin.password);
+      if (!isMatch) {
+        return res.status(400).json({ message: "Invalid credentials" });
+      }
+      const token = createToken(admin._id);
+      return res.status(200).json({ user: admin, token });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     console.log(isMatch);
