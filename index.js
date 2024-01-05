@@ -34,6 +34,7 @@ app.use("/api/trainer", require('./Routes/TrainerRouter/TrainerRouter'));
 app.use("/api/traininglist", require('./Routes/TrainingRouter/TrainingRouter'));
 app.use("/api/award", require('./Routes/CoreHRRouter/AwardRouter'));
 app.use("/api/complaint", require('./Routes/CoreHRRouter/ComplaintRouter'));
+app.use("/api/promotion", require('./Routes/CoreHRRouter/PromotionRouter'));
 
 app.use(notFound);
 app.use(errorHandler);
