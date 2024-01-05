@@ -159,6 +159,7 @@ const addbranch = async (req, res) => {
     const branchdata = new branchModel({
       branch_name: req.body.branch_name,
       location: JSON.parse(req.body.location),
+      address: req.body.address,
     });
 
     let data = await branchdata.save();
@@ -183,6 +184,7 @@ const updateBranch = async (req, res) => {
       {
         branch_name: req.body.branch_name,
         location: req.body.location,
+        address: req.body.address,
       },
       { new: true } // This option returns the updated document
     );
