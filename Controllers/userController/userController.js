@@ -12,7 +12,11 @@ const getuser = async (req, res) => {
     const user = await db.findById(req.user).populate("leave");
 
     if (!user) {
-      return res.status(404).json({ message: "No users found" });
+      const admin = await AdminModel.findById(req.user);
+      if (!admin) {
+        return res.status(404).json({ message: "No users found" });
+      }
+      return res.status(200).json({ user: admin });
     }
 
     res.status(200).json({ user });

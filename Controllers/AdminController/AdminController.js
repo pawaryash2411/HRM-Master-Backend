@@ -22,6 +22,7 @@ const registerAdmin = async (req, res) => {
     email,
     password,
     location,
+    branch_id,
   } = req.body;
 
   const uploadimg = req.uploadedImageUrl;
@@ -63,9 +64,15 @@ const registerAdmin = async (req, res) => {
       email,
       location,
       password,
+      branch_id,
     });
 
     const AdminRegister = await newAdmin.save();
+
+    await branchModel.findByIdAndUpdate(branch_id, {
+      admin_id: AdminRegister._id,
+    });
+
     res
       .status(200)
       .json({ success: true, AdminRegister, message: "Admin Created" });
@@ -149,24 +156,17 @@ const deleteAdmin = async (req, res) => {
 
 const addbranch = async (req, res) => {
   try {
-    const admindata = await db.findById(req.body.id);
-
     const branchdata = new branchModel({
       branch_name: req.body.branch_name,
       location: JSON.parse(req.body.location),
-      admin_id: admindata._id,
     });
 
     let data = await branchdata.save();
 
-    const adminupdate = await db.findByIdAndUpdate(req.body.id, {
-      branch_id: data._id,
-    });
-
-    console.log(adminupdate);
     res.status(200).send({
       success: true,
-      adminupdate,
+      message: "Added successfully",
+      branch: data,
     });
   } catch (error) {
     res
@@ -178,20 +178,14 @@ const addbranch = async (req, res) => {
 const updateBranch = async (req, res) => {
   const { id: branchId } = req.params;
   try {
-    const admindata = await db.findById(req.body.id);
-
     const updatedBranchData = await branchModel.findByIdAndUpdate(
       branchId,
       {
         branch_name: req.body.branch_name,
         location: req.body.location,
-        admin_id: admindata._id,
       },
       { new: true } // This option returns the updated document
     );
-
-    admindata.branch_id = updatedBranchData._id;
-    await admindata.save();
 
     res.status(200).send({
       success: true,
@@ -244,6 +238,7 @@ const updateAdmin = async (req, res) => {
     email,
     password,
     location,
+    branch_id,
   } = req.body;
 
   let picture;
@@ -284,9 +279,13 @@ const updateAdmin = async (req, res) => {
           email,
           location,
           password,
+          branch_id,
         },
       }
     );
+    await branchModel.findByIdAndUpdate(branch_id, {
+      admin_id: req.params.id,
+    });
     res.status(200).json({ success: true, message: "update staff" });
   } catch (error) {
     res.status(500).json({ message: error.message });
