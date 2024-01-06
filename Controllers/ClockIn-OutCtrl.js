@@ -83,10 +83,9 @@ const putdata = async (req, res) => {
 
     await userTimeRegistorData.save();
 
-    let removedata = await db.findOne({ userid });
+    let removedata = await db.findOneAndDelete({ userid });
 
     if (removedata) {
-      await removedata.remove();
       return res.status(200).json({ success: true });
     } else {
       return res.status(404).json({
