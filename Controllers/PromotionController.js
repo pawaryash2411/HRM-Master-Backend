@@ -68,7 +68,7 @@ const updateData = async (req, res) => {
             description
         }, { new: true });
 
-        res.status(200).json({ success: true, message: "Promotion Updated successfully" });
+        res.status(200).json({ success: true, updatedData, message: "Promotion Updated successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -80,7 +80,7 @@ const deleteData = async (req, res) => {
 
         await db.findByIdAndDelete(id);
 
-        res.status(200).json({ success: true, message: "Promotion Removed successfully" });
+        res.status(200).json({ success: true, deleteData, message: "Promotion Removed successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
