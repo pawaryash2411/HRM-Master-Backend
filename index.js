@@ -41,6 +41,9 @@ app.use("/api/transfer", require('./Routes/TransferRouter'));
 app.use("/api/warning", require('./Routes/WarningRouter'));
 app.use("/api/travel", require('./Routes/TravelRouter'));
 app.use("/api/projects", require('./Routes/ProjectsRouter'));
+app.use("/api/task", require('./Routes/TasksRouter'));
+app.use("/api/client", require('./Routes/ClientRouter'));
+app.use("/api/taxtype", require('./Routes/TaxTypeRouter'));
 
 app.use(notFound);
 app.use(errorHandler);
