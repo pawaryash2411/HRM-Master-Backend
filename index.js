@@ -39,6 +39,7 @@ app.use("/api/resignation", require('./Routes/CoreHRRouter/ResignationRouter'));
 app.use("/api/termination", require('./Routes/CoreHRRouter/TerminationRouter'));
 app.use("/api/transfer", require('./Routes/CoreHRRouter/TransferRouter'));
 app.use("/api/Warning", require('./Routes/CoreHRRouter/WarningRouter'));
+app.use("/api/travel", require('./Routes/CoreHRRouter/TravelRouter'));
 
 app.use(notFound);
 app.use(errorHandler);
