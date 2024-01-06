@@ -38,7 +38,7 @@ app.use("/api/promotion", require('./Routes/PromotionRouter'));
 app.use("/api/resignation", require('./Routes/ResignationRouter'));
 app.use("/api/termination", require('./Routes/TerminationRouter'));
 app.use("/api/transfer", require('./Routes/TransferRouter'));
-app.use("/api/Warning", require('./Routes/WarningRouter'));
+app.use("/api/warning", require('./Routes/WarningRouter'));
 app.use("/api/travel", require('./Routes/TravelRouter'));
 
 app.use(notFound);

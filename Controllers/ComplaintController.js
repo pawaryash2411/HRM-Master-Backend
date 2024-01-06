@@ -10,7 +10,7 @@ const postData = async (req, res) => {
             complaintDate,
             description
         } = req.body;
-        const Complaintdata = await db.create({
+        const ComplaintData = await db.create({
             company,
             complaintForm,
             complaintAgainst,
@@ -21,8 +21,8 @@ const postData = async (req, res) => {
 
         res.status(201).json({
             success: true,
-            Complaintdata,
-            message: " Complaint Created successfully"
+            ComplaintData,
+            message: "Complaint Created successfully"
         });
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -72,7 +72,7 @@ const updateData = async (req, res) => {
             description
         }, { new: true });
 
-        res.status(200).json({ success: true, message: "Complaint Updated successfully" });
+        res.status(200).json({ success: true, updatedData, message: "Complaint Updated successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -84,7 +84,7 @@ const deleteData = async (req, res) => {
 
         const deletedData = await db.findByIdAndDelete(id);
 
-        res.status(200).json({ success: true, message: "Complaint Removed successfully" });
+        res.status(200).json({ success: true, deletedData, message: "Complaint Removed successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }

@@ -12,7 +12,7 @@ const postData = async (req, res) => {
             training_cost,
             description
         } = req.body;
-        const trainingdata = await db.create({
+        const trainingData = await db.create({
             company,
             training_type,
             trainer,
@@ -25,8 +25,8 @@ const postData = async (req, res) => {
 
         res.status(201).json({
             success: true,
-            trainingdata,
-            message: " Training Created successfully"
+            trainingData,
+            message: " Training List Created successfully"
         });
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -36,7 +36,7 @@ const postData = async (req, res) => {
 const getAllData = async (req, res) => {
     try {
         const trainingAllData = await db.find();
-        res.status(200).json({ success: true, trainingAllData, message: "All Training Data Fetched successfully" });
+        res.status(200).json({ success: true, trainingAllData, message: "All Training List Data Fetched successfully" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -48,7 +48,7 @@ const getSingleData = async (req, res) => {
 
         const trainingData = await db.findById(id);
 
-        res.status(200).json({ success: true, trainingData, message: "Training Single Data Fetched successfully" });
+        res.status(200).json({ success: true, trainingData, message: "Training Single List Data Fetched successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -80,7 +80,7 @@ const updateData = async (req, res) => {
             description
         }, { new: true });
 
-        res.status(200).json({ success: true, message: "Training Updated successfully" });
+        res.status(200).json({ success: true, updatedData, message: "Training List Updated successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -92,7 +92,7 @@ const deleteData = async (req, res) => {
 
         const deletedData = await db.findByIdAndDelete(id);
 
-        res.status(200).json({ success: true, deletedData, message: "Training Removed successfully" });
+        res.status(200).json({ success: true, deletedData, message: "Training List Removed successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
