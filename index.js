@@ -30,6 +30,16 @@ app.use("/api/company", require('./Routes/CompanyRouter/CompanyRouter'));
 app.use("/api/rota", require('./Routes/RotaRouter/RotaRouter'));
 app.use("/api/leavecategory", require('./Routes/LeaveCategoryRoute/LeaveCategoryRouter'));
 app.use("/api/machinesetup", require('./Routes/MachineSetupRoute/MachineSetupRoute'));
+app.use("/api/trainer", require('./Routes/TrainerRouter/TrainerRouter'));
+app.use("/api/traininglist", require('./Routes/TrainingRouter/TrainingRouter'));
+app.use("/api/award", require('./Routes/CoreHRRouter/AwardRouter'));
+app.use("/api/complaint", require('./Routes/CoreHRRouter/ComplaintRouter'));
+app.use("/api/promotion", require('./Routes/CoreHRRouter/PromotionRouter'));
+app.use("/api/resignation", require('./Routes/CoreHRRouter/ResignationRouter'));
+app.use("/api/termination", require('./Routes/CoreHRRouter/TerminationRouter'));
+app.use("/api/transfer", require('./Routes/CoreHRRouter/TransferRouter'));
+app.use("/api/Warning", require('./Routes/CoreHRRouter/WarningRouter'));
+app.use("/api/travel", require('./Routes/CoreHRRouter/TravelRouter'));
 
 app.use(notFound);
 app.use(errorHandler);
