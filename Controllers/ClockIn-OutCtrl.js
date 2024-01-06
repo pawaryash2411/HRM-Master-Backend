@@ -1,8 +1,8 @@
-const db = require("../Models/Clockin-OutModel/Clockin-OutModel");
+const db = require("../Models/Clockin-OutModel");
 
 const fetch = require("node-fetch");
 const axios = require("axios");
-const UserTimeRegistor = require("../Models/UserTimeRegistor/UserTimeRegistor");
+const UserTimeRegistor = require("../Models/UserTimeRegistor");
 const apiKey = "AIzaSyBpcBi67uEbAIQTdShuxektx1E_v38CTHI";
 const address = "tajmahal";
 const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
