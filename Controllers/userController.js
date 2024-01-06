@@ -41,7 +41,6 @@ const getusers = async (req, res) => {
 
 const registerUser = async (req, res) => {
   const {
-    supervisor_name,
     mobile_no,
     name,
     present_address,
@@ -57,7 +56,6 @@ const registerUser = async (req, res) => {
     joindate,
     email,
     password,
-    location,
     adminId,
   } = req.body;
 
@@ -72,19 +70,12 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Please enter a valid email" });
     }
 
-    if (!validator.isStrongPassword(password)) {
-      return res
-        .status(400)
-        .json({ message: "Please enter a strong password" });
-    }
-
     const exists = await db.findOne({ email });
     if (exists) {
       return res.status(400).json({ message: "User already exists" });
     }
 
     const newUser = new db({
-      supervisor_name,
       mobile_no,
       name,
       present_address,
@@ -100,7 +91,6 @@ const registerUser = async (req, res) => {
       picture: uploadimg,
       joindate,
       email,
-      location,
       password,
       adminId,
     });
@@ -130,7 +120,6 @@ const updateuser = async (req, res) => {
     joindate,
     email,
     password,
-    location,
   } = req.body;
 
   let picture;
@@ -152,11 +141,6 @@ const updateuser = async (req, res) => {
     }
     let hashedPassword;
     if (password) {
-      if (!validator.isStrongPassword(password)) {
-        return res
-          .status(400)
-          .json({ message: "Please enter a strong password" });
-      }
       const salt = await bcrypt.genSalt(10);
       hashedPassword = await bcrypt.hash(password, salt);
     }
@@ -181,7 +165,6 @@ const updateuser = async (req, res) => {
           picture,
           joindate,
           email,
-          location,
           password: hashedPassword,
         },
       }

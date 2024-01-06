@@ -4,10 +4,6 @@ const crypto = require("crypto");
 
 const userSchema = mongoose.Schema(
   {
-    supervisor_name: {
-      type: String,
-      required: true,
-    },
     mobile_no: {
       type: String,
       required: true,
@@ -58,7 +54,6 @@ const userSchema = mongoose.Schema(
     },
     picture: {
       type: String,
-      required: true,
     },
     joindate: {
       type: String,
@@ -73,10 +68,7 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    location: {
-      type: String,
-      required: true,
-    },
+
     adminId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "admin",
