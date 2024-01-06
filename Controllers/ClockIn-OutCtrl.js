@@ -83,9 +83,17 @@ const putdata = async (req, res) => {
 
     await userTimeRegistorData.save();
 
-    await db.findByIdAndDelete(userid);
+    let removedata = await db.findOne({ userid });
 
-    res.status(200).json({ success: true });
+    if (removedata) {
+      await removedata.remove();
+      return res.status(200).json({ success: true });
+    } else {
+      return res.status(404).json({
+        success: false,
+        message: "No document found for the given userid.",
+      });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
