@@ -38,6 +38,7 @@ app.use("/api/promotion", require('./Routes/CoreHRRouter/PromotionRouter'));
 app.use("/api/resignation", require('./Routes/CoreHRRouter/ResignationRouter'));
 app.use("/api/termination", require('./Routes/CoreHRRouter/TerminationRouter'));
 app.use("/api/transfer", require('./Routes/CoreHRRouter/TransferRouter'));
+app.use("/api/Warning", require('./Routes/CoreHRRouter/WarningRouter'));
 
 app.use(notFound);
 app.use(errorHandler);
