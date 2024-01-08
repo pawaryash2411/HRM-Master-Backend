@@ -10,17 +10,25 @@ const cloudinary = require("cloudinary").v2;
 const getuser = async (req, res) => {
   try {
     console.log(req.user.id);
-    const user = await db.findById(req.user.id).populate("leave");
+    const user = await db.findById(req.user.id).populate("leave branch_id");
 
     if (!user) {
-      const admin = await AdminModel.findById(req.user.id);
+      const admin = await AdminModel.findById(req.user.id).populate(
+        "branch_id"
+      );
       if (!admin) {
+        if (req.user.id === process.env.SUPER_EMAIL) {
+          return res.status(200).json({
+            user: { email: "superadmin@gmail.com" },
+            role: "Super Admin",
+          });
+        }
         return res.status(404).json({ message: "No users found" });
       }
-      return res.status(200).json({ user: admin });
+      return res.status(200).json({ user: admin, role: "admin" });
     }
 
-    res.status(200).json({ user });
+    res.status(200).json({ user, role: "user" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -71,7 +79,8 @@ const registerUser = async (req, res) => {
     }
 
     const exists = await db.findOne({ email });
-    if (exists) {
+    const adminExists = await AdminModel.findOne({ email });
+    if (exists || adminExists) {
       return res.status(400).json({ message: "User already exists" });
     }
 
@@ -189,6 +198,14 @@ const loginUser = async (req, res) => {
   try {
     if (!email || !password) {
       return res.status(400).json({ message: "Please enter all fields" });
+    }
+    if (email === process.env.SUPER_EMAIL) {
+      const isMatch = await bcrypt.compare(password, process.env.SUPER_PW);
+      if (isMatch) {
+        return res
+          .status(200)
+          .json({ user: { email: process.env.SUPER_EMAIL } });
+      }
     }
     const user = await db.findOne({ email }).populate("branch_id");
     console.log(user);

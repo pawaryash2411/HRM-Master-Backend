@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const branchModel = require("../Models/branchModel");
 const LeaveModel = require("../Models/LeaveModel");
+const userModel = require("../Models/userModel");
 
 const registerAdmin = async (req, res) => {
   const {
@@ -36,8 +37,9 @@ const registerAdmin = async (req, res) => {
     }
 
     const exists = await db.findOne({ email });
-    if (exists) {
-      return res.status(400).json({ message: "admin already exists" });
+    const userExists = await userModel.findOne({ email });
+    if (exists || userExists) {
+      return res.status(400).json({ message: "User already exists" });
     }
 
     const newAdmin = new db({
