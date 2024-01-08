@@ -14,7 +14,7 @@ const getdata = async (req, res) => {
 
 const getalldata = async (req, res) => {
   try {
-    data = await db.find();
+    data = await db.find().populate("user_id");
     res.status(200).json(data);
   } catch (error) {
     res.status(404).json({ message: error.message });
