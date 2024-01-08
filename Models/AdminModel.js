@@ -56,13 +56,8 @@ const userSchema = mongoose.Schema(
     },
     picture: {
       type: String,
-      required: true,
     },
     joindate: {
-      type: String,
-      required: true,
-    },
-    location: {
       type: String,
       required: true,
     },

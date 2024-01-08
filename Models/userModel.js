@@ -73,6 +73,10 @@ const userSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "admin",
     },
+    branch_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "branch",
+    },
     leave: [
       {
         type: mongoose.Schema.Types.ObjectId,

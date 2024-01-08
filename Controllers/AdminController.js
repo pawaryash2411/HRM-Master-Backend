@@ -21,7 +21,6 @@ const registerAdmin = async (req, res) => {
     joindate,
     email,
     password,
-    location,
     branch_id,
   } = req.body;
 
@@ -34,12 +33,6 @@ const registerAdmin = async (req, res) => {
 
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Please enter a valid email" });
-    }
-
-    if (!validator.isStrongPassword(password)) {
-      return res
-        .status(400)
-        .json({ message: "Please enter a strong password" });
     }
 
     const exists = await db.findOne({ email });
@@ -62,7 +55,6 @@ const registerAdmin = async (req, res) => {
       picture: uploadimg,
       joindate,
       email,
-      location,
       password,
       branch_id,
     });

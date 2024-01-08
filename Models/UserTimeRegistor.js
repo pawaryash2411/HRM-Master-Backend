@@ -8,9 +8,11 @@ const UserTimeRegistorSchema = mongoose.Schema(
     },
     clock: [
       {
-        clockintime: {
-          type: String,
-          required: true,
+        clockInDetails: {
+          browserName: String,
+          platform: String,
+          time: String,
+          isMobile: Boolean,
         },
         clockouttime: {
           type: String,

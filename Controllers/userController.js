@@ -8,7 +8,6 @@ const AdminModel = require("../Models/AdminModel");
 const cloudinary = require("cloudinary").v2;
 
 const getuser = async (req, res) => {
-  console.log(req.headers);
   try {
     console.log(req.user.id);
     const user = await db.findById(req.user.id).populate("leave");
@@ -76,6 +75,8 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
+    const admin = await AdminModel.findById(adminId);
+
     const newUser = new db({
       mobile_no,
       name,
@@ -94,6 +95,7 @@ const registerUser = async (req, res) => {
       email,
       password,
       adminId,
+      branch_id: admin.branch_id,
     });
 
     const userRegister = await newUser.save();
@@ -188,10 +190,10 @@ const loginUser = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ message: "Please enter all fields" });
     }
-    const user = await db.findOne({ email });
+    const user = await db.findOne({ email }).populate("branch_id");
     console.log(user);
     if (!user) {
-      const admin = await AdminModel.findOne({ email });
+      const admin = await AdminModel.findOne({ email }).populate("branch_id");
       if (!admin) {
         return res.status(400).json({ message: "User does not exist" });
       }

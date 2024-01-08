@@ -54,11 +54,11 @@ const postdata = async (req, res) => {
 
     const { time } = req.body;
     // console.log(time, userid);
-    const headers = req.body;
-
+    const headers = req.headers;
     // Extract browser name
-    const userAgent = headers["user-agent"];
-    const browserName = userAgent.split(" ")[2];
+    console.log(headers);
+    const userAgent = headers["sec-ch-ua"];
+    const browserName = userAgent.split(",").at(2).split(";")[0].slice(2, -1);
 
     // Extract platform
     const platform = headers["sec-ch-ua-platform"].replace(/"/g, "");
@@ -89,16 +89,18 @@ const putdata = async (req, res) => {
     if (!userdata) {
       return res.status(404).json({ error: "User not found" });
     }
-
-    const clockintime = userdata.time;
-
+    const { time, browserName, platform, isMobile } = userdata;
     let userTimeRegistorData = await UserTimeRegistor.findOne({ userid });
 
     if (!userTimeRegistorData) {
       userTimeRegistorData = new UserTimeRegistor({ userid, clock: [] });
     }
 
-    userTimeRegistorData.clock.push({ clockintime, clockouttime, totaltime });
+    userTimeRegistorData.clock.push({
+      clockInDetails: { time, browserName, platform, isMobile },
+      clockouttime,
+      totaltime,
+    });
 
     await userTimeRegistorData.save();
 
