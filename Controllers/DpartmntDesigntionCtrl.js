@@ -16,7 +16,7 @@ const postdata = async (req, res) => {
       designations: JSON.parse(designations),
       department,
     });
-    res.status(201).json({ data, message: "Designation added successfully" });
+    res.status(201).json({ data, message: "Department added successfully" });
   } catch (error) {
     res.status(404).json(error.message);
   }
