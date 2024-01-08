@@ -51,9 +51,28 @@ const getlocation = (req, res) => {
 const postdata = async (req, res) => {
   try {
     const { id: userid } = req.user;
+
     const { time } = req.body;
-    console.log(time, userid);
-    const newData = await db.create({ userid, time });
+    // console.log(time, userid);
+    const headers = req.body;
+
+    // Extract browser name
+    const userAgent = headers["user-agent"];
+    const browserName = userAgent.split(" ")[2];
+
+    // Extract platform
+    const platform = headers["sec-ch-ua-platform"].replace(/"/g, "");
+
+    // Check if it's a mobile device
+    const isMobile = headers["sec-ch-ua-mobile"] === "?1" ? true : false;
+
+    const newData = await db.create({
+      userid,
+      time,
+      browserName,
+      platform,
+      isMobile,
+    });
     res.status(200).json(newData);
   } catch (error) {
     console.log(error);
