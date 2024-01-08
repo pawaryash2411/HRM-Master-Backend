@@ -6,10 +6,19 @@ const jwt = require("jsonwebtoken");
 const sendEmail = require("./emailController");
 const AdminModel = require("../Models/AdminModel");
 const cloudinary = require("cloudinary").v2;
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const getuser = async (req, res) => {
   try {
     console.log(req.user.id);
+    if (req.user.id === process.env.SUPER_EMAIL) {
+      return res.status(200).json({
+        user: { email: "superadmin@gmail.com" },
+        role: "Super Admin",
+      });
+    }
     const user = await db.findById(req.user.id).populate("leave branch_id");
 
     if (!user) {
@@ -17,12 +26,6 @@ const getuser = async (req, res) => {
         "branch_id"
       );
       if (!admin) {
-        if (req.user.id === process.env.SUPER_EMAIL) {
-          return res.status(200).json({
-            user: { email: "superadmin@gmail.com" },
-            role: "Super Admin",
-          });
-        }
         return res.status(404).json({ message: "No users found" });
       }
       return res.status(200).json({ user: admin, role: "admin" });
@@ -202,9 +205,15 @@ const loginUser = async (req, res) => {
     if (email === process.env.SUPER_EMAIL) {
       const isMatch = await bcrypt.compare(password, process.env.SUPER_PW);
       if (isMatch) {
+        return res.status(200).json({
+          user: { email: process.env.SUPER_EMAIL },
+          token: createToken(process.env.SUPER_EMAIL),
+          role: "Super Admin",
+        });
+      } else {
         return res
-          .status(200)
-          .json({ user: { email: process.env.SUPER_EMAIL } });
+          .status(400)
+          .json({ message: "Super admin password invalid" });
       }
     }
     const user = await db.findOne({ email }).populate("branch_id");
@@ -219,7 +228,7 @@ const loginUser = async (req, res) => {
         return res.status(400).json({ message: "Invalid credentials" });
       }
       const token = createToken(admin._id);
-      return res.status(200).json({ user: admin, token });
+      return res.status(200).json({ user: admin, token, role: "admin" });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     console.log(isMatch);
@@ -228,7 +237,7 @@ const loginUser = async (req, res) => {
     }
     const token = createToken(user._id);
     console.log("datatoken", token);
-    res.status(200).json({ user, token });
+    res.status(200).json({ user, token, role: "user" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
