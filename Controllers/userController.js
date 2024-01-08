@@ -8,6 +8,7 @@ const AdminModel = require("../Models/AdminModel");
 const cloudinary = require("cloudinary").v2;
 
 const getuser = async (req, res) => {
+  console.log(req.headers);
   try {
     console.log(req.user.id);
     const user = await db.findById(req.user.id).populate("leave");
