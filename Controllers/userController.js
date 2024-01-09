@@ -216,10 +216,15 @@ const loginUser = async (req, res) => {
           .json({ message: "Super admin password invalid" });
       }
     }
-    const user = await db.findOne({ email }).populate("branch_id");
+    const user = await db
+      .findOne({ email })
+      .populate("branch_id")
+      .populate("leave");
     console.log(user);
     if (!user) {
-      const admin = await AdminModel.findOne({ email }).populate("branch_id");
+      const admin = await AdminModel.findOne({ email })
+        .populate("branch_id")
+        .populate("leave");
       if (!admin) {
         return res.status(400).json({ message: "User does not exist" });
       }
