@@ -38,7 +38,7 @@ const postdata = async (req, res) => {
       end_date: endDate,
       total_days: durationInDays + 1,
       last_modified_date: lastModifiedDate,
-      user_id: req.user._id,
+      user_id: req.user.id,
       ...req.body,
     });
 
