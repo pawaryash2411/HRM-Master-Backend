@@ -1,15 +1,16 @@
 const mongoose = require("mongoose");
 
-const rotaSchema = mongoose.Schema({
-
+const rotaSchema = mongoose.Schema(
+  {
+    employeename: String,
     employeeid: {
-        type: String,
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
     },
-    rota: []
-},
-    { timestamps: true }
+    rota: [],
+  },
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("rotacollection1", rotaSchema);
-

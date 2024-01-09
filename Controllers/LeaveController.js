@@ -59,35 +59,6 @@ const postdata = async (req, res) => {
   }
 };
 
-// const putdata = async (req, res) => {
-//     try {
-//         const startDate = new Date(req.body.start_date);
-//         const endDate = new Date(req.body.end_date);
-
-//         const durationInMilliseconds = endDate.getTime() - startDate.getTime();
-
-//         const durationInDays = Math.ceil(durationInMilliseconds / (1000 * 60 * 60 * 24));
-
-//         const lastModifiedDate = new Date();
-
-//         let result = await db.updateMany(
-//             { _id: req.params.id },
-//             {
-//                 $set: {
-//                     start_date: startDate,
-//                     end_date: endDate,
-//                     total_days: durationInDays,
-//                     last_modified_date: lastModifiedDate,
-//                     ...req.body
-//                 },
-//             }
-//         );
-//         res.status(200).json(result);
-//     } catch (error) {
-//         res.status(404).json(error.message);
-//     }
-// };
-
 const putdata = async (req, res) => {
   try {
     const startDate = new Date(req.body.start_date);
