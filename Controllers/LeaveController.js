@@ -43,7 +43,7 @@ const postdata = async (req, res) => {
     });
 
     // insert  leave in userModel
-    const user = await userModel.findOne({ _id: req.user._id });
+    const user = await userModel.findOne({ _id: req.user.id });
     user.leave.push(data._id);
     await user.save();
 
