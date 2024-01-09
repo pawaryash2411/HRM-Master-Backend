@@ -34,7 +34,11 @@ const deletedata = async (req, res) => {
       return res.status(404).json({ message: "Document not found for deletion" });
     }
 
-    res.status(200).json(result);
+    res.status(200).json({
+      success: true,
+      message: "Holiday Deleted Successfully",
+      data
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
