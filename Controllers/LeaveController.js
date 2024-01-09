@@ -14,7 +14,7 @@ const getdata = async (req, res) => {
 
 const getalldata = async (req, res) => {
   try {
-    data = await db.find().populate("user_id");
+    data = await db.find({}).populate("user_id");
     res.status(200).json(data);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -42,15 +42,17 @@ const postdata = async (req, res) => {
       ...req.body,
     });
 
+    console.log(req.user.id);
     // insert  leave in userModel
     const user = await userModel.findOne({ _id: req.user.id });
-    user.leave.push(data._id);
+    console.log(user);
+    await user.leave.push(data._id);
     await user.save();
 
     // insert  leave in adminmodel
     const admin = await AdminModel.findOne({});
     console.log(admin);
-    admin.leave.push(data._id);
+    await admin.leave.push(data._id);
     await admin.save();
 
     res.status(201).json(data);
@@ -58,6 +60,35 @@ const postdata = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+// const putdata = async (req, res) => {
+//     try {
+//         const startDate = new Date(req.body.start_date);
+//         const endDate = new Date(req.body.end_date);
+
+//         const durationInMilliseconds = endDate.getTime() - startDate.getTime();
+
+//         const durationInDays = Math.ceil(durationInMilliseconds / (1000 * 60 * 60 * 24));
+
+//         const lastModifiedDate = new Date();
+
+//         let result = await db.updateMany(
+//             { _id: req.params.id },
+//             {
+//                 $set: {
+//                     start_date: startDate,
+//                     end_date: endDate,
+//                     total_days: durationInDays,
+//                     last_modified_date: lastModifiedDate,
+//                     ...req.body
+//                 },
+//             }
+//         );
+//         res.status(200).json(result);
+//     } catch (error) {
+//         res.status(404).json(error.message);
+//     }
+// };
 
 const putdata = async (req, res) => {
   try {
