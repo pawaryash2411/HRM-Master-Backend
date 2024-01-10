@@ -113,19 +113,19 @@ const deleteData = async (req, res) => {
 const getsingledata = async (req, res) => {
   try {
     const id = req.user.id;
-
+    console.log(id);
     const data = await rotaModal.findOne({ employeeid: id });
 
     if (data) {
       res.status(200).json({
         success: true,
-        data,
+        rotaData: data,
         message: "data found successfully",
       });
     } else {
       res.status(401).json({
         success: false,
-        data,
+        rotaData: data,
         message: "data found not found in rota",
       });
     }
