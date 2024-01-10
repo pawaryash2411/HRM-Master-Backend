@@ -111,6 +111,29 @@ const deleteData = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
+const getsingledata = async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    const data = await rotaModal.findOne({ employeeid: id });
+
+    if (data) {
+      res.status(200).json({
+        success: true,
+        data,
+        message: "data found successfully",
+      });
+    } else {
+      res.status(401).json({
+        success: false,
+        data,
+        message: "data found not found in rota",
+      });
+    }
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
 
 module.exports = {
   postData,
@@ -118,4 +141,5 @@ module.exports = {
   updateData,
   deleteData,
   filterData,
+  getsingledata,
 };
