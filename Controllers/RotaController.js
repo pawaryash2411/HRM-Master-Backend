@@ -73,15 +73,12 @@ const filterData = async (req, res) => {
 const updateData = async (req, res) => {
   try {
     const { id } = req.params;
-    const { employeename, date, starttime, endtime } = req.body;
+    const { rota } = req.body;
 
     const updatedData = await rotaModal.findByIdAndUpdate(
       id,
       {
-        employeename,
-        date,
-        starttime,
-        endtime,
+        rota: JSON.parse(rota),
       },
       { new: true }
     );
@@ -99,8 +96,10 @@ const updateData = async (req, res) => {
 const deleteData = async (req, res) => {
   try {
     const { id } = req.params;
-
-    const deletedData = await rotaModal.findByIdAndDelete(id);
+    const { rota } = req.body;
+    const deletedData = await rotaModal.findByIdAndUpdate(id, {
+      rota: JSON.parse(rota),
+    });
 
     res.status(200).json({
       success: true,
