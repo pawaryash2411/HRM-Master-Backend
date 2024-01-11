@@ -2,8 +2,8 @@ const express = require("express");
 const {
     postData,
     getAllData,
-    updateData,
-    deleteData,
+    // updateData,
+    // deleteData,
     getSingleData
 } = require("../Controllers/TaxTypeController");
 const router = express.Router();
@@ -11,7 +11,7 @@ const router = express.Router();
 router.get("/", getAllData)
 router.get("/:id", getSingleData)
 router.post("/", postData)
-router.put("/:id", updateData)
-router.delete("/:id", deleteData)
+// router.put("/:id", updateData)
+// router.delete("/:id", deleteData)
 
 module.exports = router;
