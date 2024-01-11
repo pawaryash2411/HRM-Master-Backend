@@ -47,6 +47,7 @@ app.use("/api/client", require("./Routes/ClientRouter"));
 app.use("/api/taxtype", require("./Routes/TaxTypeRouter"));
 app.use("/api/register", require("./Routes/RegisterRouter"));
 app.use("/api/usertimeregister", require("./Routes/UserTimeRegisterRoute"));
+app.use("/api/payroll", require("./Routes/PayrollRouter"));
 
 app.use(notFound);
 app.use(errorHandler);
