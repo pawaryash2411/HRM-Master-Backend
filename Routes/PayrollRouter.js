@@ -6,11 +6,12 @@ const {
     deleteData,
     getSingleData
 } = require("../Controllers/PayrollContoller");
+const { requireAuth } = require("../Middlewares/requireAuth");
 const router = express.Router();
 
 router.get("/", getAllData)
 router.get("/:id", getSingleData)
-router.post("/", postData)
+router.post("/",requireAuth, postData)
 router.put("/:id", updateData)
 router.delete("/:id", deleteData)
 
