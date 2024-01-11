@@ -32,5 +32,5 @@ const PayrollMonthlySchema = mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("payrollmonthly", PayrollSchema);
+module.exports = mongoose.model("payrollmonthly", PayrollMonthlySchema);
 
