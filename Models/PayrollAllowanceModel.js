@@ -6,9 +6,6 @@ const PayrollAllowanceSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "admin",
     },
-    allowance: {
-      type: String,
-    },
     allowance_name: {
       type: String,
     },

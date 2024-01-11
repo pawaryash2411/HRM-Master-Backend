@@ -4,7 +4,6 @@ const postData = async (req, res) => {
   try {
     const { id: adminid } = req.user;
     const {
-      allowance,
       allowance_name,
       allowance_type,
       percentage_of_basic,
@@ -13,7 +12,6 @@ const postData = async (req, res) => {
 
     const PayrollData = await db.create({
       adminid,
-      allowance,
       allowance_name,
       allowance_type,
       percentage_of_basic,
@@ -63,7 +61,6 @@ const updateData = async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      allowance,
       allowance_name,
       allowance_type,
       percentage_of_basic,
@@ -73,7 +70,6 @@ const updateData = async (req, res) => {
     const updatedData = await db.findByIdAndUpdate(
       id,
       {
-        allowance,
         allowance_name,
         allowance_type,
         percentage_of_basic,
