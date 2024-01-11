@@ -24,7 +24,7 @@ const postData = async (req, res) => {
 
 const getAllData = async (req, res) => {
   try {
-    const PayrollAllData = await db.find();
+    const PayrollAllData = await db.find().populate("adminid");
     res.status(200).json({
       success: true,
       PayrollAllData,
