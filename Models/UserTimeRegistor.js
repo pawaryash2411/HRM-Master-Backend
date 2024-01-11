@@ -3,8 +3,12 @@ const mongoose = require("mongoose");
 const UserTimeRegistorSchema = mongoose.Schema(
   {
     userid: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+    },
+    adminid: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "admin",
     },
     clock: [
       {

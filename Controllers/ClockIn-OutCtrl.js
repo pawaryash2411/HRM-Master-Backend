@@ -3,6 +3,8 @@ const db = require("../Models/Clockin-OutModel");
 const fetch = require("node-fetch");
 const axios = require("axios");
 const UserTimeRegistor = require("../Models/UserTimeRegistor");
+const userModel = require("../Models/userModel");
+const AdminModel = require("../Models/AdminModel");
 const apiKey = "AIzaSyBpcBi67uEbAIQTdShuxektx1E_v38CTHI";
 const address = "tajmahal";
 const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
@@ -50,52 +52,107 @@ const getlocation = (req, res) => {
 
 const postdata = async (req, res) => {
   try {
-    const { id: userid } = req.user;
+    let userid;
+    let adminid;
+    const { id: userId } = req.user;
 
+    let finalUser;
+    const user = await userModel.findById(userId);
+    if (!user) {
+      finalUser = await AdminModel.findById(userId);
+    } else {
+      finalUser = user;
+    }
+    console.log(finalUser.role);
+    // console.log(userid, finalUser);
     const { time } = req.body;
     // console.log(time, userid);
-    const headers = req.headers;
+    const headers = req?.headers;
     // Extract browser name
-    console.log(headers);
+    // console.log(headers);
     const userAgent = headers["sec-ch-ua"];
-    const browserName = userAgent.split(",").at(2).split(";")[0].slice(2, -1);
+    const browserName = userAgent
+      ?.split(",")
+      ?.at(2)
+      ?.split(";")[0]
+      ?.slice(2, -1);
 
     // Extract platform
-    const platform = headers["sec-ch-ua-platform"].replace(/"/g, "");
+    const platform = headers["sec-ch-ua-platform"]?.replace(/"/g, "");
 
     // Check if it's a mobile device
     const isMobile = headers["sec-ch-ua-mobile"] === "?1" ? true : false;
 
+    if (finalUser.role == undefined) {
+      adminid = userId;
+      userid = null;
+    } else {
+      userid = userId;
+      adminid = null;
+    }
+
     const newData = await db.create({
       userid,
+      adminid,
       time,
       browserName,
       platform,
       isMobile,
     });
-    res.status(200).json(newData);
+    await res.status(200).json(newData);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 const putdata = async (req, res) => {
   try {
-    const { id: userid } = req.user;
+    let userid;
+    let adminid;
+    const { id: userId } = req.user;
     const { clockouttime, totaltime } = req.body;
-    const userdata = await db.findOne({ userid });
+
+    let finalUser;
+    const user = await userModel.findById(userId);
+    if (!user) {
+      finalUser = await AdminModel.findById(userId);
+    } else {
+      finalUser = user;
+    }
+    if (finalUser.role == undefined) {
+      adminid = userId;
+      userid = null;
+    } else {
+      userid = userId;
+      adminid = null;
+    }
+    // Find the user data based on userid or adminid
+    const userdata = await db.findOne({
+      $or: [{ userid: userId }, { adminid: userId }],
+    });
 
     if (!userdata) {
       return res.status(404).json({ error: "User not found" });
     }
+
     const { time, browserName, platform, isMobile } = userdata;
-    let userTimeRegistorData = await UserTimeRegistor.findOne({ userid });
+
+    // Find or create the UserTimeRegistorData
+    let userTimeRegistorData = await UserTimeRegistor.findOne({
+      $or: [{ userid: userId }, { adminid: userId }],
+    });
 
     if (!userTimeRegistorData) {
-      userTimeRegistorData = new UserTimeRegistor({ userid, clock: [] });
+      userTimeRegistorData = new UserTimeRegistor({
+        userid,
+        adminid,
+        clock: [],
+      });
     }
 
+    userTimeRegistorData.userid = userid;
+    userTimeRegistorData.adminid = adminid;
+    // Push clock data to UserTimeRegistorData
     userTimeRegistorData.clock.push({
       clockInDetails: { time, browserName, platform, isMobile },
       clockouttime,
@@ -104,7 +161,10 @@ const putdata = async (req, res) => {
 
     await userTimeRegistorData.save();
 
-    let removedata = await db.findOneAndDelete({ userid });
+    // Remove the user data
+    const removedata = await db.findOneAndDelete({
+      $or: [{ userid }, { adminid: userid }],
+    });
 
     if (removedata) {
       return res.status(200).json({ success: true });
@@ -115,7 +175,7 @@ const putdata = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
