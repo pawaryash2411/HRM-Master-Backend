@@ -1,30 +1,29 @@
-const db = require("../Models/PayrollModel");
+const db = require("../Models/PayrollAllowanceModel");
 
 const postData = async (req, res) => {
   try {
     const { id: adminid } = req.user;
     const {
       allowance,
-
       allowance_name,
       allowance_type,
-      percentange_of_basic,
+      percentage_of_basic,
       limit_per_month,
     } = req.body;
 
-    const Projectsdata = await db.create({
+    const PayrollData = await db.create({
       adminid,
       allowance,
       allowance_name,
       allowance_type,
-      percentange_of_basic,
+      percentage_of_basic,
       limit_per_month,
     });
 
     res.status(201).json({
       success: true,
-      Projectsdata,
-      message: " payroll Created successfully",
+      PayrollData,
+      message: "Payroll Allowance Created successfully",
     });
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -33,11 +32,11 @@ const postData = async (req, res) => {
 
 const getAllData = async (req, res) => {
   try {
-    const ProjectsAllData = await db.find();
+    const PayrollAllData = await db.find();
     res.status(200).json({
       success: true,
-      ProjectsAllData,
-      message: "All Payroll Data Fetched successfully",
+      PayrollAllData,
+      message: "All Payroll Allowance Data Fetched successfully",
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -53,7 +52,7 @@ const getSingleData = async (req, res) => {
     res.status(200).json({
       success: true,
       PayrollData,
-      message: "Payroll Single Data Fetched successfully",
+      message: "Payroll Allowance Single Data Fetched successfully",
     });
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -67,7 +66,7 @@ const updateData = async (req, res) => {
       allowance,
       allowance_name,
       allowance_type,
-      percentange_of_basic,
+      percentage_of_basic,
       limit_per_month,
     } = req.body;
 
@@ -77,7 +76,7 @@ const updateData = async (req, res) => {
         allowance,
         allowance_name,
         allowance_type,
-        percentange_of_basic,
+        percentage_of_basic,
         limit_per_month,
       },
       { new: true }
@@ -86,7 +85,7 @@ const updateData = async (req, res) => {
     res.status(200).json({
       success: true,
       updatedData,
-      message: "payroll Updated successfully",
+      message: "Payroll Allowance Updated successfully",
     });
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -101,7 +100,7 @@ const deleteData = async (req, res) => {
 
     res
       .status(200)
-      .json({ success: true, message: "payroll Removed successfully" });
+      .json({ success: true, message: "Payroll Allowance Removed successfully" });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

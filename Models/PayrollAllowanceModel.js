@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const PayrollSchema = mongoose.Schema(
+const PayrollAllowanceSchema = mongoose.Schema(
   {
     adminid: {
       type: mongoose.Schema.Types.ObjectId,
@@ -15,7 +15,7 @@ const PayrollSchema = mongoose.Schema(
     allowance_type: {
       type: String,
     },
-    percentange_of_basic: {
+    percentage_of_basic: {
       type: String,
     },
     limit_per_month: {
@@ -24,4 +24,4 @@ const PayrollSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
-module.exports = mongoose.model("payroll", PayrollSchema);
+module.exports = mongoose.model("payroll-allowance", PayrollAllowanceSchema);

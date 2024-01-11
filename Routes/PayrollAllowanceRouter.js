@@ -5,13 +5,13 @@ const {
     updateData,
     deleteData,
     getSingleData
-} = require("../Controllers/PayrollContoller");
+} = require("../Controllers/PayrollAllowanceController");
 const { requireAuth } = require("../Middlewares/requireAuth");
 const router = express.Router();
 
 router.get("/", getAllData)
 router.get("/:id", getSingleData)
-router.post("/",requireAuth, postData)
+router.post("/", requireAuth, postData)
 router.put("/:id", updateData)
 router.delete("/:id", deleteData)
 
