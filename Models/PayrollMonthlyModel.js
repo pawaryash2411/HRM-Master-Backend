@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+
 const PayrollMonthlySchema = mongoose.Schema(
   {
     adminid: {
@@ -30,4 +31,6 @@ const PayrollMonthlySchema = mongoose.Schema(
   },
   { timestamps: true }
 );
-module.exports = mongoose.model("PayrollMonthly", PayrollMonthlySchema);
+
+module.exports = mongoose.model("payrollmonthly", PayrollMonthlySchema);
+
