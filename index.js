@@ -49,6 +49,7 @@ app.use("/api/register", require("./Routes/RegisterRouter"));
 app.use("/api/usertimeregister", require("./Routes/UserTimeRegisterRoute"));
 app.use("/api/payroll-allowance", require("./Routes/PayrollAllowanceRouter"));
 app.use("/api/payroll-deduction", require("./Routes/PayrollDeductionRouter"));
+app.use("/api/payroll-monthly", require("./Routes/PayrollMonthlyRouter"));
 
 app.use(notFound);
 app.use(errorHandler);
