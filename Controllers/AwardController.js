@@ -97,7 +97,7 @@ const updateuser = async (req, res) => {
       awardPhoto = result.secure_url;
     }
 
-    const updateaward = await db.findByIdAndUpdate(
+    const updatedAward = await db.findByIdAndUpdate(
       { _id: req.params.id },
       {
         $set: {
@@ -113,7 +113,7 @@ const updateuser = async (req, res) => {
         },
       }
     );
-    res.status(200).json({ success: true, message: "Award updated successfully" });
+    res.status(200).json({ success: true, updatedAward, message: "Award updated successfully" });
   } catch (error) {
     res
       .status(500)

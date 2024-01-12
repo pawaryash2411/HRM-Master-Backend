@@ -3,27 +3,50 @@ const db = require("../Models/TaxTypeModel");
 const postData = async (req, res) => {
     try {
         const {
+            first,
+            second,
+            third,
+            four,
+            fifth,
+            six,
             taxName,
             taxRate,
             description,
-            taxType
+            taxType,
+            totalIncome,
+            gender
         } = req.body;
+
+        const taxRateDecimal = parseFloat(taxRate) / 100;
+        const taxableAmount = parseFloat(totalIncome) * taxRateDecimal;
+        const taxRatePercentage = `${(taxRateDecimal * 100).toFixed(2)}%`;
+
         const TaxTypedata = await db.create({
+            first,
+            second,
+            third,
+            four,
+            fifth,
+            six,
             taxName,
-            taxRate,
+            taxRate: taxRatePercentage,
             description,
-            taxType
+            taxType,
+            totalIncome,
+            taxableAmount,
+            gender
         });
 
         res.status(201).json({
             success: true,
             TaxTypedata,
-            message: " TaxType Created successfully"
+            message: "TaxType Created successfully"
         });
     } catch (error) {
-        res.status(404).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
+
 
 const getAllData = async (req, res) => {
     try {
@@ -47,46 +70,46 @@ const getSingleData = async (req, res) => {
 };
 
 
-const updateData = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const {
-            taxName,
-            taxRate,
-            description,
-            taxType
-        } = req.body;
+// const updateData = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const {
+//             taxName,
+//             taxRate,
+//             description,
+//             taxType
+//         } = req.body;
 
-        const updatedData = await db.findByIdAndUpdate(id, {
-            taxName,
-            taxRate,
-            description,
-            taxType
-        }, { new: true });
+//         const updatedData = await db.findByIdAndUpdate(id, {
+//             taxName,
+//             taxRate,
+//             description,
+//             taxType
+//         }, { new: true });
 
-        res.status(200).json({ success: true, message: "TaxType Updated successfully" });
-    } catch (error) {
-        res.status(404).json({ message: error.message });
-    }
-};
+//         res.status(200).json({ success: true, message: "TaxType Updated successfully" });
+//     } catch (error) {
+//         res.status(404).json({ message: error.message });
+//     }
+// };
 
-const deleteData = async (req, res) => {
-    try {
-        const { id } = req.params;
+// const deleteData = async (req, res) => {
+//     try {
+//         const { id } = req.params;
 
-        await db.findByIdAndDelete(id);
+//         await db.findByIdAndDelete(id);
 
-        res.status(200).json({ success: true, message: "TaxType Removed successfully" });
-    } catch (error) {
-        res.status(404).json({ message: error.message });
-    }
-};
+//         res.status(200).json({ success: true, message: "TaxType Removed successfully" });
+//     } catch (error) {
+//         res.status(404).json({ message: error.message });
+//     }
+// };
 
 module.exports = {
     postData,
     getAllData,
-    updateData,
-    deleteData,
+    // updateData,
+    // deleteData,
     getSingleData
 };
 
