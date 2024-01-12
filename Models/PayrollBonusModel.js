@@ -16,7 +16,7 @@ const PayrollBonusSchema = mongoose.Schema(
         percentange_of_bonus: {
             type: Number,
         },
-       
+
     },
     { timestamps: true }
 );
