@@ -52,6 +52,7 @@ app.use("/api/payroll-deduction", require("./Routes/PayrollDeductionRouter"));
 app.use("/api/payroll-monthly-pay-grade", require("./Routes/PayrollMonthlyRouter"));
 app.use("/api/payroll-hourly-pay-grade", require("./Routes/PayrollHourlyRouter"));
 app.use("/api/payroll-bonus", require("./Routes/PayrollBonusRouter"));
+app.use("/api/payroll-salary-sheet", require("./Routes/PayrollSalarySheetRouter"));
 
 app.use(notFound);
 app.use(errorHandler);
