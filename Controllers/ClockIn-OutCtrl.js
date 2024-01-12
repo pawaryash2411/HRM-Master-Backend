@@ -82,7 +82,7 @@ const postdata = async (req, res) => {
 
 const putdata = async (req, res) => {
   try {
-    const { id: userid } = req.user;
+    const { id: npm  } = req.user;
     const { clockouttime, totaltime } = req.body;
     const userdata = await db.findOne({ userid });
 
