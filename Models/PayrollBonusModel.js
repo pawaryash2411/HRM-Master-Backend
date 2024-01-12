@@ -14,7 +14,7 @@ const PayrollBonusSchema = mongoose.Schema(
             type: String,
         },
         percentange_of_bonus: {
-            type: Number,
+            type: String,
         },
 
     },
