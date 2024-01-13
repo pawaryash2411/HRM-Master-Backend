@@ -124,7 +124,7 @@ const putdata = async (req, res) => {
       userid = null;
     } else {
       userid = userId;
-      adminid = null;
+      adminid = user.adminId;
     }
     // Find the user data based on userid or adminid
     const userdata = await db.findOne({
