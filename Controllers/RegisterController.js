@@ -3,6 +3,16 @@ const UserTimeRegistor = require("../Models/UserTimeRegistor");
 const getRegisterData = async (req, res) => {
   try {
     const register = await UserTimeRegistor.findOne({ userid: req.user.id });
+    if (!register) {
+      const newRegister = await UserTimeRegistor.findOne({
+        adminid: req.user.id,
+      });
+      return res.status(200).json({
+        success: true,
+        register: newRegister,
+        message: "Register Data Fetched successfully",
+      });
+    }
     res.status(200).json({
       success: true,
       register,
@@ -12,5 +22,18 @@ const getRegisterData = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const verifyClockData = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updated = await UserTimeRegistor.findByIdAndUpdate(
+      id,
+      { verified: true },
+      { new: true }
+    );
+    res.status(200).json({ message: "Updated succesfully", updated });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-module.exports = { getRegisterData };
+module.exports = { getRegisterData, verifyClockData };

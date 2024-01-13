@@ -147,6 +147,7 @@ const putdata = async (req, res) => {
         userid,
         adminid,
         clock: [],
+        verified: !!adminid,
       });
     }
 

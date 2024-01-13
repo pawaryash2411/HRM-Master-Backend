@@ -2,8 +2,12 @@ const express = require("express");
 
 const router = express.Router();
 const { requireAuth } = require("../Middlewares/requireAuth");
-const { getRegisterData } = require("../Controllers/RegisterController");
+const {
+  getRegisterData,
+  verifyClockData,
+} = require("../Controllers/RegisterController");
 
 router.get("/", requireAuth, getRegisterData);
+router.put("/verify/:id", requireAuth, verifyClockData);
 
 module.exports = router;
