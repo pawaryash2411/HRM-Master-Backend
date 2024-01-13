@@ -2,18 +2,10 @@ const UserTimeRegistor = require("../Models/UserTimeRegistor");
 
 const getRegisterData = async (req, res) => {
   try {
-    const register = await UserTimeRegistor.findOne({ userid: req.user.id });
-    if (!register) {
-      const newRegister = await UserTimeRegistor.findOne({
-        adminid: req.user.id,
-      });
-      return res.status(200).json({
-        success: true,
-        register: newRegister,
-        message: "Register Data Fetched successfully",
-      });
-    }
-    res.status(200).json({
+    const register = await UserTimeRegistor.findOne({
+      adminid: req.user.id,
+    }).populate("userid");
+    return res.status(200).json({
       success: true,
       register,
       message: "Register Data Fetched successfully",
