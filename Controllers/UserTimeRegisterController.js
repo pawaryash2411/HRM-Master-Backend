@@ -3,10 +3,14 @@ const UserTimeRegistor = require("../Models/UserTimeRegistor");
 
 const getdata = async (req, res) => {
   try {
-    const getalldata = await UserTimeRegistor.findOne({
+    const getAllData = await UserTimeRegistor.findOne({
       adminid: req.user.id,
     }).populate("userid adminid");
-    res.status(200).json(getalldata);
+    res.status(200).json({
+      success: true,
+      getAllData,
+      message: "All Approved Work Time Hour Fetched Successfully"
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
