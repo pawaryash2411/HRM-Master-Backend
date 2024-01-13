@@ -22,6 +22,8 @@ const registerAdmin = async (req, res) => {
     joindate,
     email,
     password,
+    monthly_pay_grade,
+    hourly_pay_grade,
     branch_id,
   } = req.body;
 
@@ -59,6 +61,8 @@ const registerAdmin = async (req, res) => {
       email,
       password,
       branch_id,
+      monthly_pay_grade,
+      hourly_pay_grade,
     });
 
     const AdminRegister = await newAdmin.save();
@@ -123,7 +127,9 @@ const createnotification = async (req, res) => {
 
 const getadmin = async (req, res) => {
   try {
-    const admindata = await db.find().populate("leave").populate("branch_id");
+    const admindata = await db
+      .find()
+      .populate("leave branch_id monthly_pay_grade hourly_pay_grade");
     console.log(admindata);
     res.status(200).send({
       success: true,
@@ -233,6 +239,8 @@ const updateAdmin = async (req, res) => {
     joindate,
     email,
     password,
+    monthly_pay_grade,
+    hourly_pay_grade,
     location,
     branch_id,
   } = req.body;
@@ -272,6 +280,8 @@ const updateAdmin = async (req, res) => {
           both_shift,
           picture,
           joindate,
+          monthly_pay_grade,
+          hourly_pay_grade,
           email,
           location,
           password,

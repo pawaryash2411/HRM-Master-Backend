@@ -82,6 +82,14 @@ const userSchema = mongoose.Schema(
         ref: "leave",
       },
     ],
+    monthly_pay_grade: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "payrollmonthly",
+    },
+    hourly_pay_grade: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "payrollhourly",
+    },
   },
   {
     timestamps: true,

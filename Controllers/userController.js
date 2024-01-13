@@ -19,7 +19,9 @@ const getuser = async (req, res) => {
         role: "Super Admin",
       });
     }
-    const user = await db.findById(req.user.id).populate("leave branch_id");
+    const user = await db
+      .findById(req.user.id)
+      .populate("leave branch_id monthly_pay_grade hourly_pay_grade");
 
     if (!user) {
       const admin = await AdminModel.findById(req.user.id).populate(
@@ -38,7 +40,9 @@ const getuser = async (req, res) => {
 };
 const getusers = async (req, res) => {
   try {
-    const users = await db.find().populate("leave");
+    const users = await db
+      .find()
+      .populate("leave monthly_pay_grade hourly_pay_grade");
 
     if (users.length === 0) {
       return res.status(404).json({ message: "No users found" });
@@ -67,6 +71,8 @@ const registerUser = async (req, res) => {
     joindate,
     email,
     password,
+    monthly_pay_grade,
+    hourly_pay_grade,
     adminId,
   } = req.body;
 
@@ -106,6 +112,8 @@ const registerUser = async (req, res) => {
       joindate,
       email,
       password,
+      monthly_pay_grade: monthly_pay_grade,
+      hourly_pay_grade: hourly_pay_grade,
       adminId,
       branch_id: admin.branch_id,
     });
@@ -134,6 +142,8 @@ const updateuser = async (req, res) => {
     both_shift,
     joindate,
     email,
+    monthly_pay_grade,
+    hourly_pay_grade,
     password,
   } = req.body;
 
@@ -178,6 +188,8 @@ const updateuser = async (req, res) => {
           weekday_shift,
           both_shift,
           picture,
+          monthly_pay_grade,
+          hourly_pay_grade,
           joindate,
           email,
           password: hashedPassword,
