@@ -130,7 +130,6 @@ const getadmin = async (req, res) => {
     const admindata = await db
       .find()
       .populate("leave branch_id monthly_pay_grade hourly_pay_grade");
-    console.log(admindata);
     res.status(200).send({
       success: true,
       admindata,
