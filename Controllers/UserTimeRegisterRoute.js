@@ -6,7 +6,13 @@ const getdata = async (req, res) => {
     const getalldata = await UserTimeRegistor.findOne({
       adminid: req.user.id,
     }).populate("userid adminid");
-    res.status(200).json(getalldata);
+    if (!getalldata) {
+      const registers = await UserTimeRegistor.findOne({
+        userid: req.user.id,
+      }).populate("userid");
+      return res.status(200).json({ registers });
+    }
+    res.status(200).json({ registers: getalldata });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
