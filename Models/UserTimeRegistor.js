@@ -6,6 +6,7 @@ const UserTimeRegistorSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
     },
+
     adminid: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "admin",
