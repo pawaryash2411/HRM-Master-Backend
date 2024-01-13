@@ -44,10 +44,6 @@ const getusers = async (req, res) => {
       .find()
       .populate("leave monthly_pay_grade hourly_pay_grade");
 
-    if (users.length === 0) {
-      return res.status(404).json({ message: "No users found" });
-    }
-
     res.status(200).json({ users });
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -3,7 +3,9 @@ const UserTimeRegistor = require("../Models/UserTimeRegistor");
 
 const getdata = async (req, res) => {
   try {
-    const getalldata = await UserTimeRegistor.find().populate("userid adminid");
+    const getalldata = await UserTimeRegistor.findOne({}).populate(
+      "userid adminid"
+    );
     res.status(200).json(getalldata);
   } catch (error) {
     console.error(error);
