@@ -3,12 +3,21 @@ const UserTimeRegistor = require("../Models/UserTimeRegistor");
 
 const getdata = async (req, res) => {
   try {
-    const getAllData = await UserTimeRegistor.findOne({
-      adminid: req.user.id,
-    }).populate("userid adminid");
+    const isUser = await userModel.findById(req.user.id);
+    let register;
+    if (!isUser) {
+      register = await UserTimeRegistor.find({
+        adminid: req.user.id,
+      }).populate("userid adminid");
+    } else {
+      register = await UserTimeRegistor.find({
+        userid: req.user.id,
+        verified: true,
+      }).populate("userid");
+    }
     res.status(200).json({
       success: true,
-      getAllData,
+      register,
       message: "All Approved Work Time Hour Fetched Successfully",
     });
   } catch (error) {
