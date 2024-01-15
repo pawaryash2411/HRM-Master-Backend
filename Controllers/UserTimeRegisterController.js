@@ -7,14 +7,13 @@ const getdata = async (req, res) => {
     const isUser = await userModel.findById(req.user.id);
     let register;
     if (!isUser) {
-      register = await UserTimeRegistor.find({
+      register = await UserTimeRegistor.findOne({
         adminid: req.user.id,
         userid: null,
       }).populate("userid adminid");
     } else {
-      register = await UserTimeRegistor.find({
+      register = await UserTimeRegistor.findOne({
         userid: req.user.id,
-        verified: true,
       }).populate("userid");
     }
     res.status(200).json({

@@ -147,7 +147,6 @@ const putdata = async (req, res) => {
         userid,
         adminid,
         clock: [],
-        verified: !!adminid,
       });
     }
 
@@ -158,6 +157,7 @@ const putdata = async (req, res) => {
       clockInDetails: { time, browserName, platform, isMobile },
       clockouttime,
       totaltime,
+      verified: !userId,
     });
 
     await userTimeRegistorData.save();

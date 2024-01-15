@@ -11,9 +11,7 @@ const UserTimeRegistorSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "admin",
     },
-    verified: {
-      type: Boolean,
-    },
+
     clock: [
       {
         clockInDetails: {
@@ -21,6 +19,9 @@ const UserTimeRegistorSchema = mongoose.Schema(
           platform: String,
           time: String,
           isMobile: Boolean,
+        },
+        verified: {
+          type: Boolean,
         },
         clockouttime: {
           type: String,
