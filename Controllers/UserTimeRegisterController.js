@@ -1,5 +1,6 @@
 const db = require("../Models/Clockin-OutModel");
 const UserTimeRegistor = require("../Models/UserTimeRegistor");
+const userModel = require("../Models/userModel");
 
 const getdata = async (req, res) => {
   try {
@@ -8,6 +9,7 @@ const getdata = async (req, res) => {
     if (!isUser) {
       register = await UserTimeRegistor.find({
         adminid: req.user.id,
+        userid: null,
       }).populate("userid adminid");
     } else {
       register = await UserTimeRegistor.find({
