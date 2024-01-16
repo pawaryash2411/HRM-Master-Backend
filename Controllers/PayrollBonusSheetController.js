@@ -22,7 +22,15 @@ const postData = async (req, res) => {
 
 const getAllData = async (req, res) => {
   try {
-    const PayrollAllData = await db.find().populate("bonusid userid");
+    const PayrollAllData = await db.find().populate({
+      path: "bonusid",
+      populate: {
+        path: "userid",
+        populate: {
+          path: "monthly_pay_grade",
+        },
+      },
+    });
     res.status(200).json({
       success: true,
       bonusdata: PayrollAllData,
