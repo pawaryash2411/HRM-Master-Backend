@@ -13,6 +13,9 @@ const PayrollBonusSheetSchema = mongoose.Schema(
       ref: "user",
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    strictPopulate: false, // Set strictPopulate option to false
+  }
 );
 module.exports = mongoose.model("payroll-Bonussheet", PayrollBonusSheetSchema);
