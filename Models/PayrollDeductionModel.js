@@ -21,6 +21,7 @@ const PayrollDeductionSchema = mongoose.Schema(
         limit_per_month: {
             type: String,
         },
+        fixed_amount:String,
     },
     { timestamps: true }
 );

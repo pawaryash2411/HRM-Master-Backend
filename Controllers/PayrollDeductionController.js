@@ -9,6 +9,7 @@ const postData = async (req, res) => {
             deduction_type,
             percentage_of_basic,
             limit_per_month,
+            fixed_amount
         } = req.body;
 
         const PayrollData = await db.create({
@@ -18,6 +19,7 @@ const postData = async (req, res) => {
             deduction_type,
             percentage_of_basic,
             limit_per_month,
+            fixed_amount
         });
 
         res.status(201).json({

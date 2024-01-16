@@ -8,6 +8,7 @@ const postData = async (req, res) => {
       allowance_type,
       percentage_of_basic,
       limit_per_month,
+      fixed_amount,
     } = req.body;
 
     const PayrollData = await db.create({
@@ -16,6 +17,7 @@ const postData = async (req, res) => {
       allowance_type,
       percentage_of_basic,
       limit_per_month,
+      fixed_amount,
     });
 
     res.status(201).json({
@@ -96,7 +98,10 @@ const deleteData = async (req, res) => {
 
     res
       .status(200)
-      .json({ success: true, message: "Payroll Allowance Removed successfully" });
+      .json({
+        success: true,
+        message: "Payroll Allowance Removed successfully",
+      });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
