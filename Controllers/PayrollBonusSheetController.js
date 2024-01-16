@@ -5,14 +5,14 @@ const postData = async (req, res) => {
     const { id: userid } = req.params;
     const { bonusid } = req.body;
 
-    const PayrollData = await db.create({
+    const bonusData = await db.create({
       userid,
       bonusid: JSON.parse(bonusid),
     });
 
     res.status(201).json({
       success: true,
-      bonusdata: PayrollData,
+      bonusData,
       message: "Payroll bonus Created successfully",
     });
   } catch (error) {
@@ -22,7 +22,7 @@ const postData = async (req, res) => {
 
 const getAllData = async (req, res) => {
   try {
-    const PayrollAllData = await db.find().populate({
+    const BonusAllData = await db.find().populate({
       path: "bonusid userid",
       // path: "userid",
       // populate: {
@@ -33,7 +33,7 @@ const getAllData = async (req, res) => {
     });
     res.status(200).json({
       success: true,
-      bonusdata: PayrollAllData,
+      BonusAllData,
       message: "All Payroll bonus Data Fetched successfully",
     });
   } catch (error) {
@@ -56,7 +56,7 @@ const updateData = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      updatedBonus: updatedData,
+      updatedData,
       message: "Payroll bonus Updated successfully",
     });
   } catch (error) {
