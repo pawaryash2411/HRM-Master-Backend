@@ -5,7 +5,7 @@ const PayrollBonusSheetSchema = mongoose.Schema(
     bonusid: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "payroll-bonus",
+        ref: "payroll-Bonus",
       },
     ],
     userid: {
