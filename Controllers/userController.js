@@ -39,9 +39,10 @@ const getuser = async (req, res) => {
   }
 };
 const getusers = async (req, res) => {
+  const { id } = req.user;
   try {
     const users = await db
-      .find()
+      .find({ adminId: id })
       .populate("leave monthly_pay_grade hourly_pay_grade");
 
     res.status(200).json({ users });
