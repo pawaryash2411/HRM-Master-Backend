@@ -2,6 +2,8 @@ const express = require("express");
 const {
   postData,
   getAllData,
+  updateData,
+  deleteData,
 } = require("../Controllers/PayrollBonusSheetController");
 const { requireAuth } = require("../Middlewares/requireAuth");
 const router = express.Router();
