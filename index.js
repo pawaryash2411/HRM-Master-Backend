@@ -58,7 +58,7 @@ app.use(
   require("./Routes/PayrollHourlyRouter")
 );
 app.use("/api/payroll-bonus", require("./Routes/PayrollBonusRouter"));
-app.use("/api/payroll-bonussheet", require("./Routes/PayrollBonusRouter"));
+app.use("/api/payroll-bonussheet", require("./Routes/PayrollBonusSheetRouter"));
 app.use(
   "/api/payroll-salary-sheet",
   require("./Routes/PayrollSalarySheetRouter")

@@ -76,5 +76,4 @@ module.exports = {
   getAllData,
   updateData,
   deleteData,
-  getSingleData,
 };
