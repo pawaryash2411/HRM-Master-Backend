@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const resignationSchema = mongoose.Schema(
+const PerformanceGoaltrackingSchema = mongoose.Schema(
   {
     adminid: {
       type: mongoose.Schema.Types.ObjectId,
@@ -8,25 +8,26 @@ const resignationSchema = mongoose.Schema(
     },
     company: {
       type: String,
-      required: true,
     },
-    department: {
+    goal_type: {
       type: String,
-      required: true,
     },
-    employee: {
+    target_achievement: {
       type: String,
-      required: true,
     },
-    notice_date: {
+    start_date: {
       type: String,
-      required: true,
     },
-    description: {
+    end_date: {
       type: String,
-      required: true,
+    },
+    progress: {
+      type: String,
     },
   },
   { timestamps: true }
 );
-module.exports = mongoose.model("resignation", resignationSchema);
+module.exports = mongoose.model(
+  "performance_goaltracking",
+  PerformanceGoaltrackingSchema
+);

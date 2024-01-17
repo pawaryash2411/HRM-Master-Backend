@@ -63,6 +63,22 @@ app.use(
   "/api/payroll-salary-sheet",
   require("./Routes/PayrollSalarySheetRouter")
 );
+app.use(
+  "/api/performance_appraisal",
+  require("./Routes/PerformanceAppraisalRouter")
+);
+app.use(
+  "/api/performance_goal_tracking",
+  require("./Routes/PerformanceGoaltrackingRouter")
+);
+app.use(
+  "/api/performance_goal_type",
+  require("./Routes/PerformanceGoaltypeRouter")
+);
+app.use(
+  "/api/performance_indicator",
+  require("./Routes/PerformanceIndicatorRouter")
+);
 
 app.use(notFound);
 app.use(errorHandler);

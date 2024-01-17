@@ -1,23 +1,30 @@
-const db = require("../Models/ResignationModel");
+const db = require("../Models/PerformanceGoaltrackingModel");
 
 const postData = async (req, res) => {
-  const { id: adminid } = req.user;
   try {
-    const { company, department, employee, notice_date, description } =
-      req.body;
-    const Resignationdata = await db.create({
+    const { id: adminid } = req.user;
+    const {
+      company,
+      goal_type,
+      target_achievement,
+      start_date,
+      end_date,
+      progress,
+    } = req.body;
+    const performancedata = await db.create({
       adminid,
       company,
-      department,
-      employee,
-      notice_date,
-      description,
+      goal_type,
+      target_achievement,
+      start_date,
+      end_date,
+      progress,
     });
 
     res.status(201).json({
       success: true,
-      Resignationdata,
-      message: " Resignation Created successfully",
+      performancedata,
+      message: " performance Created successfully",
     });
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -26,11 +33,11 @@ const postData = async (req, res) => {
 
 const getAllData = async (req, res) => {
   try {
-    const ResignationAllData = await db.find();
+    const performanceAllData = await db.find();
     res.status(200).json({
       success: true,
-      ResignationAllData,
-      message: "All Resignation Data Fetched successfully",
+      performanceAllData,
+      message: "All performance Data Fetched successfully",
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -41,12 +48,12 @@ const getSingleData = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const ResignationData = await db.findById(id);
+    const performanceData = await db.findById(id);
 
     res.status(200).json({
       success: true,
-      ResignationData,
-      message: "Resignation Single Data Fetched successfully",
+      performanceData,
+      message: "performance Single Data Fetched successfully",
     });
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -55,20 +62,26 @@ const getSingleData = async (req, res) => {
 
 const updateData = async (req, res) => {
   try {
-    const { id: adminid } = req.user;
     const { id } = req.params;
-    const { company, department, employee, notice_date, description } =
-      req.body;
-
+    const {
+      company,
+      goal_type,
+      target_achievement,
+      start_date,
+      end_date,
+      progress,
+    } = req.body;
     const updatedData = await db.findByIdAndUpdate(
       id,
       {
-        adminid,
-        company,
-        department,
-        employee,
-        notice_date,
-        description,
+        $set: {
+          company,
+          goal_type,
+          target_achievement,
+          start_date,
+          end_date,
+          progress,
+        },
       },
       { new: true }
     );
@@ -76,7 +89,7 @@ const updateData = async (req, res) => {
     res.status(200).json({
       success: true,
       updatedData,
-      message: "Resignation Updated successfully",
+      message: "performance Updated successfully",
     });
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -91,7 +104,7 @@ const deleteData = async (req, res) => {
 
     res
       .status(200)
-      .json({ success: true, message: "Resignation Removed successfully" });
+      .json({ success: true, message: "performance Removed successfully" });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
