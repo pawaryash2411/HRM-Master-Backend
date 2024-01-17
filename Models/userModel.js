@@ -90,6 +90,7 @@ const userSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "payrollhourly",
     },
+    paid: [],
   },
   {
     timestamps: true,

@@ -74,74 +74,87 @@ const getAllData = async (req, res) => {
 };
 
 const getSalarySheetForMonth = async (req, res) => {
-  const { date } = req.params;
-  const [year, month] = date.split("-");
-  const lastOrCurDay = getLastDayOrCurrentDate(year, month);
-  const users = await userModel
-    .find({ adminId: req.user?.id })
-    .populate("monthly_pay_grade");
-  const finalUsers = [];
-  async function processUsers() {
-    for (const user of users) {
-      const diff = getDaysDifference(new Date(user.joindate), lastOrCurDay);
-      console.log(diff);
-      const isValid =
-        new Date(user.joindate).getDate() <= lastOrCurDay.getDate();
-
-      if (diff >= 30 && isValid) {
-        const { month: prevMonth, year: prevYear } = getPreviousMonth(
-          lastOrCurDay.getFullYear(),
-          lastOrCurDay.getMonth()
-        );
-        const endDate = new Date(
-          lastOrCurDay.getFullYear(),
-          lastOrCurDay.getMonth(),
-          new Date(user.joindate).getDate()
-        );
-        const startDate = new Date(
-          prevYear,
-          prevMonth,
-          new Date(user.joindate).getDate()
-        );
-        const timeRegistor = await UserTimeRegistor.findOne({
-          userid: user._id,
-        });
-        let overtime = 0;
-        if (timeRegistor) {
-          timeRegistor?.clock?.forEach((clock) => {
-            if (
-              new Date(clock.clockouttime) >= startDate &&
-              new Date(clock.clockouttime) <= endDate
-            ) {
-              const totalHour = +clock.totaltime.split(":")[0];
-              if (totalHour > 8) {
-                overtime = overtime + (totalHour - 8);
-              }
-            }
-          });
+  try {
+    const { date } = req.params;
+    const [year, month] = date.split("-");
+    const lastOrCurDay = getLastDayOrCurrentDate(year, month);
+    const users = await userModel
+      .find({ adminId: req.user?.id })
+      .populate("monthly_pay_grade");
+    const finalUsers = [];
+    async function processUsers() {
+      for (const user of users) {
+        let paid = false;
+        if (user?.paid?.includes(`${year}-${month}`)) {
+          paid = true;
         }
+        const diff = getDaysDifference(new Date(user.joindate), lastOrCurDay);
+        console.log(diff);
+        const isValid =
+          new Date(user.joindate).getDate() <= lastOrCurDay.getDate();
 
-        const bonus = await PayrollBonusSheetModel.find({
-          userid: user._id,
-        }).populate("bonusid");
-        finalUsers.push({ user, bonus, overtime });
+        if (diff >= 30 && isValid) {
+          const { month: prevMonth, year: prevYear } = getPreviousMonth(
+            lastOrCurDay.getFullYear(),
+            lastOrCurDay.getMonth()
+          );
+          const endDate = new Date(
+            lastOrCurDay.getFullYear(),
+            lastOrCurDay.getMonth(),
+            new Date(user.joindate).getDate()
+          );
+          const startDate = new Date(
+            prevYear,
+            prevMonth,
+            new Date(user.joindate).getDate()
+          );
+          const timeRegistor = await UserTimeRegistor.findOne({
+            userid: user._id,
+          });
+          let overtime = 0;
+          if (timeRegistor) {
+            timeRegistor?.clock?.forEach((clock) => {
+              if (
+                new Date(clock.clockouttime) >= startDate &&
+                new Date(clock.clockouttime) <= endDate
+              ) {
+                const totalHour = +clock.totaltime.split(":")[0];
+                if (totalHour > 8) {
+                  overtime = overtime + (totalHour - 8);
+                }
+              }
+            });
+          }
+
+          const bonus = await PayrollBonusSheetModel.find({
+            userid: user._id,
+          }).populate("bonusid");
+          finalUsers.push({ user, bonus, overtime, paid });
+        }
       }
     }
+    await processUsers();
+    res.status(200).json({ message: "Succesful", finalUsers });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-  await processUsers();
-  // const filteredUsers = users.forEach(async (user) => {
-  //   const diff = getDaysDifference(new Date(user.joindate), lastOrCurDay);
-  //   console.log(diff);
-  //   const isValid = new Date(user.joindate).getDate() <= lastOrCurDay.getDate();
-  //   if (diff >= 30 && isValid) {
-  //     const bonus = await PayrollBonusSheetModel.find({ userid: user._id });
-  //     finalUsers.push({ ...user, bonus });
-  //   }
-  // });
-  res.status(200).json({ message: "Succesful", finalUsers });
+};
+
+const updatePayUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { date } = req.body;
+    const user = await userModel.findById(id);
+    user.paid.push(date);
+    await user.save();
+    res.status(201).json({ message: "Successful" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 module.exports = {
   getAllData,
   getSalarySheetForMonth,
+  updatePayUser,
 };
