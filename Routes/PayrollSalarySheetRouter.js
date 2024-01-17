@@ -10,6 +10,6 @@ const router = express.Router();
 
 router.post("/:id", requireAuth, updatePayUser);
 router.get("/:date", requireAuth, getSalarySheetForMonth);
-router.get("/user/:date", getIndividualSalary);
+router.get("/user/:date", requireAuth, getIndividualSalary);
 
 module.exports = router;
