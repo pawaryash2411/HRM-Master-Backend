@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const PerformanceSchema = mongoose.Schema(
+const PerformanceAppraisalSchema = mongoose.Schema(
   {
     adminid: {
       type: mongoose.Schema.Types.ObjectId,
@@ -24,4 +24,4 @@ const PerformanceSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
-module.exports = mongoose.model("performance", PerformanceSchema);
+module.exports = mongoose.model("performance_appraisal", PerformanceAppraisalSchema);

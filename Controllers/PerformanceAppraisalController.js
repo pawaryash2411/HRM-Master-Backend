@@ -1,4 +1,4 @@
-const db = require("../Models/PerformanceModel");
+const db = require("../Models/PerformanceAppraisalModel");
 
 const postData = async (req, res) => {
   try {

@@ -5,7 +5,7 @@ const {
   updateData,
   deleteData,
   getSingleData,
-} = require("../Controllers/PerformanceController");
+} = require("../Controllers/PerformanceAppraisalController");
 const { requireAuth } = require("../Middlewares/requireAuth");
 const router = express.Router();
 
