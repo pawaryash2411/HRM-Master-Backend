@@ -57,22 +57,6 @@ function getPreviousMonth(year, month) {
   return { year, month };
 }
 
-const getAllData = async (req, res) => {
-  try {
-    const PayrollHourly = await PayrollHourlyModel.find();
-    const PayrollMonthly = await PayrollMonthlyModel.find();
-
-    res.status(200).json({
-      success: true,
-      PayrollMonthly,
-      PayrollHourly,
-      message: "All Payroll Monthly Data Fetched successfully",
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 const getSalarySheetForMonth = async (req, res) => {
   try {
     const { date } = req.params;
@@ -153,8 +137,49 @@ const updatePayUser = async (req, res) => {
   }
 };
 
+const getIndividualSalary = async (req, res) => {
+  try {
+    const { date } = req.params;
+    const [year, month] = date;
+    const user = await userModel
+      .findById(req.user.id)
+      .populate("monthly_pay_grade");
+    const paid = user.paid.includes(`${year}-${month}`);
+    if (!paid) {
+      return res
+        .status(201)
+        .json({ message: "Success", paid: false, details: [] });
+    }
+    const bonus = await PayrollBonusSheetModel.find({
+      userid: user._id,
+    }).populate("bonusid");
+    const timeRegistor = await UserTimeRegistor.findOne({
+      userid: user._id,
+    });
+    let overtime = 0;
+    if (timeRegistor) {
+      overtime = timeRegistor?.clock?.reduce((acc, clock) => {
+        if (
+          new Date(clock.clockouttime) >= startDate &&
+          new Date(clock.clockouttime) <= endDate
+        ) {
+          const totalHour = +clock.totaltime.split(":")[0];
+          if (totalHour > 8) {
+            acc = acc + (totalHour - 8);
+          }
+          return acc;
+        }
+      }, 0);
+    }
+    const details = { user, bonus, paid: true, overtime };
+    res.status(201).json({ message: "Successful", details });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
-  getAllData,
   getSalarySheetForMonth,
   updatePayUser,
+  getIndividualSalary,
 };
