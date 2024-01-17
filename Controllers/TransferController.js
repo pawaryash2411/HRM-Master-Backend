@@ -72,7 +72,7 @@ const updateData = async (req, res) => {
             description
         }, { new: true });
 
-        res.status(200).json({ success: true, message: "Transfer Updated successfully" });
+        res.status(200).json({ success: true, updatedData, message: "Transfer Updated successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
