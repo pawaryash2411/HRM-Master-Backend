@@ -3,6 +3,7 @@ const validator = require("validator");
 const cloudinary = require("cloudinary").v2;
 
 const addAward = async (req, res) => {
+  const { id: adminid } = req.user;
   const {
     company,
     department,
@@ -11,7 +12,7 @@ const addAward = async (req, res) => {
     gift,
     cash,
     awardInformation,
-    awardDate
+    awardDate,
   } = req.body;
 
   const uploadimg = req.uploadedImageUrl;
@@ -22,6 +23,7 @@ const addAward = async (req, res) => {
         .json({ message: "Please provide all required fields" });
     }
     const AwardData = new db({
+      adminid,
       company,
       department,
       employee,
@@ -42,12 +44,16 @@ const addAward = async (req, res) => {
   }
 };
 
-
-
 const getAllData = async (req, res) => {
   try {
     const awardAllData = await db.find();
-    res.status(200).json({ success: true, awardAllData, message: "All Award Data Fetched successfully" });
+    res
+      .status(200)
+      .json({
+        success: true,
+        awardAllData,
+        message: "All Award Data Fetched successfully",
+      });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -59,7 +65,13 @@ const getSingleData = async (req, res) => {
 
     const awardData = await db.findById(id);
 
-    res.status(200).json({ success: true, awardData, message: "Award Single Data Fetched successfully" });
+    res
+      .status(200)
+      .json({
+        success: true,
+        awardData,
+        message: "Award Single Data Fetched successfully",
+      });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -69,12 +81,13 @@ const deleteData = async (req, res) => {
   try {
     const { id } = req.params;
     await db.findByIdAndDelete(id);
-    res.status(200).json({ success: true, message: "Award Removed successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Award Removed successfully" });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
 };
-
 
 const updateuser = async (req, res) => {
   try {
@@ -87,12 +100,13 @@ const updateuser = async (req, res) => {
       gift,
       cash,
       awardInformation,
-      awardDate
+      awardDate,
     } = req.body;
     let awardPhoto;
     if (req.file) {
-      const dataUrl = `data:${req.file.mimetype
-        };base64,${req.file.buffer.toString("base64")}`;
+      const dataUrl = `data:${
+        req.file.mimetype
+      };base64,${req.file.buffer.toString("base64")}`;
       const result = await cloudinary.uploader.upload(dataUrl);
       awardPhoto = result.secure_url;
     }
@@ -109,11 +123,17 @@ const updateuser = async (req, res) => {
           cash,
           awardInformation,
           awardDate,
-          awardPhoto
+          awardPhoto,
         },
       }
     );
-    res.status(200).json({ success: true, updatedAward, message: "Award updated successfully" });
+    res
+      .status(200)
+      .json({
+        success: true,
+        updatedAward,
+        message: "Award updated successfully",
+      });
   } catch (error) {
     res
       .status(500)

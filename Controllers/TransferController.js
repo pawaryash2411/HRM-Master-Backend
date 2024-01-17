@@ -1,6 +1,7 @@
 const db = require("../Models/TransferModel");
 
 const postData = async (req, res) => {
+    const { id: adminid } = req.user;
     try {
         const {
             company,
@@ -11,6 +12,7 @@ const postData = async (req, res) => {
             description
         } = req.body;
         const Transferdata = await db.create({
+            adminid,
             company,
             employee,
             from_department,

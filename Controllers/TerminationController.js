@@ -1,6 +1,7 @@
 const db = require("../Models/TerminationModel");
 
 const postData = async (req, res) => {
+    const { id: adminid } = req.user;
     try {
         const {
             company,
@@ -11,6 +12,7 @@ const postData = async (req, res) => {
             description
         } = req.body;
         const Terminationdata = await db.create({
+            adminid,
             company,
             termination_to,
             termination_type,

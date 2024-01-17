@@ -1,6 +1,7 @@
 const db = require("../Models/TravelModel");
 
 const postData = async (req, res) => {
+    const { id: adminid } = req.user;
     try {
         const {
             company,
@@ -17,6 +18,7 @@ const postData = async (req, res) => {
 
         } = req.body;
         const Traveldata = await db.create({
+            adminid,
             company,
             employee,
             arrangement_type,
