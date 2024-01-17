@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const PayrollMonthlySchema = mongoose.Schema(
   {
     adminid: {
@@ -19,12 +18,18 @@ const PayrollMonthlySchema = mongoose.Schema(
     percentange_of_basic: {
       type: String,
     },
-    allowance: {
-      type: Array,
-    },
-    deduction: {
-      type: Array,
-    },
+    allowance: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "payroll-allowance",
+      },
+    ],
+    deduction: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "payroll-deduction",
+      },
+    ],
     overtime_rate: {
       type: String,
     },
@@ -33,4 +38,3 @@ const PayrollMonthlySchema = mongoose.Schema(
 );
 
 module.exports = mongoose.model("payrollmonthly", PayrollMonthlySchema);
-

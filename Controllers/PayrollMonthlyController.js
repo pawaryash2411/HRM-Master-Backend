@@ -19,8 +19,8 @@ const postData = async (req, res) => {
       gross_salary,
       percentange_of_basic,
       basic_salary,
-      allowance,
-      deduction,
+      allowance: JSON.parse(allowance),
+      deduction: JSON.parse(deduction),
       overtime_rate,
     });
 
