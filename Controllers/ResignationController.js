@@ -6,7 +6,7 @@ const postData = async (req, res) => {
     const { company, department, employee, notice_date, description } =
       req.body;
     const Resignationdata = await db.create({
-        adminid,
+      adminid,
       company,
       department,
       employee,
@@ -27,13 +27,11 @@ const postData = async (req, res) => {
 const getAllData = async (req, res) => {
   try {
     const ResignationAllData = await db.find();
-    res
-      .status(200)
-      .json({
-        success: true,
-        ResignationAllData,
-        message: "All Resignation Data Fetched successfully",
-      });
+    res.status(200).json({
+      success: true,
+      ResignationAllData,
+      message: "All Resignation Data Fetched successfully",
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -45,13 +43,11 @@ const getSingleData = async (req, res) => {
 
     const ResignationData = await db.findById(id);
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        ResignationData,
-        message: "Resignation Single Data Fetched successfully",
-      });
+    res.status(200).json({
+      success: true,
+      ResignationData,
+      message: "Resignation Single Data Fetched successfully",
+    });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -59,6 +55,7 @@ const getSingleData = async (req, res) => {
 
 const updateData = async (req, res) => {
   try {
+    const { id: adminid } = req.user;
     const { id } = req.params;
     const { company, department, employee, notice_date, description } =
       req.body;
@@ -66,6 +63,7 @@ const updateData = async (req, res) => {
     const updatedData = await db.findByIdAndUpdate(
       id,
       {
+        adminid,
         company,
         department,
         employee,
@@ -75,13 +73,11 @@ const updateData = async (req, res) => {
       { new: true }
     );
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        updatedData,
-        message: "Resignation Updated successfully",
-      });
+    res.status(200).json({
+      success: true,
+      updatedData,
+      message: "Resignation Updated successfully",
+    });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

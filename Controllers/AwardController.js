@@ -47,13 +47,11 @@ const addAward = async (req, res) => {
 const getAllData = async (req, res) => {
   try {
     const awardAllData = await db.find();
-    res
-      .status(200)
-      .json({
-        success: true,
-        awardAllData,
-        message: "All Award Data Fetched successfully",
-      });
+    res.status(200).json({
+      success: true,
+      awardAllData,
+      message: "All Award Data Fetched successfully",
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -65,13 +63,11 @@ const getSingleData = async (req, res) => {
 
     const awardData = await db.findById(id);
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        awardData,
-        message: "Award Single Data Fetched successfully",
-      });
+    res.status(200).json({
+      success: true,
+      awardData,
+      message: "Award Single Data Fetched successfully",
+    });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -90,6 +86,7 @@ const deleteData = async (req, res) => {
 };
 
 const updateuser = async (req, res) => {
+  const { id: adminid } = req.user;
   try {
     const uploadedImages = req.uploadedImageUrl;
     const {
@@ -115,6 +112,7 @@ const updateuser = async (req, res) => {
       { _id: req.params.id },
       {
         $set: {
+          adminid,
           company,
           department,
           employee,
@@ -127,13 +125,11 @@ const updateuser = async (req, res) => {
         },
       }
     );
-    res
-      .status(200)
-      .json({
-        success: true,
-        updatedAward,
-        message: "Award updated successfully",
-      });
+    res.status(200).json({
+      success: true,
+      updatedAward,
+      message: "Award updated successfully",
+    });
   } catch (error) {
     res
       .status(500)

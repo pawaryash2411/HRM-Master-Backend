@@ -62,6 +62,7 @@ const getSingleData = async (req, res) => {
 
 const updateData = async (req, res) => {
   try {
+    const { id: adminid } = req.user;
     const { id } = req.params;
     const {
       company,
@@ -75,6 +76,7 @@ const updateData = async (req, res) => {
     const updatedData = await db.findByIdAndUpdate(
       id,
       {
+        adminid,
         company,
         warning_to,
         warning_type,

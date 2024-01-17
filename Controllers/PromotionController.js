@@ -5,7 +5,7 @@ const postData = async (req, res) => {
   try {
     const { company, employee, title, promotion_date, description } = req.body;
     const Promotiondata = await db.create({
-        adminid,
+      adminid,
       company,
       employee,
       title,
@@ -26,13 +26,11 @@ const postData = async (req, res) => {
 const getAllData = async (req, res) => {
   try {
     const PromotionAllData = await db.find();
-    res
-      .status(200)
-      .json({
-        success: true,
-        PromotionAllData,
-        message: "All Promotion Data Fetched successfully",
-      });
+    res.status(200).json({
+      success: true,
+      PromotionAllData,
+      message: "All Promotion Data Fetched successfully",
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -44,19 +42,18 @@ const getSingleData = async (req, res) => {
 
     const PromotionData = await db.findById(id);
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        PromotionData,
-        message: "Promotion Single Data Fetched successfully",
-      });
+    res.status(200).json({
+      success: true,
+      PromotionData,
+      message: "Promotion Single Data Fetched successfully",
+    });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
 };
 
 const updateData = async (req, res) => {
+  const { id: adminid } = req.user;
   try {
     const { id } = req.params;
     const { company, employee, title, promotion_date, description } = req.body;
@@ -64,6 +61,7 @@ const updateData = async (req, res) => {
     const updatedData = await db.findByIdAndUpdate(
       id,
       {
+        adminid,
         company,
         employee,
         title,
@@ -73,13 +71,11 @@ const updateData = async (req, res) => {
       { new: true }
     );
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        updatedData,
-        message: "Promotion Updated successfully",
-      });
+    res.status(200).json({
+      success: true,
+      updatedData,
+      message: "Promotion Updated successfully",
+    });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -91,13 +87,11 @@ const deleteData = async (req, res) => {
 
     await db.findByIdAndDelete(id);
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        deleteData,
-        message: "Promotion Removed successfully",
-      });
+    res.status(200).json({
+      success: true,
+      deleteData,
+      message: "Promotion Removed successfully",
+    });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

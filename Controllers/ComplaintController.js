@@ -12,7 +12,7 @@ const postData = async (req, res) => {
       description,
     } = req.body;
     const ComplaintData = await db.create({
-        adminid,
+      adminid,
       company,
       complaintForm,
       complaintAgainst,
@@ -34,13 +34,11 @@ const postData = async (req, res) => {
 const getAllData = async (req, res) => {
   try {
     const ComplaintAllData = await db.find();
-    res
-      .status(200)
-      .json({
-        success: true,
-        ComplaintAllData,
-        message: "All Complaint Data Fetched successfully",
-      });
+    res.status(200).json({
+      success: true,
+      ComplaintAllData,
+      message: "All Complaint Data Fetched successfully",
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -52,19 +50,18 @@ const getSingleData = async (req, res) => {
 
     const ComplaintData = await db.findById(id);
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        ComplaintData,
-        message: "Complaint Single Data Fetched successfully",
-      });
+    res.status(200).json({
+      success: true,
+      ComplaintData,
+      message: "Complaint Single Data Fetched successfully",
+    });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
 };
 
 const updateData = async (req, res) => {
+  const { id: adminid } = req.user;
   try {
     const { id } = req.params;
     const {
@@ -79,6 +76,7 @@ const updateData = async (req, res) => {
     const updatedData = await db.findByIdAndUpdate(
       id,
       {
+        adminid,
         company,
         complaintForm,
         complaintAgainst,
@@ -89,13 +87,11 @@ const updateData = async (req, res) => {
       { new: true }
     );
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        updatedData,
-        message: "Complaint Updated successfully",
-      });
+    res.status(200).json({
+      success: true,
+      updatedData,
+      message: "Complaint Updated successfully",
+    });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -107,13 +103,11 @@ const deleteData = async (req, res) => {
 
     const deletedData = await db.findByIdAndDelete(id);
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        deletedData,
-        message: "Complaint Removed successfully",
-      });
+    res.status(200).json({
+      success: true,
+      deletedData,
+      message: "Complaint Removed successfully",
+    });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
