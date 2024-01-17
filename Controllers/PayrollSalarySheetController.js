@@ -140,15 +140,17 @@ const updatePayUser = async (req, res) => {
 const getIndividualSalary = async (req, res) => {
   try {
     const { date } = req.params;
-    const [year, month] = date;
+    const [year, month] = date.split("-");
+    const lastOrCurDay = getLastDayOrCurrentDate(year, month);
     const user = await userModel
       .findById(req.user.id)
       .populate("monthly_pay_grade");
+    console.log(user.paid, `${year}-${month}`);
     const paid = user.paid.includes(`${year}-${month}`);
     if (!paid) {
       return res
         .status(201)
-        .json({ message: "Success", paid: false, details: [] });
+        .json({ message: "Success", paid: false, details: {} });
     }
     const bonus = await PayrollBonusSheetModel.find({
       userid: user._id,
@@ -158,6 +160,20 @@ const getIndividualSalary = async (req, res) => {
     });
     let overtime = 0;
     if (timeRegistor) {
+      const { month: prevMonth, year: prevYear } = getPreviousMonth(
+        lastOrCurDay.getFullYear(),
+        lastOrCurDay.getMonth()
+      );
+      const endDate = new Date(
+        lastOrCurDay.getFullYear(),
+        lastOrCurDay.getMonth(),
+        new Date(user.joindate).getDate()
+      );
+      const startDate = new Date(
+        prevYear,
+        prevMonth,
+        new Date(user.joindate).getDate()
+      );
       overtime = timeRegistor?.clock?.reduce((acc, clock) => {
         if (
           new Date(clock.clockouttime) >= startDate &&
