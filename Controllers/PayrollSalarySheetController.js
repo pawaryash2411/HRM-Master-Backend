@@ -127,35 +127,57 @@ const getSalarySheetForMonth = async (req, res) => {
             status: "approve",
           })
             .populate("leave_type")
-            .select("total_days leave_type");
+            .select("total_days leave_type start_date");
           // console.log(leave);
           leave?.forEach((el) => {
             const { _id, paid } = el.leave_type;
-            const isPresent = discreteLeave.some((el) => el._id === _id);
-            if (isPresent) {
-              discreteLeave = discreteLeave.map((leave) => {
-                if (leave._id === _id) {
-                  return { ...leave, total: leave.total + el.total_days };
-                }
-                return leave;
+            if (
+              new Date(el.start_date) >= startDate &&
+              new Date(el.start_date) <= endDate
+            ) {
+              const isPresent = discreteLeave.some((el) => el._id === _id);
+              if (isPresent) {
+                discreteLeave = discreteLeave.map((leave) => {
+                  if (leave._id === _id) {
+                    return { ...leave, total: leave.total + el.total_days };
+                  }
+                  return leave;
+                });
+                return;
+              }
+              discreteLeave.push({
+                _id,
+                paid,
+                originalTotal: el.total_days,
+                total: el.total_days,
               });
-              return;
             }
-            discreteLeave.push({
-              _id,
-              paid,
-              originalTotal: el.total_days,
-              total: el.total_days,
-            });
           });
           const finalDiscrete = discreteLeave.map((el) => {
             if (el.paid) {
-              return { ...el, total: el.total - el.originalTotal };
+              const cutDays =
+                el.total > el.originalTotal ? el.total - el.originalTotal : 0;
+              return { ...el, total: cutDays };
             }
             return el;
           });
+          const totalUnpaidLeaves = finalDiscrete.reduce(
+            (acc, cur) => (acc += cur.total),
+            0
+          );
+          const leaveDeduction = Math.floor(
+            (user.monthly_pay_grade.basic_salary / 30) * totalUnpaidLeaves
+          );
 
-          finalUsers.push({ user, discreteLeave, bonus, overtime, paid });
+          finalUsers.push({
+            user,
+            finalDiscrete,
+            totalUnpaidLeaves,
+            leaveDeduction,
+            bonus,
+            overtime,
+            paid,
+          });
         }
       }
     }
