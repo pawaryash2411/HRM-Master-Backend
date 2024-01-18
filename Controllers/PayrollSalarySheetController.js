@@ -206,9 +206,12 @@ const getIndividualSalary = async (req, res) => {
     const { date } = req.params;
     const [year, month] = date.split("-");
     const lastOrCurDay = getLastDayOrCurrentDate(year, month);
-    const user = await userModel
-      .findById(req.user.id)
-      .populate("monthly_pay_grade");
+    const user = await userModel.findById(req.user.id).populate({
+      path: "monthly_pay_grade",
+      populate: {
+        path: "allowance deduction",
+      },
+    });
     console.log(user.paid, `${year}-${month}`);
     const paid = user.paid.includes(`${year}-${month}`);
     if (!paid) {
@@ -223,21 +226,21 @@ const getIndividualSalary = async (req, res) => {
       userid: user._id,
     });
     let overtime = 0;
+    const { month: prevMonth, year: prevYear } = getPreviousMonth(
+      lastOrCurDay.getFullYear(),
+      lastOrCurDay.getMonth()
+    );
+    const endDate = new Date(
+      lastOrCurDay.getFullYear(),
+      lastOrCurDay.getMonth(),
+      new Date(user.joindate).getDate()
+    );
+    const startDate = new Date(
+      prevYear,
+      prevMonth,
+      new Date(user.joindate).getDate()
+    );
     if (timeRegistor) {
-      const { month: prevMonth, year: prevYear } = getPreviousMonth(
-        lastOrCurDay.getFullYear(),
-        lastOrCurDay.getMonth()
-      );
-      const endDate = new Date(
-        lastOrCurDay.getFullYear(),
-        lastOrCurDay.getMonth(),
-        new Date(user.joindate).getDate()
-      );
-      const startDate = new Date(
-        prevYear,
-        prevMonth,
-        new Date(user.joindate).getDate()
-      );
       overtime = timeRegistor?.clock?.reduce((acc, clock) => {
         if (
           new Date(clock.clockouttime) >= startDate &&
@@ -251,7 +254,64 @@ const getIndividualSalary = async (req, res) => {
         }
       }, 0);
     }
-    const details = { user, bonus, paid: true, overtime };
+
+    let discreteLeave = [];
+
+    const leave = await LeaveModel.find({
+      user_id: user._id,
+      status: "approve",
+    })
+      .populate("leave_type")
+      .select("total_days leave_type start_date");
+    // console.log(leave);
+    leave?.forEach((el) => {
+      const { _id, paid } = el.leave_type;
+      if (
+        new Date(el.start_date) >= startDate &&
+        new Date(el.start_date) <= endDate
+      ) {
+        const isPresent = discreteLeave.some((el) => el._id === _id);
+        if (isPresent) {
+          discreteLeave = discreteLeave.map((leave) => {
+            if (leave._id === _id) {
+              return { ...leave, total: leave.total + el.total_days };
+            }
+            return leave;
+          });
+          return;
+        }
+        discreteLeave.push({
+          _id,
+          paid,
+          originalTotal: el.total_days,
+          total: el.total_days,
+        });
+      }
+    });
+    const finalDiscrete = discreteLeave.map((el) => {
+      if (el.paid) {
+        const cutDays =
+          el.total > el.originalTotal ? el.total - el.originalTotal : 0;
+        return { ...el, total: cutDays };
+      }
+      return el;
+    });
+    const totalUnpaidLeaves = finalDiscrete.reduce(
+      (acc, cur) => (acc += cur.total),
+      0
+    );
+    const leaveDeduction = Math.floor(
+      (user.monthly_pay_grade.basic_salary / 30) * totalUnpaidLeaves
+    );
+
+    const details = {
+      user,
+      bonus,
+      paid: true,
+      overtime,
+      totalUnpaidLeaves,
+      leaveDeduction,
+    };
     res.status(201).json({ message: "Successful", details });
   } catch (error) {
     res.status(500).json({ message: error.message });
