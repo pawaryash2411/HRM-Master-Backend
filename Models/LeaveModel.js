@@ -4,7 +4,8 @@ const { Schema } = mongoose;
 const leaveSchema = mongoose.Schema(
   {
     leave_type: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "leaveCategory",
       required: true,
     },
     subject: {
