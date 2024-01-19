@@ -14,23 +14,5 @@ const getRegisterData = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-const verifyClockData = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { clockId } = req.body;
-    const updated = await UserTimeRegistor.updateOne(
-      { _id: id, "clock._id": clockId },
-      { $set: { "clock.$.verified": true } }
-    );
-    // const updated = await UserTimeRegistor.findByIdAndUpdate(
-    //   id,
-    //   { verified: true },
-    //   { new: true }
-    // );
-    res.status(200).json({ message: "Updated succesfully", updated });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
 
-module.exports = { getRegisterData, verifyClockData };
+module.exports = { getRegisterData };
