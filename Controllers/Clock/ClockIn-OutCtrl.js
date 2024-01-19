@@ -157,7 +157,6 @@ const putdata = async (req, res) => {
       clockInDetails: { time, browserName, platform, isMobile },
       clockouttime,
       totaltime,
-      verified: user ? false : true,
     });
 
     await userTimeRegistorData.save();

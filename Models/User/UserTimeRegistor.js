@@ -20,9 +20,6 @@ const UserTimeRegistorSchema = mongoose.Schema(
           time: String,
           isMobile: Boolean,
         },
-        verified: {
-          type: Boolean,
-        },
         clockouttime: {
           type: String,
           required: true,
