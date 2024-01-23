@@ -9,6 +9,10 @@ const rotaSchema = mongoose.Schema(
       required: true,
     },
     rota: [],
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+    },
   },
   { timestamps: true }
 );

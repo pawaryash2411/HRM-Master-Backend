@@ -6,6 +6,9 @@ const PayrollBonusSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "admin",
     },
+    month: {
+      type: String,
+    },
     festival_name: {
       type: String,
     },

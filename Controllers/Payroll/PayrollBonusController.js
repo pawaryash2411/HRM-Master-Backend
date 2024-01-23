@@ -3,10 +3,11 @@ const db = require("../../Models/Payroll/PayrollBonusModel.js");
 const postData = async (req, res) => {
   try {
     const { id: adminid } = req.user;
-    const { festival_name, bonus_based_on, percentange_of_bonus } = req.body;
+    const { festival_name, month, bonus_based_on, percentange_of_bonus } = req.body;
 
     const PayrollData = await db.create({
       adminid,
+      month,
       festival_name,
       bonus_based_on,
       percentange_of_bonus,
@@ -54,11 +55,12 @@ const getSingleData = async (req, res) => {
 const updateData = async (req, res) => {
   try {
     const { id } = req.params;
-    const { festival_name, bonus_based_on, percentange_of_bonus } = req.body;
+    const { festival_name, month, bonus_based_on, percentange_of_bonus } = req.body;
 
     const updatedData = await db.findByIdAndUpdate(
       id,
       {
+        month,
         festival_name,
         bonus_based_on,
         percentange_of_bonus,
