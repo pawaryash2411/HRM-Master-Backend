@@ -71,6 +71,7 @@ const getSalarySheetForMonth = async (req, res) => {
         path: "allowance deduction",
       },
     });
+    // console.log(users);
     const finalUsers = [];
     async function processUsers() {
       for (const user of users) {
@@ -79,7 +80,7 @@ const getSalarySheetForMonth = async (req, res) => {
           paid = true;
         }
         const diff = getDaysDifference(new Date(user.joindate), lastOrCurDay);
-        console.log(diff);
+        // console.log(diff);
         const isValid =
           new Date(user.joindate).getDate() <= lastOrCurDay.getDate();
 
