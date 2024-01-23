@@ -1,4 +1,4 @@
-const UserTimeRegistor = require("../Models/UserTimeRegistor");
+const UserTimeRegistor = require("../Models/User/UserTimeRegistor");
 
 const getRegisterData = async (req, res) => {
   try {
