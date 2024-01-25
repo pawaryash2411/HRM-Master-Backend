@@ -5,9 +5,10 @@ const getRegisterData = async (req, res) => {
     const register = await UserTimeRegistor.find({
       adminid: req.user.id,
     }).populate("userid");
+    const finalRegister = register.filter((el) => el.userid);
     return res.status(200).json({
       success: true,
-      register,
+      register: finalRegister,
       message: "Register Data Fetched successfully",
     });
   } catch (error) {
