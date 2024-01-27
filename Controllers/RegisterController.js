@@ -8,7 +8,7 @@ const getRegisterData = async (req, res) => {
     const finalRegister = register.filter((el) => el.userid);
     return res.status(200).json({
       success: true,
-      register: finalRegister,
+      register: finalRegistern,
       message: "Register Data Fetched successfully",
     });
   } catch (error) {
