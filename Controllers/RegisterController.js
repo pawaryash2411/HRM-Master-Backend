@@ -1,4 +1,5 @@
 const UserTimeRegistor = require("../Models/User/UserTimeRegistor");
+const userModel = require("../Models/User/userModel");
 
 const getRegisterData = async (req, res) => {
   try {
@@ -33,4 +34,29 @@ const getFilteredRegisterData = async (req, res) => {
   }
 };
 
-module.exports = { getRegisterData, getFilteredRegisterData };
+const getAllStaffMemberByAdmin = async (req, res) => {
+  try {
+    const admins = await userModel.find({ role: "admin" });
+    const adminData = [];
+    console.log(admins)
+    for (const admin of admins) {
+      const users = await userModel.find({ adminId: admin._id });
+      console.log("users:", users)
+      adminData.push({
+        adminId: admin._id,
+        adminName: admin.name,
+        adminEmail: admin.email,
+        users: users
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      adminData,
+      message: "Staff By Admin Data Fetched successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+module.exports = { getRegisterData, getFilteredRegisterData, getAllStaffMemberByAdmin };
