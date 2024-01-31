@@ -1,5 +1,5 @@
+const AdminModel = require("../Models/Admin/AdminModel");
 const UserTimeRegistor = require("../Models/User/UserTimeRegistor");
-const userModel = require("../Models/User/userModel");
 
 const getRegisterData = async (req, res) => {
   try {
@@ -36,7 +36,7 @@ const getFilteredRegisterData = async (req, res) => {
 
 const getAllStaffMemberByAdmin = async (req, res) => {
   try {
-    const admins = await userModel.find({ role: "admin" });
+    const admins = await AdminModel.find();
     const adminData = [];
     console.log(admins)
     for (const admin of admins) {

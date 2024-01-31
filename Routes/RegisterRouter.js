@@ -10,6 +10,6 @@ const {
 
 router.get("/", requireAuth, getRegisterData);
 router.get("/:id", requireAuth, getFilteredRegisterData);
-router.get("/all-staff", requireAuth, getAllStaffMemberByAdmin);
+router.get("/staff", requireAuth, getAllStaffMemberByAdmin);
 
 module.exports = router;
