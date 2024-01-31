@@ -336,7 +336,7 @@ const resetPassword = async (req, res) => {
 
 const changepassword = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
     const { password, oldPW } = req.body;
 
     if (!userId) {
