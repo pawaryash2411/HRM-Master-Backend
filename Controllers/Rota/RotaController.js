@@ -31,11 +31,35 @@ const postData = async (req, res) => {
 };
 
 const getData = async (req, res) => {
+  const { id } = req.user;
   try {
-    const rotaData = await rotaModal.find();
+    const rotaData = await rotaModal.find().populate("employeeid");
+    const filtered = rotaData.filter(
+      (el) => String(el.employeeid?.adminId) === id
+    );
     res.status(200).json({
       success: true,
-      rotaData,
+      rotaData: filtered,
+      message: "Rota Data Fetched successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+const checkRota = async (req, res) => {
+  const { date } = req.params;
+  const { id } = req.user;
+  try {
+    const rotaData = await rotaModal
+      .findOne({ employeeid: id })
+      .populate("employeeid");
+    const filtered = rotaData?.rota?.find((el) => date === el.date);
+    res.status(200).json({
+      success: true,
+      rotaData: {
+        rota: filtered,
+        shift: rotaData?.employeeid?.attendense_calculation,
+      },
       message: "Rota Data Fetched successfully",
     });
   } catch (error) {
@@ -139,6 +163,7 @@ module.exports = {
   getData,
   updateData,
   deleteData,
+  checkRota,
   filterData,
   getsingledata,
 };
