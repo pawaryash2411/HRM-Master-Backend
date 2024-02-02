@@ -17,7 +17,7 @@ const getuser = async (req, res) => {
     if (req.user.id === process.env.SUPER_EMAIL) {
       return res.status(200).json({
         user: { email: "superadmin@gmail.com" },
-        role: "Super Admin",
+        role: "Master",
       });
     }
     const user = await db
