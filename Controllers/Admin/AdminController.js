@@ -260,7 +260,12 @@ const updateAdmin = async (req, res) => {
     location,
     branch_id,
   } = req.body;
-
+  if (refinedAccess.length === 0) {
+    finalBranch = branch_id;
+  } else {
+    const admin = await AdminModel.findById(id);
+    finalBranch = admin.branch_id;
+  }
   let picture;
   if (req.file) {
     const dataUrl = `data:${
@@ -302,7 +307,7 @@ const updateAdmin = async (req, res) => {
           email,
           location,
           password,
-          branch_id,
+          branch_id: finalBranch,
         },
       }
     );
