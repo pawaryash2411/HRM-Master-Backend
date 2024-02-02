@@ -24,7 +24,7 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    access: [],
+
     permanent_address: {
       type: String,
       required: true,

@@ -6,6 +6,7 @@ const userSchema = mongoose.Schema(
       type: String,
       required: false,
     },
+    access: [],
     password: {
       type: String,
       required: false,
