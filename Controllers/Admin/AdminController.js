@@ -13,6 +13,7 @@ const registerAdmin = async (req, res) => {
     present_address,
     user_id,
     permanent_address,
+    access,
     display_frontmonitor,
     attendance_calculation,
     department,
@@ -52,6 +53,8 @@ const registerAdmin = async (req, res) => {
       permanent_address,
       display_frontmonitor,
       attendance_calculation,
+      access: JSON.parse(access),
+
       department,
       designation,
       weekday_shift,
@@ -228,6 +231,8 @@ const updateAdmin = async (req, res) => {
     name,
     present_address,
     user_id,
+    access,
+
     permanent_address,
     display_frontmonitor,
     attendance_calculation,
@@ -276,6 +281,7 @@ const updateAdmin = async (req, res) => {
           department,
           designation,
           weekday_shift,
+          access: JSON.parse(access),
           both_shift,
           picture,
           joindate,
