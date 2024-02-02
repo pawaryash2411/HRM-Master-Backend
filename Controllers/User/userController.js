@@ -7,6 +7,7 @@ const sendEmail = require("../emailController");
 const AdminModel = require("../../Models/Admin/AdminModel");
 const cloudinary = require("cloudinary").v2;
 const dotenv = require("dotenv");
+const SuperAdminModel = require("../../Models/SuperAdmin/SuperAdminModel");
 
 dotenv.config();
 
@@ -28,7 +29,11 @@ const getuser = async (req, res) => {
         "branch_id"
       );
       if (!admin) {
-        return res.status(404).json({ message: "No users found" });
+        const superAdmin = await SuperAdminModel.findById(req.user.id);
+        if (!superAdmin) {
+          return res.status(404).json({ message: "No users found" });
+        }
+        return res.status(200).json({ user: superAdmin, role: "SuperAdmin" });
       }
       return res.status(200).json({ user: admin, role: "admin" });
     }
@@ -223,7 +228,7 @@ const loginUser = async (req, res) => {
         return res.status(200).json({
           user: { email: process.env.SUPER_EMAIL },
           token: createToken(process.env.SUPER_EMAIL),
-          role: "Super Admin",
+          role: "Master",
         });
       } else {
         return res
@@ -241,7 +246,18 @@ const loginUser = async (req, res) => {
         .populate("branch_id")
         .populate("leave");
       if (!admin) {
-        return res.status(400).json({ message: "User does not exist" });
+        const superAdmin = await SuperAdminModel.findOne({ email });
+        if (!superAdmin) {
+          return res.status(400).json({ message: "User does not exist" });
+        }
+        const isMatch = await bcrypt.compare(password, superAdmin.password);
+        if (!isMatch) {
+          return res.status(400).json({ message: "Invalid credentials" });
+        }
+        const token = createToken(superAdmin._id);
+        return res
+          .status(200)
+          .json({ user: superAdmin, token, role: "Super Admin" });
       }
       const isMatch = await bcrypt.compare(password, admin.password);
       if (!isMatch) {

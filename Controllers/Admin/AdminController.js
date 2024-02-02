@@ -39,7 +39,6 @@ const registerAdmin = async (req, res) => {
     const admin = await AdminModel.findById(id);
     finalBranch = admin.branch_id;
   }
-
   const uploadimg = req.uploadedImageUrl;
 
   try {

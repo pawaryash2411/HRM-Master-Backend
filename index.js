@@ -24,6 +24,7 @@ app.use(cookieParser());
 app.use("/api/superadmin", require("./Routes/SuperAdminRouter"));
 app.use("/api/user", require("./Routes/User/userRouter"));
 app.use("/api/admin", require("./Routes/Admin/AdminRouter"));
+app.use("/api/superAdmin", require("./Routes/SuperAdmin/SuperAdminRouter"));
 app.use(
   "/api/department",
   require("./Routes/Planning/DpartmntDesigntionRoute")
