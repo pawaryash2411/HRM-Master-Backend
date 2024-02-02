@@ -5,8 +5,10 @@ const jwt = require("jsonwebtoken");
 const branchModel = require("../../Models/branchModel");
 const LeaveModel = require("../../Models/LeaveManagement/LeaveModel");
 const userModel = require("../../Models/User/userModel");
+const AdminModel = require("../../Models/Admin/AdminModel");
 
 const registerAdmin = async (req, res) => {
+  const { id } = req.user;
   const {
     mobile_no,
     name,
@@ -27,6 +29,16 @@ const registerAdmin = async (req, res) => {
     hourly_pay_grade,
     branch_id,
   } = req.body;
+
+  const refinedAccess = JSON.parse(access || "[]");
+
+  let finalBranch;
+  if (refinedAccess.length === 0) {
+    finalBranch = branch_id;
+  } else {
+    const admin = await AdminModel.findById(id);
+    finalBranch = admin.branch_id;
+  }
 
   const uploadimg = req.uploadedImageUrl;
 
@@ -63,7 +75,7 @@ const registerAdmin = async (req, res) => {
       joindate,
       email,
       password,
-      branch_id,
+      branch_id: finalBranch,
       monthly_pay_grade,
       hourly_pay_grade,
     });
