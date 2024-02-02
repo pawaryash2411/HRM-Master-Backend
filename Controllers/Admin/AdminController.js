@@ -65,7 +65,7 @@ const registerAdmin = async (req, res) => {
       permanent_address,
       display_frontmonitor,
       attendense_calculation,
-      access: JSON.parse(access),
+      access: refinedAccess,
 
       department,
       designation,
@@ -260,6 +260,7 @@ const updateAdmin = async (req, res) => {
     location,
     branch_id,
   } = req.body;
+  const refinedAccess = JSON.parse(access || []);
   if (refinedAccess.length === 0) {
     finalBranch = branch_id;
   } else {
@@ -298,7 +299,7 @@ const updateAdmin = async (req, res) => {
           department,
           designation,
           weekday_shift,
-          access: JSON.parse(access),
+          access: refinedAccess,
           both_shift,
           picture,
           joindate,

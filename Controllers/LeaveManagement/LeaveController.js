@@ -14,8 +14,12 @@ const getdata = async (req, res) => {
 
 const getalldata = async (req, res) => {
   try {
-    data = await db.find({}).populate("user_id");
-    res.status(200).json(data);
+    const admin = await AdminModel.findById(req.user.id);
+    const data = await db.find({}).populate("user_id");
+    const filteredData = data.filter(
+      (el) => String(el.user_id.branch_id) === String(admin.branch_id)
+    );
+    res.status(200).json(filteredData);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
