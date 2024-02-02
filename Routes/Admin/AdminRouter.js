@@ -26,6 +26,7 @@ router.post(
   "/addadmin",
   upload.single("picture"),
   uploadedcloudinaryImages,
+  requireAuth,
   registerAdmin
 );
 router.put("/addadmin/:id", upload.single("picture"), updateAdmin);

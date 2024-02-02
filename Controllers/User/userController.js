@@ -40,9 +40,10 @@ const getuser = async (req, res) => {
 };
 const getusers = async (req, res) => {
   const { id } = req.user;
+  const admin = await AdminModel.findById(id);
   try {
     const users = await db
-      .find({ adminId: id })
+      .find({ branch_id: admin.branch_id })
       .populate("leave monthly_pay_grade hourly_pay_grade");
 
     res.status(200).json({ users });

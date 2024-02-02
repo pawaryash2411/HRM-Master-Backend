@@ -1,3 +1,4 @@
+const AdminModel = require("../../Models/Admin/AdminModel");
 const rotaModal = require("../../Models/Rota/RotaModel");
 const userModel = require("../../Models/User/userModel");
 
@@ -32,10 +33,11 @@ const postData = async (req, res) => {
 
 const getData = async (req, res) => {
   const { id } = req.user;
+  const admin = await AdminModel.findById(id);
   try {
     const rotaData = await rotaModal.find().populate("employeeid");
     const filtered = rotaData.filter(
-      (el) => String(el.employeeid?.adminId) === id
+      (el) => String(el.employeeid?.branch_id) === String(admin.branch_id)
     );
     res.status(200).json({
       success: true,

@@ -108,7 +108,7 @@ const postdata = async (req, res) => {
 const putdata = async (req, res) => {
   try {
     let userid;
-    let adminid;
+    let adminid, branch_id;
     const { id: userId } = req.user;
     const { clockouttime, totaltime } = req.body;
 
@@ -116,8 +116,10 @@ const putdata = async (req, res) => {
     const user = await userModel.findById(userId);
     if (!user) {
       finalUser = await AdminModel.findById(userId);
+      branch_id = finalUser.branch_id;
     } else {
       finalUser = user;
+      branch_id = user.branch_id;
     }
     if (finalUser.role == undefined) {
       adminid = userId;
@@ -146,6 +148,7 @@ const putdata = async (req, res) => {
       userTimeRegistorData = new UserTimeRegistor({
         userid,
         adminid,
+        branch_id,
         clock: [],
       });
     }

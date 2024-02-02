@@ -3,8 +3,9 @@ const UserTimeRegistor = require("../Models/User/UserTimeRegistor");
 
 const getRegisterData = async (req, res) => {
   try {
+    const admin = await AdminModel.findById(req.user.id);
     const register = await UserTimeRegistor.find({
-      adminid: req.user.id,
+      branch_id: admin.branch_id,
     }).populate("userid");
     const finalRegister = register.filter((el) => el.userid);
     console.log(finalRegister);
@@ -38,15 +39,15 @@ const getAllStaffMemberByAdmin = async (req, res) => {
   try {
     const admins = await AdminModel.find();
     const adminData = [];
-    console.log(admins)
+    console.log(admins);
     for (const admin of admins) {
       const users = await userModel.find({ adminId: admin._id });
-      console.log("users:", users)
+      console.log("users:", users);
       adminData.push({
         adminId: admin._id,
         adminName: admin.name,
         adminEmail: admin.email,
-        users: users
+        users: users,
       });
     }
 
@@ -59,4 +60,8 @@ const getAllStaffMemberByAdmin = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-module.exports = { getRegisterData, getFilteredRegisterData, getAllStaffMemberByAdmin };
+module.exports = {
+  getRegisterData,
+  getFilteredRegisterData,
+  getAllStaffMemberByAdmin,
+};

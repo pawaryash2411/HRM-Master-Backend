@@ -35,7 +35,7 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       required: true,
     },
-    attendance_calculation: {
+    attendense_calculation: {
       type: Boolean,
       required: true,
     },
