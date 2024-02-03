@@ -12,12 +12,21 @@ const getalldata = async (req, res) => {
 const postdata = async (req, res) => {
   const { department, childDepartment, departmentId, independent } = req.body;
   try {
-    const data = await db.create({
-      childDepartment: JSON.parse(childDepartment),
-      department,
-      independent,
-    });
-    res.status(201).json({ data, message: "Department added successfully" });
+    if (!departmentId) {
+      const data = await db.create({
+        department,
+        independent,
+      });
+      return res
+        .status(201)
+        .json({ data, message: "Department added successfully" });
+    }
+    if (departmentId && !independent) {
+      const data = await db.findByIdAndUpdate(departmentId, {
+        childDepartment: JSON.parse(childDepartment),
+      });
+      res.status(201).json({ data, message: "Department added successfully" });
+    }
   } catch (error) {
     res.status(404).json(error.message);
   }
