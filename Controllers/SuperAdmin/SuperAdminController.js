@@ -1,5 +1,6 @@
 const SuperAdminModel = require("../../Models/SuperAdmin/SuperAdminModel");
 const validator = require("validator");
+const bcrypt = require("bcrypt");
 
 const registerSuperAdmin = async (req, res) => {
   try {
@@ -33,13 +34,17 @@ const updateSuperAdmin = async (req, res) => {
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Please enter a valid email" });
     }
-
+    let hashedPassword;
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      hashedPassword = await bcrypt.hash(password, salt);
+    }
     await SuperAdminModel.findByIdAndUpdate(
       { _id: req.params.id },
       {
         $set: {
           email,
-          password,
+          password: hashedPassword,
         },
       }
     );

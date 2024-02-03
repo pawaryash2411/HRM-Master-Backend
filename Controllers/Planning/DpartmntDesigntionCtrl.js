@@ -10,11 +10,12 @@ const getalldata = async (req, res) => {
 };
 
 const postdata = async (req, res) => {
-  const { designations, department } = req.body;
+  const { department, childDepartment, departmentId, independent } = req.body;
   try {
     const data = await db.create({
-      designations: JSON.parse(designations),
+      childDepartment: JSON.parse(childDepartment),
       department,
+      independent,
     });
     res.status(201).json({ data, message: "Department added successfully" });
   } catch (error) {

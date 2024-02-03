@@ -9,6 +9,7 @@ const superSchema = mongoose.Schema(
     password: {
       type: String,
       required: false,
+      select: false,
     },
   },
 

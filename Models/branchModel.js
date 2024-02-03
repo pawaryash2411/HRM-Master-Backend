@@ -15,6 +15,10 @@ const BranchSchema = mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "admin",
     },
+    superadmin_id: {
+      type: Schema.Types.ObjectId,
+      ref: "superAdmin",
+    },
   },
   { timestamps: true }
 );

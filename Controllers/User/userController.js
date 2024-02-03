@@ -246,10 +246,13 @@ const loginUser = async (req, res) => {
         .populate("branch_id")
         .populate("leave");
       if (!admin) {
-        const superAdmin = await SuperAdminModel.findOne({ email });
+        const superAdmin = await SuperAdminModel.findOne({ email }).select(
+          "+password"
+        );
         if (!superAdmin) {
           return res.status(400).json({ message: "User does not exist" });
         }
+        console.log(superAdmin);
         const isMatch = await bcrypt.compare(password, superAdmin.password);
         if (!isMatch) {
           return res.status(400).json({ message: "Invalid credentials" });

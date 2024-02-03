@@ -6,6 +6,7 @@ const branchModel = require("../../Models/branchModel");
 const LeaveModel = require("../../Models/LeaveManagement/LeaveModel");
 const userModel = require("../../Models/User/userModel");
 const AdminModel = require("../../Models/Admin/AdminModel");
+const SuperAdminModel = require("../../Models/SuperAdmin/SuperAdminModel");
 
 const registerAdmin = async (req, res) => {
   const { id } = req.user;
@@ -141,8 +142,9 @@ const createnotification = async (req, res) => {
 
 const getadmin = async (req, res) => {
   try {
+    const branch = await branchModel.findOne({ superadmin_id: req.user.id });
     const admindata = await db
-      .find()
+      .find({ branch_id: branch._id })
       .populate("leave branch_id monthly_pay_grade hourly_pay_grade");
     res.status(200).send({
       success: true,
@@ -173,6 +175,7 @@ const addbranch = async (req, res) => {
       branch_name: req.body.branch_name,
       location: JSON.parse(req.body.location),
       address: req.body.address,
+      superadmin_id: req.user.id,
     });
 
     let data = await branchdata.save();
@@ -227,7 +230,7 @@ const deleteBranch = async (req, res) => {
 
 const getBranch = async (req, res) => {
   try {
-    const branches = await branchModel.find();
+    const branches = await branchModel.find({ superadmin_id: req.user.id });
     res.status(200).json({ branches });
   } catch (error) {
     res
@@ -283,6 +286,11 @@ const updateAdmin = async (req, res) => {
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Please enter a valid email" });
     }
+    let hashedPassword;
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      hashedPassword = await bcrypt.hash(password, salt);
+    }
 
     const updateuser = await db.findByIdAndUpdate(
       { _id: req.params.id },
@@ -306,7 +314,7 @@ const updateAdmin = async (req, res) => {
           hourly_pay_grade,
           email,
           location,
-          password,
+          password: hashedPassword,
           branch_id: finalBranch,
         },
       }

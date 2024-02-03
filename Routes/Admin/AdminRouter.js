@@ -33,12 +33,12 @@ router.put("/addadmin/:id", upload.single("picture"), updateAdmin);
 
 router.post("/login", loginadmin);
 
-router.post("/addbranch", addbranch);
-router.get("/branch", getBranch);
+router.post("/addbranch", requireAuth, addbranch);
+router.get("/branch", requireAuth, getBranch);
 router.put("/branch/:id", updateBranch);
 router.delete("/branch/:id", deleteBranch);
 
-router.get("/getalldata", getadmin);
+router.get("/getalldata", requireAuth, getadmin);
 // router.post("/createadmin", createadmin);
 router.post("/createnotification", createnotification);
 

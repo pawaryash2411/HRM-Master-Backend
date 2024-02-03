@@ -7,6 +7,8 @@ const department = mongoose.Schema(
       required: true,
     },
     designations: [],
+    childDepartment: [],
+    independent: { type: Boolean, default: false },
   },
   {
     timestamps: true,
