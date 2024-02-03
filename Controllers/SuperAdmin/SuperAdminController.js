@@ -1,4 +1,5 @@
 const SuperAdminModel = require("../../Models/SuperAdmin/SuperAdminModel");
+const validator = require("validator");
 
 const registerSuperAdmin = async (req, res) => {
   try {
