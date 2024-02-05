@@ -33,7 +33,7 @@ const getuser = async (req, res) => {
         if (!superAdmin) {
           return res.status(404).json({ message: "No users found" });
         }
-        return res.status(200).json({ user: superAdmin, role: "SuperAdmin" });
+        return res.status(200).json({ user: superAdmin, role: "Super Admin" });
       }
       return res.status(200).json({ user: admin, role: "admin" });
     }
