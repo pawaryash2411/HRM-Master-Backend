@@ -136,6 +136,11 @@ const test = async () => {
 
 // test(); // in the end we execute the function
 
+app.post("/", (req, res) => {
+  console.log(req.body);
+  res.status(200).json({ content: req.body });
+});
+
 app.use(notFound);
 app.use(errorHandler);
 
