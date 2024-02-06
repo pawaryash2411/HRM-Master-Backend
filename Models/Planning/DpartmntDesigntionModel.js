@@ -6,7 +6,6 @@ const department = mongoose.Schema(
       type: String,
       required: true,
     },
-    designations: [],
     childDepartment: [],
     independent: { type: Boolean, default: false },
   },
