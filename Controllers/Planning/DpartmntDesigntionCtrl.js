@@ -10,9 +10,15 @@ const getalldata = async (req, res) => {
 };
 
 const postdata = async (req, res) => {
-  const { department, childDepartment, departmentId, independent } = req.body;
+  const {
+    department,
+    childDepartmentId,
+    childDepartment,
+    departmentId,
+    independent,
+  } = req.body;
   try {
-    if (!departmentId) {
+    if (!childDepartmentId && !departmentId) {
       const data = await db.create({
         department,
         independent,
@@ -21,9 +27,27 @@ const postdata = async (req, res) => {
         .status(201)
         .json({ data, message: "Department added successfully" });
     }
-    if (departmentId && !independent) {
+    if (departmentId && !childDepartmentId) {
       const data = await db.findByIdAndUpdate(departmentId, {
+        department,
+        independent,
+      });
+      return res
+        .status(201)
+        .json({ data, message: "Department added successfully" });
+    }
+    if (departmentId && childDepartmentId) {
+      const data = await db.findByIdAndUpdate(childDepartmentId, {
         childDepartment: JSON.parse(childDepartment),
+      });
+      return res
+        .status(201)
+        .json({ data, message: "Department added successfully" });
+    }
+
+    if (childDepartmentId) {
+      const data = await db.findByIdAndUpdate(childDepartmentId, {
+        $push: { childDepartment: { $each: JSON.parse(childDepartment) } },
       });
       res.status(201).json({ data, message: "Department added successfully" });
     }

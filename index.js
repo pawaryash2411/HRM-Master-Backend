@@ -140,37 +140,40 @@ const test = async () => {
 
 app.use("/i18n", express.static(path.join(__dirname, "i18n")));
 
-// const biometricDeviceIP = "your_device_ip";
-// const biometricDevicePort = 12345;
+const biometricDeviceIP = "86.124.84.198";
+const biometricDevicePort = 4370;
 
-// const client = net.createConnection(
-//   { host: biometricDeviceIP, port: biometricDevicePort },
-//   () => {
-//     console.log("Connected to biometric device");
-//   }
-// );
+const client = net.createConnection(
+  { host: biometricDeviceIP, port: biometricDevicePort },
+  async () => {
+    console.log("Connected to biometric device");
+    const command = "CMD_GET_TIME";
+    const data = client.read(64);
+    console.log(data);
+  }
+);
 
-// client.on("data", (data) => {
-//   console.log("Biometric data received:", data.toString());
-//   // Process the data received from the biometric device
-// });
+client.on("data", (data) => {
+  console.log("Biometric data received:", data.toString());
+  // Process the data received from the biometric device
+});
 
-// // Handle connection errors
-// client.on("error", (err) => {
-//   console.error("Error connecting to biometric device:", err.message);
-// });
+// Handle connection errors
+client.on("error", (err) => {
+  console.error("Error connecting to biometric device:", err.message);
+});
 
-// // Handle disconnection
-// client.on("end", () => {
-//   console.log("Connection to biometric device closed");
-// });
+// Handle disconnection
+client.on("end", () => {
+  console.log("Connection to biometric device closed");
+});
 
 // test(); // in the end we execute the function
 
-// app.post("/", (req, res) => {
-//   console.log(req.body);
-//   res.status(200).json({ content: req.body });
-// });
+app.post("/", (req, res) => {
+  console.log(req.body);
+  res.status(200).json({ content: req.body });
+});
 
 app.use(notFound);
 app.use(errorHandler);
