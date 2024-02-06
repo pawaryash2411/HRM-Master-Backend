@@ -7,6 +7,8 @@ const dotenv = require("dotenv").config();
 
 const ZKLib = require("zklib-birigu");
 
+const path = require("path");
+
 const PORT = process.env.PORT;
 
 const net = require("net");
@@ -135,6 +137,8 @@ const test = async () => {
     console.log(data);
   });
 };
+
+app.use("/i18n", express.static(path.join(__dirname, "i18n")));
 
 // const biometricDeviceIP = "your_device_ip";
 // const biometricDevicePort = 12345;
