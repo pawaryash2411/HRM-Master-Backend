@@ -146,19 +146,19 @@ const client = net.createConnection(
   }
 );
 
-// Handle data received from the biometric device
 client.on("data", (data) => {
+  console.log("Biometric data received:", data.toString());
   // Process the data received from the biometric device
-  res.json({ biometricData: data.toString() });
-
-  // Close the connection after receiving the response
-  client.end();
 });
 
 // Handle connection errors
 client.on("error", (err) => {
   console.error("Error connecting to biometric device:", err.message);
-  res.status(500).json({ error: "Internal Server Error" });
+});
+
+// Handle disconnection
+client.on("end", () => {
+  console.log("Connection to biometric device closed");
 });
 
 // test(); // in the end we execute the function
