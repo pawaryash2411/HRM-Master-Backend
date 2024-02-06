@@ -25,6 +25,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // super admin
+app.use("/api/language", require("./Routes/LanguageRouter"));
 app.use("/api/superadmin", require("./Routes/SuperAdminRouter"));
 app.use("/api/user", require("./Routes/User/userRouter"));
 app.use("/api/admin", require("./Routes/Admin/AdminRouter"));
