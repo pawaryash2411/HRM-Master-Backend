@@ -12,6 +12,9 @@ const path = require("path");
 const PORT = process.env.PORT;
 
 const net = require("net");
+const usb = require("usb");
+
+console.log(usb.getDeviceList());
 
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
@@ -106,75 +109,75 @@ app.use(
   require("./Routes/Performance/PerformanceIndicatorRouter")
 );
 
-const test = async () => {
-  let zkInstance = new ZKLib("192.168.1.201", 4370, 5200, 5000);
-  try {
-    // Create socket to machine
-    await zkInstance.createSocket();
+// const test = async () => {
+//   let zkInstance = new ZKLib("192.168.1.201", 4370, 5200, 5000);
+//   try {
+//     // Create socket to machine
+//     await zkInstance.createSocket();
 
-    // Get general info like logCapacity, user counts, logs count
-    // It's really useful to check the status of device
+//     // Get general info like logCapacity, user counts, logs count
+//     // It's really useful to check the status of device
 
-    console.log("execute", await zkInstance.getInfo());
-  } catch (e) {
-    console.log(e);
-    if (e.code === "EADDRINUSE") {
-    }
-  }
+//     console.log("execute", await zkInstance.getInfo());
+//   } catch (e) {
+//     console.log(e);
+//     if (e.code === "EADDRINUSE") {
+//     }
+//   }
 
-  // Get users in machine
+//   // Get users in machine
 
-  const users = await zkInstance.getUsers();
-  console.log(users);
+//   const users = await zkInstance.getUsers();
+//   console.log(users);
 
-  // Create new user: setUser(uid, userid, name, password, role = 0, cardno = 0)
+//   // Create new user: setUser(uid, userid, name, password, role = 0, cardno = 0)
 
-  await zkInstance.setUser(12, "9", "testing", "111", 0, 0);
+//   await zkInstance.setUser(12, "9", "testing", "111", 0, 0);
 
-  // You can also read realtime log by getRealTimelogs function
+//   // You can also read realtime log by getRealTimelogs function
 
-  await zkInstance.getRealTimeLogs((data) => {
-    // do something when some checkin
-    console.log(data);
-  });
-};
+//   await zkInstance.getRealTimeLogs((data) => {
+//     // do something when some checkin
+//     console.log(data);
+//   });
+// };
 
 app.use("/i18n", express.static(path.join(__dirname, "i18n")));
 
-const biometricDeviceIP = "86.124.84.198";
-const biometricDevicePort = 4370;
+// const biometricDeviceIP = "86.124.84.198";
+// const biometricDevicePort = 4370;
 
-const client = net.createConnection(
-  { host: biometricDeviceIP, port: biometricDevicePort },
-  async () => {
-    console.log("Connected to biometric device");
-    const command = "CMD_GET_TIME";
-    const data = client.read(64);
-    console.log(data);
-  }
-);
+// const client = net.createConnection(
+//   { host: biometricDeviceIP, port: biometricDevicePort },
+//   async () => {
+//     console.log("Connected to biometric device");
+//     const command = "CMD_GET_TIME";
+//     const data = client.read(64);
+//     console.log(data);
+//   }
+// );
 
-client.on("data", (data) => {
-  console.log("Biometric data received:", data.toString());
-  // Process the data received from the biometric device
-});
+// client.on("data", (data) => {
+//   console.log("Biometric data received:", data.toString());
+//   // Process the data received from the biometric device
+// });
 
-// Handle connection errors
-client.on("error", (err) => {
-  console.error("Error connecting to biometric device:", err.message);
-});
+// // Handle connection errors
+// client.on("error", (err) => {
+//   console.error("Error connecting to biometric device:", err.message);
+// });
 
-// Handle disconnection
-client.on("end", () => {
-  console.log("Connection to biometric device closed");
-});
+// // Handle disconnection
+// client.on("end", () => {
+//   console.log("Connection to biometric device closed");
+// });
 
-// test(); // in the end we execute the function
+// // test(); // in the end we execute the function
 
-app.post("/", (req, res) => {
-  console.log(req.body);
-  res.status(200).json({ content: req.body });
-});
+// app.post("/", (req, res) => {
+//   console.log(req.body);
+//   res.status(200).json({ content: req.body });
+// });
 
 app.use(notFound);
 app.use(errorHandler);
