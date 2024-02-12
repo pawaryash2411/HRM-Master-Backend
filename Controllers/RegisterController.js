@@ -6,7 +6,12 @@ const getRegisterData = async (req, res) => {
     const admin = await AdminModel.findById(req.user.id);
     const register = await UserTimeRegistor.find({
       branch_id: admin.branch_id,
-    }).populate("userid");
+    }).populate({
+      path: "userid",
+      populate: {
+        path: "leave",
+      },
+    });
     const finalRegister = register.filter((el) => el.userid);
     console.log(finalRegister);
     return res.status(200).json({

@@ -32,9 +32,17 @@ const UserTimeRegistorSchema = mongoose.Schema(
           type: String,
           required: true,
         },
+        shiftDetail: {
+          date: String,
+          starttime: String,
+          endtime: String,
+          check_in: String,
+          check_out: String,
+        },
       },
     ],
   },
+
   { timestamps: true }
 );
 
