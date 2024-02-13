@@ -203,10 +203,10 @@ const getsingle = async (req, res) => {
   try {
     const getsingledata = await db.findOne({ userid: req.user.id });
     if (getsingledata) {
-      res.status(200).json({ clockedIn: true, clockIn: getsingledata.time });
+      res.status(200).json({ clockedIn: true, clockIn: getsingledata });
     } else {
       const getSingle = await db.findOne({ adminid: req.user.id });
-      res.status(200).json({ clockedIn: true, clockIn: getSingle.time });
+      res.status(200).json({ clockedIn: true, clockIn: getSingle });
       if (!getSingle) {
         res.status(200).json({ clockedIn: false });
       }
