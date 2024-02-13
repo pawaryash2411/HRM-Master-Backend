@@ -6,9 +6,9 @@ const ProjectsSchema = mongoose.Schema(
             type: String,
             required: true,
         },
-        client: {
+        cost: {
             type: String,
-            required: true,
+            required: true
         },
         startDate: {
             type: String,
@@ -22,14 +22,10 @@ const ProjectsSchema = mongoose.Schema(
             type: String,
             required: true,
         },
-        company: {
+        assignedEmployees: [{
             type: String,
             required: true,
-        },
-        assignedEmployees: {
-            type: String,
-            required: true,
-        },
+        }],
         summary: {
             type: String,
             required: true,

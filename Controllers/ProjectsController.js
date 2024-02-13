@@ -4,28 +4,27 @@ const postData = async (req, res) => {
     try {
         const {
             title,
-            client,
+            cost,
             startDate,
             endDate,
             priority,
-            company,
             assignedEmployees,
             summary
         } = req.body;
-        const Projectsdata = await db.create({
+        const ProjectData = await db.create({
             title,
+            cost,
             client,
             startDate,
             endDate,
             priority,
-            company,
-            assignedEmployees,
+            assignedEmployees: JSON.parse(assignedEmployees),
             summary
         });
 
         res.status(201).json({
             success: true,
-            Projectsdata,
+            ProjectData,
             message: " Projects Created successfully"
         });
     } catch (error) {
@@ -60,27 +59,26 @@ const updateData = async (req, res) => {
         const { id } = req.params;
         const {
             title,
-            client,
+            cost,
             startDate,
             endDate,
             priority,
-            company,
             assignedEmployees,
             summary
         } = req.body;
 
         const updatedData = await db.findByIdAndUpdate(id, {
             title,
+            cost,
             client,
             startDate,
             endDate,
             priority,
-            company,
-            assignedEmployees,
+            assignedEmployees: JSON.parse(assignedEmployees),
             summary
         }, { new: true });
 
-        res.status(200).json({ success: true, message: "Projects Updated successfully" });
+        res.status(200).json({ success: true, updatedData, message: "Projects Updated successfully" });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
