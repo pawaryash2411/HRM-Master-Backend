@@ -1,5 +1,3 @@
-const db = require("../../Models/Clock/Clockin-OutModel");
-
 const fetch = require("node-fetch");
 const axios = require("axios");
 const UserTimeRegistor = require("../../Models/User/UserTimeRegistor");
@@ -12,8 +10,8 @@ const ProjectReportModel = require("../Models/ProjectReportModel");
 const postProjectClock = async (req, res) => {
   try {
     const { id: userid } = req.user;
-
-    const user = await userModel.findById(userId);
+    const { projectid } = req.body;
+    const user = await userModel.findById(userid);
     if (!user) {
       throw new Error("False");
     }
@@ -35,6 +33,7 @@ const postProjectClock = async (req, res) => {
     const newData = await db.create({
       userid,
       time,
+      projectid,
       browserName,
       platform,
       isMobile,
