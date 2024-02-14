@@ -27,7 +27,7 @@ const postProjectClock = async (req, res) => {
     // Check if it's a mobile device
     const isMobile = headers["sec-ch-ua-mobile"] === "?1" ? true : false;
 
-    const newData = await db.create({
+    const newData = await ProjectClockModel.create({
       userid,
       time,
       projectid,
