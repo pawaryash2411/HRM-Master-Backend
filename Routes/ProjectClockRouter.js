@@ -1,8 +1,11 @@
 const express = require("express");
 const {
-    postProjectClock, getdata, getsingle, putProjectClock
-} = require("../../Controllers/ProjectClockController.js");
-const { requireAuth } = require("../../Middlewares/requireAuth");
+  postProjectClock,
+  getdata,
+  getsingle,
+  putProjectClock,
+} = require("../Controllers/ProjectClockController.js");
+const { requireAuth } = require("../Middlewares/requireAuth");
 const router = express.Router();
 
 router.get("/ALL", getdata);

@@ -40,7 +40,7 @@ app.use(
 app.use("/api/designation", require("./Routes/Planning/DesignationRoute"));
 app.use("/api/leave", require("./Routes/LeaveManagement/LeaveRouter"));
 app.use("/api/clock", require("./Routes/Clock/ClockIn-OutRoute"));
-app.use("/api/project-clock", require("./Routes/ProjectClockRoute"));
+app.use("/api/project-clock", require("./Routes/ProjectClockRouter"));
 app.use("/api/holiday", require("./Routes/Holiday/HolidayRouter"));
 app.use("/api/company", require("./Routes/Planning/CompanyRouter"));
 app.use("/api/rota", require("./Routes/Rota/RotaRouter"));

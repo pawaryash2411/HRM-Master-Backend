@@ -1,9 +1,6 @@
 const fetch = require("node-fetch");
 const axios = require("axios");
-const UserTimeRegistor = require("../../Models/User/UserTimeRegistor");
-const userModel = require("../../Models/User/userModel");
-const AdminModel = require("../../Models/Admin/AdminModel");
-const RotaModel = require("../../Models/Rota/RotaModel");
+const userModel = require("../Models/User/userModel");
 const ProjectClockModel = require("../Models/ProjectClockModel");
 const ProjectReportModel = require("../Models/ProjectReportModel");
 
