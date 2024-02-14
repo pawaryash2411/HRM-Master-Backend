@@ -30,6 +30,10 @@ const ProjectsSchema = mongoose.Schema(
             type: String,
             required: true,
         },
+        employeeId: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user"
+        }]
     },
     { timestamps: true }
 );
