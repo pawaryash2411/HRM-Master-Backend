@@ -9,17 +9,18 @@ const postData = async (req, res) => {
             endDate,
             priority,
             assignedEmployees,
-            summary
+            summary,
+            employeeId
         } = req.body;
         const ProjectData = await db.create({
             title,
             cost,
-            client,
             startDate,
             endDate,
             priority,
             assignedEmployees: JSON.parse(assignedEmployees),
-            summary
+            summary,
+            employeeId
         });
 
         res.status(201).json({
@@ -64,18 +65,19 @@ const updateData = async (req, res) => {
             endDate,
             priority,
             assignedEmployees,
-            summary
+            summary,
+            employeeId
         } = req.body;
 
         const updatedData = await db.findByIdAndUpdate(id, {
             title,
             cost,
-            client,
             startDate,
             endDate,
             priority,
             assignedEmployees: JSON.parse(assignedEmployees),
-            summary
+            summary,
+            employeeId
         }, { new: true });
 
         res.status(200).json({ success: true, updatedData, message: "Projects Updated successfully" });
