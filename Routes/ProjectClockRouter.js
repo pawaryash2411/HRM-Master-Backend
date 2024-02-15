@@ -9,7 +9,7 @@ const { requireAuth } = require("../Middlewares/requireAuth");
 const router = express.Router();
 
 router.get("/ALL", getdata);
-router.get("/", requireAuth, getsingle);
+router.get("/:projectid", requireAuth, getsingle);
 router.post("/", requireAuth, postProjectClock);
 router.put("/", requireAuth, putProjectClock);
 
