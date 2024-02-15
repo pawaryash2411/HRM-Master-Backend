@@ -108,12 +108,9 @@ const getdata = async (req, res) => {
 };
 
 const getsingle = async (req, res) => {
-  const { userid, projectid } = req.params;
+  const { projectid } = req.params;
   try {
-    const getsingledata = await ProjectClockModel.find({
-      userid,
-      projectid
-    });
+    const getsingledata = await ProjectClockModel.find({ projectid });
     if (getsingledata) {
       res.status(200).json({ clockedIn: true, clockIn: getsingledata });
     } else {
