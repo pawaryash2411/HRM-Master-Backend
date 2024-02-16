@@ -1,17 +1,18 @@
 const express = require("express");
 const {
-    postData,
-    getAllData,
-    updateData,
-    deleteData,
-    getSingleData
+  postData,
+  getAllData,
+  updateData,
+  deleteData,
+  getSingleData,
 } = require("../Controllers/ProjectsController");
+const { requireAuth } = require("../Middlewares/requireAuth");
 const router = express.Router();
 
-router.get("/", getAllData)
-router.get("/:id", getSingleData)
-router.post("/", postData)
-router.put("/:id", updateData)
-router.delete("/:id", deleteData)
+router.get("/", requireAuth, getAllData);
+router.get("/:id", requireAuth, getSingleData);
+router.post("/", requireAuth, postData);
+router.put("/:id", requireAuth, updateData);
+router.delete("/:id", requireAuth, deleteData);
 
 module.exports = router;
