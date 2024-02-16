@@ -43,7 +43,11 @@ const getAllData = async (req, res) => {
     }
     const ProjectsAllData = await db.find({ branch_id }).populate("employeeId");
     const filteredProjects = user
-      ? ProjectsAllData.filter((el) => el.employeeId.includes(user._id))
+      ? ProjectsAllData.filter((el) =>
+          el.employeeId.some(
+            (employee) => String(employee._id) === String(user._id)
+          )
+        )
       : ProjectsAllData;
     res.status(200).json({
       success: true,
