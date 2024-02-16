@@ -11,6 +11,10 @@ const ProjectReportSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "branch",
     },
+    projectid: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "projects",
+    },
 
     clock: [
       {

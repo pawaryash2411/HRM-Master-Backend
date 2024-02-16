@@ -64,11 +64,13 @@ const putProjectClock = async (req, res) => {
     // Find or create the UserTimeRegistorData
     let projectRegistorData = await ProjectReportModel.findOne({
       userid,
+      projectid,
     });
 
     if (!projectRegistorData) {
       projectRegistorData = new ProjectReportModel({
         userid,
+        projectid,
         branch_id,
         clock: [],
       });
@@ -80,7 +82,6 @@ const putProjectClock = async (req, res) => {
     projectRegistorData.clock.push({
       clockInDetails: { time, browserName, platform, isMobile },
       clockouttime,
-      projectid,
       totaltime,
     });
 
