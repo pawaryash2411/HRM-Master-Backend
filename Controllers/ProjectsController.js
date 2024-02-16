@@ -1,5 +1,6 @@
 const AdminModel = require("../Models/Admin/AdminModel");
 const db = require("../Models/ProjectsModel");
+const userModel = require("../Models/User/userModel");
 
 const postData = async (req, res) => {
   try {
@@ -29,7 +30,18 @@ const postData = async (req, res) => {
 
 const getAllData = async (req, res) => {
   try {
-    const ProjectsAllData = await db.find().populate("employeeId");
+    let branch_id;
+    const user = await userModel.findById(req.user.id);
+    if (!user) {
+      const admin = await AdminModel.findById(req.user.id);
+      if (!admin) {
+        throw new Error("Not found");
+      }
+      branch_id = admin.branch_id;
+    } else {
+      branch_id = user.branch_id;
+    }
+    const ProjectsAllData = await db.find({ branch_id }).populate("employeeId");
     res.status(200).json({
       success: true,
       ProjectsAllData,
