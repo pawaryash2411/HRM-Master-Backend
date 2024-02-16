@@ -91,7 +91,9 @@ const putProjectClock = async (req, res) => {
       userid,
     });
 
-    return res.status(200).json({ success: true, mainData: projectRegistorData });
+    return res
+      .status(200)
+      .json({ success: true, mainData: projectRegistorData });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -110,7 +112,7 @@ const getdata = async (req, res) => {
 const getsingle = async (req, res) => {
   const { projectid } = req.params;
   try {
-    const getsingledata = await ProjectClockModel.find({ projectid });
+    const getsingledata = await ProjectClockModel.findOne({ projectid });
     if (getsingledata) {
       res.status(200).json({ clockedIn: true, clockIn: getsingledata });
     } else {
