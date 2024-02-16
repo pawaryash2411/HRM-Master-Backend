@@ -43,7 +43,7 @@ const getAllData = async (req, res) => {
 const getSingleData = async (req, res) => {
   try {
     const { id } = req.params;
-
+    if (!id) throw new Error("pass an id");
     const ProjectsData = await db.findById(id);
 
     res.status(200).json({
