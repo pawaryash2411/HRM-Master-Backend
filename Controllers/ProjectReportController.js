@@ -25,7 +25,7 @@ const userReport = async (req, res) => {
     const { projectId } = req.params;
     const report = await ProjectReportModel.findOne({
       projectid: projectId,
-      userid: req.user._id,
+      userid: req.user.id,
     });
     res.status(200).json({ report });
   } catch (error) {
