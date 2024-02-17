@@ -140,13 +140,19 @@ const createnotification = async (req, res) => {
 
 const getadmin = async (req, res) => {
   try {
-    const branch = await branchModel.findOne({ superadmin_id: req.user.id });
+    const branch = await branchModel.find({ superadmin_id: req.user.id });
     const admindata = await db
-      .find({ branch_id: branch._id })
+      .find()
       .populate("leave branch_id monthly_pay_grade hourly_pay_grade");
+    const finalAdminData = admindata.filter((admin) =>
+      branch.some((singleBranch) => {
+        console.log(singleBranch);
+        return String(singleBranch._id) === String(admin.branch_id?._id);
+      })
+    );
     res.status(200).send({
       success: true,
-      admindata,
+      admindata: finalAdminData,
     });
   } catch (error) {
     res
