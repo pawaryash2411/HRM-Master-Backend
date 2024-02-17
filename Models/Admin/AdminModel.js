@@ -43,10 +43,6 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    designation: {
-      type: String,
-      required: true,
-    },
     weekday_shift: {
       type: String,
       required: true,

@@ -20,7 +20,6 @@ const registerAdmin = async (req, res) => {
     display_frontmonitor,
     attendense_calculation,
     department,
-    designation,
     weekday_shift,
     both_shift,
     joindate,
@@ -68,7 +67,6 @@ const registerAdmin = async (req, res) => {
       access: refinedAccess,
 
       department,
-      designation,
       weekday_shift,
       both_shift,
       picture: uploadimg,

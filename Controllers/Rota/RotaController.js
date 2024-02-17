@@ -1,5 +1,6 @@
 const AdminModel = require("../../Models/Admin/AdminModel");
 const rotaModal = require("../../Models/Rota/RotaModel");
+const SuperAdminModel = require("../../Models/SuperAdmin/SuperAdminModel");
 const userModel = require("../../Models/User/userModel");
 
 const postData = async (req, res) => {
@@ -34,11 +35,22 @@ const postData = async (req, res) => {
 const getData = async (req, res) => {
   const { id } = req.user;
   const admin = await AdminModel.findById(id);
+  let isSuperAdmin = false;
+  if (!admin) {
+    const finalAdmin = await SuperAdminModel.findById(id);
+    if (!finalAdmin) {
+      return res.status(500).json({ message: "No user" });
+    }
+    isSuperAdmin = true;
+  }
   try {
     const rotaData = await rotaModal.find().populate("employeeid");
-    const filtered = rotaData.filter(
-      (el) => String(el.employeeid?.branch_id) === String(admin.branch_id)
-    );
+    const filtered = isSuperAdmin
+      ? rotaData.filter((el) => el.employeeid)
+      : rotaData.filter(
+          (el) => String(el.employeeid?.branch_id) === String(admin.branch_id)
+        );
+
     res.status(200).json({
       success: true,
       rotaData: filtered,
