@@ -68,7 +68,6 @@ const registerUser = async (req, res) => {
     display_frontmonitor,
     attendense_calculation,
     department,
-    designation,
     weekday_shift,
     both_shift,
     joindate,
@@ -110,7 +109,6 @@ const registerUser = async (req, res) => {
       display_frontmonitor,
       attendense_calculation,
       department,
-      designation,
       weekday_shift,
       both_shift,
       picture: uploadimg,
@@ -238,6 +236,7 @@ const loginUser = async (req, res) => {
     }
     const user = await db
       .findOne({ email })
+      .select("password")
       .populate("branch_id")
       .populate("leave");
     console.log(user);

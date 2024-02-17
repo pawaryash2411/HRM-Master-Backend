@@ -41,10 +41,6 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    designation: {
-      type: String,
-      required: true,
-    },
     shift: Boolean,
     weekday_shift: {
       type: String,
@@ -69,6 +65,7 @@ const userSchema = mongoose.Schema(
     password: {
       type: String,
       required: true,
+      select: false,
     },
     adminId: {
       type: mongoose.Schema.Types.ObjectId,
