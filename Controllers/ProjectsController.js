@@ -44,10 +44,10 @@ const getAllData = async (req, res) => {
     const ProjectsAllData = await db.find({ branch_id }).populate("employeeId");
     const filteredProjects = user
       ? ProjectsAllData.filter((el) =>
-          el.employeeId.some(
-            (employee) => String(employee._id) === String(user._id)
-          )
+        el.employeeId.some(
+          (employee) => String(employee._id) === String(user._id)
         )
+      )
       : ProjectsAllData;
     res.status(200).json({
       success: true,
@@ -84,7 +84,6 @@ const updateData = async (req, res) => {
       startDate,
       endDate,
       priority,
-      assignedEmployees,
       summary,
       employeeId,
     } = req.body;
@@ -97,7 +96,6 @@ const updateData = async (req, res) => {
         startDate,
         endDate,
         priority,
-        assignedEmployees: JSON.parse(assignedEmployees),
         summary,
         employeeId,
       },
