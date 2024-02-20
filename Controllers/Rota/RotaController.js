@@ -68,6 +68,9 @@ const checkRota = async (req, res) => {
       .findOne({ employeeid: id })
       .populate("employeeid");
     const filtered = rotaData?.rota?.find((el) => date === el.date);
+    if (!filtered) {
+      throw new Error("NO rota");
+    }
     res.status(200).json({
       success: true,
       rotaData: {
