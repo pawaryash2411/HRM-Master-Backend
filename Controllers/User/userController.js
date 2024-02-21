@@ -125,11 +125,11 @@ const registerUser = async (req, res) => {
     const zkInstance = await connectMachineHelper();
     await zkInstance.createSocket();
 
-    await zkInstance.setUser(+user_id, user_id, name, password, 0, 12321);
+    await zkInstance.setUser(+user_id, user_id, name, password, 11, "78612241");
     const users = await zkInstance.getUsers();
 
-    const userRegister = await newUser.save();
-    res.status(200).json({ userRegister, users, message: "Staff Created" });
+    // const userRegister = await newUser.save();
+    res.status(200).json({ userRegister: "", users, message: "Staff Created" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

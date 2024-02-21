@@ -12,9 +12,6 @@ const path = require("path");
 const PORT = process.env.PORT;
 
 const net = require("net");
-const usb = require("usb");
-
-console.log(usb.getDeviceList());
 
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");

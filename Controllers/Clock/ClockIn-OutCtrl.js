@@ -244,6 +244,58 @@ const postdataAdmin = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const postdataClockIn = async (req, res) => {
+  try {
+    let userid;
+    let adminid;
+    const { id: userId } = req.user;
+    const { machineId, time } = req.body;
+
+    const finalUser = await userModel.findById(userId);
+    if (!finalUser.user_id === machineId) {
+      throw new Error("Not valid");
+    }
+    console.log(finalUser.role);
+    // console.log(userid, finalUser);
+    // console.log(time, userid);
+    const headers = req?.headers;
+    // Extract browser name
+    // console.log(headers);
+    const userAgent = headers["sec-ch-ua"];
+    const browserName = userAgent
+      ?.split(",")
+      ?.at(2)
+      ?.split(";")[0]
+      ?.slice(2, -1);
+
+    // Extract platform
+    const platform = headers["sec-ch-ua-platform"]?.replace(/"/g, "");
+
+    // Check if it's a mobile device
+    const isMobile = headers["sec-ch-ua-mobile"] === "?1" ? true : false;
+
+    if (finalUser.role == undefined) {
+      adminid = userId;
+      userid = null;
+    } else {
+      userid = userId;
+      adminid = null;
+    }
+
+    const newData = await db.create({
+      userid,
+      adminid,
+      time,
+      browserName,
+      platform,
+      isMobile,
+    });
+    await res.status(200).json(newData);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 const putdataAdmin = async (req, res) => {
   try {
     let userid;
@@ -353,6 +405,22 @@ const getsingle = async (req, res) => {
     console.error(error);
   }
 };
+const getsingleAdmin = async (req, res) => {
+  try {
+    const getsingledata = await db.findOne({ userid: req.params.id });
+    if (getsingledata) {
+      res.status(200).json({ clockedIn: true, clockIn: getsingledata });
+    } else {
+      const getSingle = await db.findOne({ adminid: req.user.id });
+      if (!getSingle) {
+        res.status(200).json({ clockedIn: false });
+      }
+      res.status(200).json({ clockedIn: true, clockIn: getSingle });
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 module.exports = {
   getlocation,
@@ -361,5 +429,6 @@ module.exports = {
   getsingle,
   putdata,
   postdataAdmin,
+  getsingleAdmin,
   putdataAdmin,
 };
