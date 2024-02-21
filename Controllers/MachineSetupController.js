@@ -106,16 +106,16 @@ const deleteData = async (req, res) => {
   }
 };
 
+const connectMachineHelper = async (req, res) => {
+  const machine = await MachineSetupModel.findOne();
+
+  let zkInstance = new ZKLib(machine.ip_address, +machine.port_no, 5200, 5000);
+  return zkInstance;
+};
+
 const connectMachine = async (req, res) => {
   try {
-    const machine = await MachineSetupModel.findOne();
-
-    let zkInstance = new ZKLib(
-      machine.ip_address,
-      +machine.port_no,
-      5200,
-      5000
-    );
+    const zkInstance = await connectMachineHelper();
 
     await zkInstance.createSocket();
 
@@ -152,4 +152,5 @@ module.exports = {
   updateData,
   connectMachine,
   deleteData,
+  connectMachineHelper,
 };

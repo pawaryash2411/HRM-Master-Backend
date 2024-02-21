@@ -8,6 +8,7 @@ const AdminModel = require("../../Models/Admin/AdminModel");
 const cloudinary = require("cloudinary").v2;
 const dotenv = require("dotenv");
 const SuperAdminModel = require("../../Models/SuperAdmin/SuperAdminModel");
+const { connectMachineHelper } = require("../MachineSetupController");
 
 dotenv.config();
 
@@ -121,9 +122,14 @@ const registerUser = async (req, res) => {
       adminId,
       branch_id: admin.branch_id,
     });
+    const zkInstance = await connectMachineHelper();
+    await zkInstance.createSocket();
+
+    await zkInstance.setUser(+user_id, user_id, name, password, 0, 12321);
+    const users = await zkInstance.getUsers();
 
     const userRegister = await newUser.save();
-    res.status(200).json({ userRegister, message: "Staff Created" });
+    res.status(200).json({ userRegister, users, message: "Staff Created" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
