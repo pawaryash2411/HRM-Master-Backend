@@ -100,7 +100,7 @@ const postdata = async (req, res) => {
       platform,
       isMobile,
     });
-     res.status(200).json(newData);
+    res.status(200).json(newData);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -238,7 +238,7 @@ const postdataAdmin = async (req, res) => {
       platform,
       isMobile,
     });
-     res.status(200).json(newData);
+    res.status(200).json(newData);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -249,7 +249,7 @@ const postdataClockIn = async (req, res) => {
     let adminid;
     const { machineId, time } = req.body;
 
-    const finalUser = await userModel.findOne({user_id:machineId});
+    const finalUser = await userModel.findOne({ user_id: machineId });
     if (!finalUser) {
       throw new Error("Not valid");
     }
@@ -272,20 +272,20 @@ const postdataClockIn = async (req, res) => {
     // Check if it's a mobile device
     const isMobile = headers["sec-ch-ua-mobile"] === "?1" ? true : false;
 
-    const already=await db.findOne({userid:finalUser._id});
-    if(already){
+    const already = await db.findOne({ userid: finalUser._id });
+    if (already) {
       throw new Error('Already clocked in')
     }
 
     const newData = await db.create({
-      userid:finalUser._id,
+      userid: finalUser._id,
       adminid,
       time,
       browserName,
       platform,
       isMobile,
     });
-    await res.status(200).json(newData);
+    await res.status(200).json({ newData });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });

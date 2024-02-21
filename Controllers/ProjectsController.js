@@ -75,8 +75,6 @@ const getSingleData = async (req, res) => {
   }
 };
 
-
-
 const updateData = async (req, res) => {
   try {
     const { id } = req.params;
