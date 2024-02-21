@@ -8,6 +8,7 @@ const {
   postdataAdmin,
   putdataAdmin,
   getsingleAdmin,
+  postdataClockIn,
 } = require("../../Controllers/Clock/ClockIn-OutCtrl");
 const { requireAuth } = require("../../Middlewares/requireAuth");
 const router = express.Router();
@@ -18,6 +19,7 @@ router.get("/ALL", getdata);
 router.get("/", requireAuth, getsingle);
 router.get("/admin/:id", requireAuth, getsingleAdmin);
 router.post("/", requireAuth, postdata);
+router.post("/qr", requireAuth, postdataClockIn);
 router.post("/admin/:id", requireAuth, postdataAdmin);
 router.put("/", requireAuth, putdata);
 router.put("/admin/:id", requireAuth, putdataAdmin);

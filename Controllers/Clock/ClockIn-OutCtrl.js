@@ -100,7 +100,7 @@ const postdata = async (req, res) => {
       platform,
       isMobile,
     });
-    await res.status(200).json(newData);
+     res.status(200).json(newData);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -238,7 +238,7 @@ const postdataAdmin = async (req, res) => {
       platform,
       isMobile,
     });
-    await res.status(200).json(newData);
+     res.status(200).json(newData);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -246,13 +246,11 @@ const postdataAdmin = async (req, res) => {
 };
 const postdataClockIn = async (req, res) => {
   try {
-    let userid;
     let adminid;
-    const { id: userId } = req.user;
     const { machineId, time } = req.body;
 
-    const finalUser = await userModel.findById(userId);
-    if (!finalUser.user_id === machineId) {
+    const finalUser = await userModel.findOne({user_id:machineId});
+    if (!finalUser) {
       throw new Error("Not valid");
     }
     console.log(finalUser.role);
@@ -274,16 +272,13 @@ const postdataClockIn = async (req, res) => {
     // Check if it's a mobile device
     const isMobile = headers["sec-ch-ua-mobile"] === "?1" ? true : false;
 
-    if (finalUser.role == undefined) {
-      adminid = userId;
-      userid = null;
-    } else {
-      userid = userId;
-      adminid = null;
+    const already=await db.findOne({userid:finalUser._id});
+    if(already){
+      throw new Error('Already clocked in')
     }
 
     const newData = await db.create({
-      userid,
+      userid:finalUser._id,
       adminid,
       time,
       browserName,
@@ -293,7 +288,7 @@ const postdataClockIn = async (req, res) => {
     await res.status(200).json(newData);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: error.message });
   }
 };
 const putdataAdmin = async (req, res) => {
@@ -431,4 +426,5 @@ module.exports = {
   postdataAdmin,
   getsingleAdmin,
   putdataAdmin,
+  postdataClockIn
 };

@@ -48,6 +48,7 @@ const getusers = async (req, res) => {
   const { id } = req.user;
   const admin = await AdminModel.findById(id);
   try {
+    const date=new Date().toISOString().split('T').at(0);
     const users = await db
       .find({ branch_id: admin.branch_id })
       .populate("leave monthly_pay_grade hourly_pay_grade");
