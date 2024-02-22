@@ -20,6 +20,7 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    card_no: String,
     role: {
       type: String,
       required: true,

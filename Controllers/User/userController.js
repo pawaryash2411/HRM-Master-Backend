@@ -48,7 +48,7 @@ const getusers = async (req, res) => {
   const { id } = req.user;
   const admin = await AdminModel.findById(id);
   try {
-    const date=new Date().toISOString().split('T').at(0);
+    const date = new Date().toISOString().split("T").at(0);
     const users = await db
       .find({ branch_id: admin.branch_id })
       .populate("leave monthly_pay_grade hourly_pay_grade");
@@ -71,6 +71,7 @@ const registerUser = async (req, res) => {
     attendense_calculation,
     department,
     weekday_shift,
+    card_no,
     both_shift,
     joindate,
     email,
@@ -107,7 +108,7 @@ const registerUser = async (req, res) => {
       user_id,
       role,
       permanent_address,
-
+      card_no,
       display_frontmonitor,
       attendense_calculation,
       department,
@@ -126,7 +127,7 @@ const registerUser = async (req, res) => {
     const zkInstance = await connectMachineHelper();
     await zkInstance.createSocket();
 
-    await zkInstance.setUser(+user_id, user_id, name, password, 11, "78612241");
+    await zkInstance.setUser(+user_id, user_id, name, password, 11, card_no);
     const users = await zkInstance.getUsers();
 
     // const userRegister = await newUser.save();
