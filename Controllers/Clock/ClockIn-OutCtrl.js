@@ -291,12 +291,31 @@ const postdataClockIn = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+function calculateTimeDifference(time1, time2) {
+  // Parse the time strings into Date objects
+  const date1 = new Date(time1);
+  const date2 = new Date(time2);
+  console.log(date1, date2);
+  // Calculate the time difference in milliseconds
+  const timeDifference = Math.abs(date2 - date1);
+
+  // Convert the time difference to hours, minutes, and seconds
+  const hours = Math.floor(timeDifference / 3600000); // 1 hour = 3600000 milliseconds
+  const minutes = Math.floor((timeDifference % 3600000) / 60000); // 1 minute = 60000 milliseconds
+  const seconds = Math.floor((timeDifference % 60000) / 1000); // 1 second = 1000 milliseconds
+
+  return {
+    hours,
+    minutes,
+    seconds,
+  };
+}
 const putdataAdmin = async (req, res) => {
   try {
     let userid;
     let adminid, branch_id;
     const { id: userId } = req.params;
-    const { clockouttime, totaltime } = req.body;
+    const { clockouttime } = req.body;
     const rotaData = await RotaModel.findOne({ employeeid: userId });
     const nowRota = rotaData.rota.find(
       (el) => el.date === clockouttime.split("T").at(0)
@@ -346,12 +365,13 @@ const putdataAdmin = async (req, res) => {
 
     userTimeRegistorData.userid = userid;
     userTimeRegistorData.adminid = adminid;
+    const { hours, minutes, seconds } = calculateTotalTime(time, clockouttime);
     // Push clock data to UserTimeRegistorData
     userTimeRegistorData.clock.push({
       clockInDetails: { time, browserName, platform, isMobile },
       clockouttime,
       shiftDetail: nowRota,
-      totaltime,
+      totaltime: `${hours}:${minutes}:${seconds}`,
     });
 
     await userTimeRegistorData.save();
