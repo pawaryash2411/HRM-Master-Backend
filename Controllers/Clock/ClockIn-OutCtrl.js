@@ -274,7 +274,7 @@ const postdataClockIn = async (req, res) => {
 
     const already = await db.findOne({ userid: finalUser._id });
     if (already) {
-      throw new Error('Already clocked in')
+      throw new Error("Already clocked in");
     }
 
     const newData = await db.create({
@@ -408,7 +408,7 @@ const getsingleAdmin = async (req, res) => {
     } else {
       const getSingle = await db.findOne({ adminid: req.user.id });
       if (!getSingle) {
-        res.status(200).json({ clockedIn: false });
+        return res.status(200).json({ clockedIn: false });
       }
       res.status(200).json({ clockedIn: true, clockIn: getSingle });
     }
@@ -426,5 +426,5 @@ module.exports = {
   postdataAdmin,
   getsingleAdmin,
   putdataAdmin,
-  postdataClockIn
+  postdataClockIn,
 };
