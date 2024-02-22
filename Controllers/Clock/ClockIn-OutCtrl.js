@@ -249,7 +249,7 @@ const postdataClockIn = async (req, res) => {
     let adminid;
     const { machineId, time } = req.body;
 
-    const finalUser = await userModel.findOne({ user_id: machineId });
+    const finalUser = await userModel.findOne({ card_no: machineId });
     if (!finalUser) {
       throw new Error("Not valid");
     }

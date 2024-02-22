@@ -244,9 +244,8 @@ const loginUser = async (req, res) => {
     }
     const user = await db
       .findOne({ email })
-      .select("password")
-      .populate("branch_id")
-      .populate("leave");
+      .select("+password")
+      .populate("branch_id leave");
     console.log(user);
     if (!user) {
       const admin = await AdminModel.findOne({ email })
