@@ -7,6 +7,7 @@ const {
   filterData,
   getsingledata,
   checkRota,
+  checkRotaAdmin,
 } = require("../../Controllers/Rota/RotaController");
 const router = express.Router();
 const { requireAuth } = require("../../Middlewares/requireAuth");
@@ -14,6 +15,7 @@ const { requireAuth } = require("../../Middlewares/requireAuth");
 router.get("/", requireAuth, getData);
 router.get("/rota-single", requireAuth, getsingledata);
 router.get("/:date", requireAuth, checkRota);
+router.get("/admin/:date/:id", requireAuth, checkRotaAdmin);
 router.get("/filter", filterData);
 router.post("/", postData);
 router.put("/:id", updateData);

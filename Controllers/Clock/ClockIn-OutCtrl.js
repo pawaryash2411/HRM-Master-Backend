@@ -365,7 +365,10 @@ const putdataAdmin = async (req, res) => {
 
     userTimeRegistorData.userid = userid;
     userTimeRegistorData.adminid = adminid;
-    const { hours, minutes, seconds } = calculateTotalTime(time, clockouttime);
+    const { hours, minutes, seconds } = calculateTimeDifference(
+      time,
+      clockouttime
+    );
     // Push clock data to UserTimeRegistorData
     userTimeRegistorData.clock.push({
       clockInDetails: { time, browserName, platform, isMobile },

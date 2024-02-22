@@ -83,7 +83,33 @@ const checkRota = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
+const checkRotaAdmin = async (req, res) => {
+  const { date, id } = req.params;
+  try {
+    const rotaData = await rotaModal
+      .findOne({ employeeid: id })
+      .populate("employeeid");
+    const filtered = rotaData?.rota?.find((el) => date === el.date);
+    if (!filtered) {
+      return res.status(200).json({
+        success: true,
+        rotaData: {
+          shift: false,
+        },
+      });
+    }
+    res.status(200).json({
+      success: true,
+      rotaData: {
+        rota: filtered,
+        shift: rotaData?.employeeid?.attendense_calculation,
+      },
+      message: "Rota Data Fetched successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 const filterData = async (req, res) => {
   try {
@@ -183,5 +209,6 @@ module.exports = {
   deleteData,
   checkRota,
   filterData,
+  checkRotaAdmin,
   getsingledata,
 };
