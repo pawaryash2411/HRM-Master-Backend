@@ -253,6 +253,12 @@ const postdataClockIn = async (req, res) => {
     if (!finalUser) {
       throw new Error("Not valid");
     }
+    const rotaData = await RotaModel.findOne({ employeeid: finalUser._id });
+
+    const filtered = rotaData?.rota?.find((el) => date === el.date);
+    if (!filtered) {
+      throw new Error("No shift found");
+    }
     console.log(finalUser.role);
     // console.log(userid, finalUser);
     // console.log(time, userid);
