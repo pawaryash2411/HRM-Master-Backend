@@ -297,7 +297,7 @@ const loginUser = async (req, res) => {
           return res.status(200).json({ admin, token, role: "Super Admin" });
         if (!alreadyPresent) {
           const allowed = superAdmin.allowedDevices;
-          if (allowed >= superAdmin.loggedIps.length) {
+          if (allowed <= superAdmin.loggedIps.length) {
             throw new Error("Reached max limit");
           } else {
             superAdmin.loggedIps.push(ip);
