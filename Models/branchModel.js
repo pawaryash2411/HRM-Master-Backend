@@ -20,7 +20,7 @@ const BranchSchema = mongoose.Schema(
       ref: "superAdmin",
     },
   },
-  { timestamps: true }
+  { timestamps: true, strictPopulate: false }
 );
 
 module.exports = mongoose.model("branch", BranchSchema);

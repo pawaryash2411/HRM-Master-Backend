@@ -22,14 +22,20 @@ const getuser = async (req, res) => {
         role: "Master",
       });
     }
-    const user = await db
-      .findById(req.user.id)
-      .populate("leave branch_id monthly_pay_grade hourly_pay_grade");
+    const user = await db.findById(req.user.id).populate({
+      path: "branch_id leave monthly_pay_grade hourly_pay_grade",
+      populate: {
+        path: "superadmin_id",
+      },
+    });
 
     if (!user) {
-      const admin = await AdminModel.findById(req.user.id).populate(
-        "branch_id"
-      );
+      const admin = await AdminModel.findById(req.user.id).populate({
+        path: "branch_id",
+        populate: {
+          path: "superadmin_id",
+        },
+      });
       if (!admin) {
         const superAdmin = await SuperAdminModel.findById(req.user.id);
         if (!superAdmin) {
@@ -248,12 +254,20 @@ const loginUser = async (req, res) => {
     const user = await db
       .findOne({ email })
       .select("+password")
-      .populate("branch_id leave");
+      .populate({
+        path: "branch_id leave",
+        populate: {
+          path: "superadmin_id",
+        },
+      });
     console.log(user);
     if (!user) {
-      const admin = await AdminModel.findOne({ email })
-        .populate("branch_id")
-        .populate("leave");
+      const admin = await AdminModel.findOne({ email }).populate({
+        path: "branch_id leave",
+        populate: {
+          path: "superadmin_id",
+        },
+      });
       if (!admin) {
         const superAdmin = await SuperAdminModel.findOne({ email }).select(
           "+password"
@@ -265,6 +279,9 @@ const loginUser = async (req, res) => {
         const isMatch = await bcrypt.compare(password, superAdmin.password);
         if (!isMatch) {
           return res.status(400).json({ message: "Invalid credentials" });
+        }
+        if (new Date(superAdmin.expiryDate) < new Date()) {
+          return res.status(400).json({ message: "License expired" });
         }
         const token = createToken(superAdmin._id);
         if (!ip || ip.length === 0) {
@@ -286,6 +303,11 @@ const loginUser = async (req, res) => {
             return res.status(200).json({ admin, token, role: "Super Admin" });
           }
         }
+      }
+      const expired =
+        new Date(admin.branch_id.superadmin_id.expiryDate) < new Date();
+      if (expired) {
+        throw new Error("License Expired. Please consult administrator.");
       }
       const isMatch = await bcrypt.compare(password, admin.password);
       if (!isMatch) {
