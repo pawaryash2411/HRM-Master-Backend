@@ -30,14 +30,15 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    display_frontmonitor: {
-      type: Boolean,
-      required: true,
-    },
-    attendense_calculation: {
-      type: Boolean,
-      required: true,
-    },
+    // display_frontmonitor: {
+    //   type: Boolean,
+    //   required: true,
+    // },
+    // attendense_calculation: {
+    //   type: Boolean,
+    //   required: true,
+    // },
+
     department: {
       type: String,
       required: true,
