@@ -226,6 +226,7 @@ const createToken = (id) => {
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   const ip = req.headers["x-forwarded-for"]?.split(",")?.at(0);
+  console.log(ip);
   try {
     if (!email || !password) {
       return res.status(400).json({ message: "Please enter all fields" });
