@@ -21,6 +21,9 @@ dbConnect();
 app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json());
+app.use((req, res, next) => {
+  console.log(req.ip);
+});
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
