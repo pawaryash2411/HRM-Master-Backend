@@ -15,7 +15,8 @@ dotenv.config();
 const getuser = async (req, res) => {
   try {
     console.log(req.user.id);
-    console.log(req.ip);
+    var ip = req.headers["x-forwarded-for"];
+    console.log(ip);
     if (req.user.id === process.env.SUPER_EMAIL) {
       return res.status(200).json({
         user: { email: "superadmin@gmail.com" },
