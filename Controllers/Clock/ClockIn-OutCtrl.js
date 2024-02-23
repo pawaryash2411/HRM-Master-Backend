@@ -259,6 +259,13 @@ const postdataClockIn = async (req, res) => {
     if (!filtered) {
       throw new Error("No shift found");
     }
+    const currentTime = new Date();
+    // Define check-in and check-out times
+    const checkInTime = new Date(filtered.check_in);
+    const checkOutTime = new Date(filtered.check_out);
+    if (!(currentTime >= checkInTime && currentTime <= checkOutTime)) {
+      throw new Error("No shift");
+    }
     console.log(finalUser.role);
     // console.log(userid, finalUser);
     // console.log(time, userid);
