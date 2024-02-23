@@ -15,7 +15,7 @@ const { requireAuth } = require("../../Middlewares/requireAuth");
 router.get("/", requireAuth, getData);
 router.get("/rota-single", requireAuth, getsingledata);
 router.get("/:date", requireAuth, checkRota);
-router.get("/admin/:date/:id", requireAuth, checkRotaAdmin);
+router.get("/admin/:id", requireAuth, checkRotaAdmin);
 router.get("/filter", filterData);
 router.post("/", postData);
 router.put("/:id", updateData);

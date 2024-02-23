@@ -84,24 +84,15 @@ const checkRota = async (req, res) => {
   }
 };
 const checkRotaAdmin = async (req, res) => {
-  const { date, id } = req.params;
+  const { id } = req.params;
   try {
     const rotaData = await rotaModal
       .findOne({ employeeid: id })
       .populate("employeeid");
-    const filtered = rotaData?.rota?.find((el) => date === el.date);
-    if (!filtered) {
-      return res.status(200).json({
-        success: true,
-        rotaData: {
-          shift: false,
-        },
-      });
-    }
     res.status(200).json({
       success: true,
       rotaData: {
-        rota: filtered,
+        rota: rotaData.rota,
         shift: rotaData?.employeeid?.attendense_calculation,
       },
       message: "Rota Data Fetched successfully",
