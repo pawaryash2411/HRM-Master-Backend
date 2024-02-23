@@ -43,7 +43,7 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    shift: Boolean,
+    shift: { type: Boolean, default: true },
     weekday_shift: {
       type: String,
       required: true,
