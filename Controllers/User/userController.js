@@ -115,7 +115,7 @@ const registerUser = async (req, res) => {
       user_id,
       role,
       permanent_address,
-      card_no,
+      card_no: `${card_no}`,
       // display_frontmonitor,
       // attendense_calculation,
       department,
@@ -165,6 +165,7 @@ const updateuser = async (req, res) => {
     monthly_pay_grade,
     hourly_pay_grade,
     password,
+    card_no,
   } = req.body;
 
   let picture;
@@ -213,6 +214,7 @@ const updateuser = async (req, res) => {
           joindate,
           shift,
           email,
+          card_no,
           password: hashedPassword,
         },
       }
