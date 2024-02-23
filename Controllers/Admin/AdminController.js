@@ -33,7 +33,7 @@ const registerAdmin = async (req, res) => {
   const refinedAccess = JSON.parse(access || "[]");
 
   let finalBranch;
-  if (refinedAccess.length === 0) {
+  if (refinedAccess?.length === 0) {
     finalBranch = branch_id;
   } else {
     const admin = await AdminModel.findById(id);
@@ -56,7 +56,7 @@ const registerAdmin = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const newAdmin = new db({
+    const newAdminData = {
       mobile_no,
       name,
       present_address,
@@ -64,8 +64,6 @@ const registerAdmin = async (req, res) => {
       permanent_address,
       display_frontmonitor,
       attendense_calculation,
-      access: refinedAccess,
-
       department,
       weekday_shift,
       both_shift,
@@ -76,7 +74,13 @@ const registerAdmin = async (req, res) => {
       branch_id: finalBranch,
       monthly_pay_grade,
       hourly_pay_grade,
-    });
+    };
+
+    if (refinedAccess.length > 0) {
+      newAdminData.access = refinedAccess;
+    }
+
+    const newAdmin = new db(newAdminData);
 
     const AdminRegister = await newAdmin.save();
 
@@ -91,6 +95,7 @@ const registerAdmin = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -275,9 +280,8 @@ const updateAdmin = async (req, res) => {
   }
   let picture;
   if (req.file) {
-    const dataUrl = `data:${
-      req.file.mimetype
-    };base64,${req.file.buffer.toString("base64")}`;
+    const dataUrl = `data:${req.file.mimetype
+      };base64,${req.file.buffer.toString("base64")}`;
     const result = await cloudinary.uploader.upload(dataUrl);
     picture = result.secure_url;
   }
