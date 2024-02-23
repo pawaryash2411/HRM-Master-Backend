@@ -19,7 +19,7 @@ const registerSuperAdmin = async (req, res) => {
     const newAdmin = await SuperAdminModel.create({
       email,
       password,
-      defaultRoles,
+      defaultRoles: JSON.parse(defaultRoles),
       expiryDate,
       allowedDevices,
     });
