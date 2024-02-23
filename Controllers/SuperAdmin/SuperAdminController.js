@@ -32,7 +32,8 @@ const registerSuperAdmin = async (req, res) => {
   }
 };
 const updateSuperAdmin = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, defaultRoles, expiryDate, allowedDevices } =
+    req.body;
 
   try {
     if (!validator.isEmail(email)) {
@@ -49,6 +50,9 @@ const updateSuperAdmin = async (req, res) => {
         $set: {
           email,
           password: hashedPassword,
+          defaultRoles,
+          expiryDate,
+          allowedDevices,
         },
       }
     );
