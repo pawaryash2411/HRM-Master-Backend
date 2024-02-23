@@ -50,7 +50,7 @@ const updateSuperAdmin = async (req, res) => {
         $set: {
           email,
           password: hashedPassword,
-          defaultRoles,
+          defaultRoles: JSON.parse(defaultRoles),
           expiryDate,
           allowedDevices,
         },
