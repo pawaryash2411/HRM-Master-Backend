@@ -4,7 +4,8 @@ const bcrypt = require("bcrypt");
 
 const registerSuperAdmin = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, defaultRoles, expiryDate, allowedDevices } =
+      req.body;
 
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Please enter a valid email" });
@@ -18,6 +19,9 @@ const registerSuperAdmin = async (req, res) => {
     const newAdmin = await SuperAdminModel.create({
       email,
       password,
+      defaultRoles,
+      expiryDate,
+      allowedDevices,
     });
 
     res
@@ -55,6 +59,7 @@ const updateSuperAdmin = async (req, res) => {
 };
 const loginsuperadmin = async (req, res) => {
   const { email, password } = req.body;
+  const ip = req.headers["x-forwarded-for"]?.split(",")?.at(0);
   try {
     if (!email || !password) {
       return res.status(400).json({ message: "Please enter all fields" });
@@ -63,12 +68,29 @@ const loginsuperadmin = async (req, res) => {
     if (!superAdmin) {
       return res.status(400).json({ message: "User does not exist" });
     }
+
     const isMatch = await bcrypt.compare(password, superAdmin.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
-    const token = createToken(admin._id);
-    res.status(200).json({ admin, token, role: "Super Admin" });
+    const token = createToken(superAdmin._id);
+    if (!ip || ip.length === 0) {
+      return res.status(200).json({ admin, token, role: "Super Admin" });
+    }
+
+    const alreadyPresent = superAdmin.loggedIps.some((el) => el === ip);
+    if (alreadyPresent)
+      return res.status(200).json({ admin, token, role: "Super Admin" });
+    if (!alreadyPresent) {
+      const allowed = superAdmin.allowedDevices;
+      if (allowed >= superAdmin.loggedIps.length) {
+        throw new Error("Reached max limit");
+      } else {
+        superAdmin.loggedIps.push(ip);
+        await superAdmin.save();
+        return res.status(200).json({ admin, token, role: "Super Admin" });
+      }
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

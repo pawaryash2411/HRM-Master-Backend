@@ -11,6 +11,10 @@ const superSchema = mongoose.Schema(
       required: false,
       select: false,
     },
+    defaultRoles: [{ type: String }],
+    expiryDate: String,
+    allowedDevices: Number,
+    loggedIps: [{ type: String }],
   },
 
   {
