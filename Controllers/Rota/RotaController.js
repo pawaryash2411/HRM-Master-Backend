@@ -92,7 +92,7 @@ const checkRotaAdmin = async (req, res) => {
     res.status(200).json({
       success: true,
       rotaData: {
-        rota: rotaData.rota,
+        rota: rotaData?.rota,
         shift: rotaData?.employeeid?.attendense_calculation,
       },
       message: "Rota Data Fetched successfully",

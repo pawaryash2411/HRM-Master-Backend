@@ -453,6 +453,78 @@ const getsingleAdmin = async (req, res) => {
   }
 };
 
+const postClockInOut = async (req, res) => {
+  try {
+    let userid;
+    let adminid;
+    const { id: userId } = req.params;
+    const rotaData = await RotaModel.findOne({ employeeid: userId });
+    const nowRota = rotaData.rota.find(
+      (el) => el.date === clockouttime.split("T").at(0)
+    );
+    console.log(nowRota);
+
+    let finalUser;
+    const user = await userModel.findById(userId);
+    if (!user) {
+      throw new Error("User doesnt exist");
+    }
+    const branch_id = user.branch_id;
+
+    const { time, clockouttime } = req.body;
+
+    const headers = req?.headers;
+    // Extract browser name
+    // console.log(headers);
+    const userAgent = headers["sec-ch-ua"];
+    const browserName = userAgent
+      ?.split(",")
+      ?.at(2)
+      ?.split(";")[0]
+      ?.slice(2, -1);
+
+    // Extract platform
+    const platform = headers["sec-ch-ua-platform"]?.replace(/"/g, "");
+
+    // Check if it's a mobile device
+    const isMobile = headers["sec-ch-ua-mobile"] === "?1" ? true : false;
+
+    // Find or create the UserTimeRegistorData
+    let userTimeRegistorData = await UserTimeRegistor.findOne({
+      userid,
+    });
+
+    if (!userTimeRegistorData) {
+      userTimeRegistorData = new UserTimeRegistor({
+        userid,
+        branch_id,
+        clock: [],
+      });
+    }
+
+    userTimeRegistorData.userid = userid;
+    userTimeRegistorData.branch_id = branch_id;
+    const { hours, minutes, seconds } = calculateTimeDifference(
+      time,
+      clockouttime
+    );
+    // Push clock data to UserTimeRegistorData
+    userTimeRegistorData.clock.push({
+      clockInDetails: { time, browserName, platform, isMobile },
+      clockouttime,
+      shiftDetail: nowRota,
+      totaltime: `${hours}:${minutes}:${seconds}`,
+    });
+
+    await userTimeRegistorData.save();
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getlocation,
   postdata,
@@ -463,4 +535,5 @@ module.exports = {
   getsingleAdmin,
   putdataAdmin,
   postdataClockIn,
+  postClockInOut,
 };
