@@ -75,7 +75,7 @@ const checkRota = async (req, res) => {
       success: true,
       rotaData: {
         rota: filtered,
-        shift: rotaData?.employeeid?.attendense_calculation,
+        shift: true,
       },
       message: "Rota Data Fetched successfully",
     });

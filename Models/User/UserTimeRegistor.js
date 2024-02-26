@@ -15,6 +15,7 @@ const UserTimeRegistorSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "branch",
     },
+    isShiftEmployee: Boolean,
 
     clock: [
       {

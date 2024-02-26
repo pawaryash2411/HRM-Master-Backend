@@ -112,11 +112,6 @@ const putdata = async (req, res) => {
     let adminid, branch_id;
     const { id: userId } = req.user;
     const { clockouttime, totaltime } = req.body;
-    const rotaData = await RotaModel.findOne({ employeeid: userId });
-    const nowRota = rotaData.rota.find(
-      (el) => el.date === clockouttime.split("T").at(0)
-    );
-    console.log(nowRota);
 
     let finalUser;
     const user = await userModel.findById(userId);
@@ -149,18 +144,28 @@ const putdata = async (req, res) => {
     let userTimeRegistorData = await UserTimeRegistor.findOne({
       $or: [{ userid: userId }, { adminid: userId }],
     });
-
+    let isShiftEmployee = false,
+      nowRota;
+    if (user.shift) {
+      isShiftEmployee = true;
+      const rotaData = await RotaModel.findOne({ employeeid: userId });
+      nowRota = rotaData.rota.find(
+        (el) => el.date === clockouttime.split("T").at(0)
+      );
+    }
     if (!userTimeRegistorData) {
       userTimeRegistorData = new UserTimeRegistor({
         userid,
         adminid,
         branch_id,
+        isShiftEmployee,
         clock: [],
       });
     }
 
     userTimeRegistorData.userid = userid;
     userTimeRegistorData.adminid = adminid;
+    userTimeRegistorData.isShiftEmployee = isShiftEmployee;
     // Push clock data to UserTimeRegistorData
     userTimeRegistorData.clock.push({
       clockInDetails: { time, browserName, platform, isMobile },
