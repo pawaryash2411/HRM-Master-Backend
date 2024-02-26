@@ -34,7 +34,7 @@ const PayrollMonthlySchema = mongoose.Schema(
       type: String,
     },
   },
-  { timestamps: true }
+  { timestamps: true, strictPopulate: false }
 );
 
 module.exports = mongoose.model("payrollmonthly", PayrollMonthlySchema);

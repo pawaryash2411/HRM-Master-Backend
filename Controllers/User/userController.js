@@ -18,11 +18,11 @@ const getuser = async (req, res) => {
 
     if (req.user.id === process.env.SUPER_EMAIL) {
       return res.status(200).json({
-        user: { email: "superadmin@gmail.com" },
+        user: { email: "master@gmail.com" },
         role: "Master",
       });
     }
-    const user = await db.findById(req.user.id).populate({
+    const user = await db.findById(req.user.id)?.populate({
       path: "branch_id leave monthly_pay_grade hourly_pay_grade",
       populate: {
         path: "superadmin_id",

@@ -145,6 +145,17 @@ const connectMachine = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const disconnectMachine = async (req, res) => {
+  try {
+    const zkInstance = await connectMachineHelper();
+
+    await zkInstance.disconnect();
+    res.json({ message: "Disconnected successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
 
 module.exports = {
   postData,
@@ -153,4 +164,5 @@ module.exports = {
   connectMachine,
   deleteData,
   connectMachineHelper,
+  disconnectMachine,
 };
