@@ -301,14 +301,17 @@ const loginUser = async (req, res) => {
         if (allowed <= superAdmin.loggedIps.length) {
           throw new Error("Reached max limit");
         } else {
-          const newLength = ++superAdmin.loggedIps.length;
-          const salt = bcrypt.genSalt(10);
-          const newIdentification = bcrypt.hash(newLength, salt);
-          superAdmin.loggedIps.push(identificationToken);
+          const newLength = String(++superAdmin.loggedIps.length);
+          const salt = await bcrypt.genSalt(10);
+          const newIdentification = await bcrypt.hash(newLength, salt);
+          superAdmin.loggedIps.push(newIdentification);
           await superAdmin.save();
-          return res
-            .status(200)
-            .json({ admin, token, identificationToken, role: "Super Admin" });
+          return res.status(200).json({
+            admin: superAdmin,
+            token,
+            newIdentification,
+            role: "Super Admin",
+          });
         }
       }
       const expired =
