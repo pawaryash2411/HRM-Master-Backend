@@ -142,7 +142,7 @@ const connectMachine = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(200).status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 const disconnectMachine = async (req, res) => {
@@ -150,7 +150,7 @@ const disconnectMachine = async (req, res) => {
     const zkInstance = await connectMachineHelper();
     await zkInstance.createSocket();
     await zkInstance.disconnect();
-    res.json({ message: "Disconnected successfully" });
+    res.status(200).json({ message: "Disconnected successfully" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });
