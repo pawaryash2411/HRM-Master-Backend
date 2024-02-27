@@ -74,12 +74,8 @@ const registerUser = async (req, res) => {
     user_id,
     role,
     permanent_address,
-    // display_frontmonitor,
-    // attendense_calculation,
     department,
-    weekday_shift,
     card_no,
-    both_shift,
     joindate,
     email,
     password,
@@ -116,11 +112,7 @@ const registerUser = async (req, res) => {
       role,
       permanent_address,
       card_no: `${card_no}`,
-      // display_frontmonitor,
-      // attendense_calculation,
       department,
-      weekday_shift,
-      both_shift,
       picture: uploadimg,
       joindate,
       email,
@@ -152,14 +144,9 @@ const updateuser = async (req, res) => {
     present_address,
     user_id,
     role,
-    shift,
+    // shift,
     permanent_address,
-    // display_frontmonitor,
-    // attendense_calculation,
     department,
-    designation,
-    weekday_shift,
-    both_shift,
     joindate,
     email,
     monthly_pay_grade,
@@ -170,9 +157,8 @@ const updateuser = async (req, res) => {
 
   let picture;
   if (req.file) {
-    const dataUrl = `data:${
-      req.file.mimetype
-    };base64,${req.file.buffer.toString("base64")}`;
+    const dataUrl = `data:${req.file.mimetype
+      };base64,${req.file.buffer.toString("base64")}`;
     const result = await cloudinary.uploader.upload(dataUrl);
     picture = result.secure_url;
   }
@@ -202,17 +188,12 @@ const updateuser = async (req, res) => {
           user_id,
           role,
           permanent_address,
-          // display_frontmonitor,
-          // attendense_calculation,
           department,
-          designation,
-          weekday_shift,
-          both_shift,
           picture,
           monthly_pay_grade,
           hourly_pay_grade,
           joindate,
-          shift,
+          // shift,
           email,
           card_no,
           password: hashedPassword,
