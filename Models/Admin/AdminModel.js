@@ -31,25 +31,13 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    display_frontmonitor: {
-      type: Boolean,
-      required: true,
-    },
-    attendense_calculation: {
-      type: Boolean,
-      required: true,
-    },
     department: {
       type: String,
       required: true,
     },
-    weekday_shift: {
-      type: String,
-      required: true,
-    },
-    both_shift: {
-      type: String,
-      required: true,
+    shift: {
+      type: Boolean,
+      require: true
     },
     picture: {
       type: String,
