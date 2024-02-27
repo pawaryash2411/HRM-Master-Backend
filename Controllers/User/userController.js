@@ -232,9 +232,8 @@ const createToken = (id) => {
 };
 
 const loginUser = async (req, res) => {
-  const { email, password } = req.body;
-  const ip = req.headers["x-forwarded-for"]?.split(",")?.at(0);
-  console.log(ip);
+  const { email, password, identificationToken } = req.body;
+
   try {
     if (!email || !password) {
       return res.status(400).json({ message: "Please enter all fields" });
@@ -286,24 +285,30 @@ const loginUser = async (req, res) => {
           return res.status(400).json({ message: "License expired" });
         }
         const token = createToken(superAdmin._id);
-        if (!ip || ip.length === 0) {
+        // if (!ip || ip.length === 0) {
+        //   return res
+        //     .status(200)
+        //     .json({ user: superAdmin, token, role: "Super Admin" });
+        // }
+
+        const alreadyPresent = superAdmin.loggedIps.findIndex(
+          (el) => el === identificationToken
+        );
+        if (alreadyPresent > -1)
+          return res.status(200).json({ admin, token, role: "Super Admin" });
+
+        const allowed = superAdmin.allowedDevices;
+        if (allowed <= superAdmin.loggedIps.length) {
+          throw new Error("Reached max limit");
+        } else {
+          const newLength = ++superAdmin.loggedIps.length;
+          const salt = bcrypt.genSalt(10);
+          const newIdentification = bcrypt.hash(newLength, salt);
+          superAdmin.loggedIps.push(identificationToken);
+          await superAdmin.save();
           return res
             .status(200)
-            .json({ user: superAdmin, token, role: "Super Admin" });
-        }
-
-        const alreadyPresent = superAdmin.loggedIps.some((el) => el === ip);
-        if (alreadyPresent)
-          return res.status(200).json({ admin, token, role: "Super Admin" });
-        if (!alreadyPresent) {
-          const allowed = superAdmin.allowedDevices;
-          if (allowed <= superAdmin.loggedIps.length) {
-            throw new Error("Reached max limit");
-          } else {
-            superAdmin.loggedIps.push(ip);
-            await superAdmin.save();
-            return res.status(200).json({ admin, token, role: "Super Admin" });
-          }
+            .json({ admin, token, identificationToken, role: "Super Admin" });
         }
       }
       const expired =
