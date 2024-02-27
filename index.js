@@ -43,6 +43,7 @@ app.use("/api/project-report", require("./Routes/ProjectReportRouter"));
 app.use("/api/holiday", require("./Routes/Holiday/HolidayRouter"));
 app.use("/api/company", require("./Routes/Planning/CompanyRouter"));
 app.use("/api/rota", require("./Routes/Rota/RotaRouter"));
+app.use("/api/shift-category", require("./Routes/Rota/ShiftCategoryRouter"));
 app.use(
   "/api/leavecategory",
   require("./Routes/LeaveManagement/LeaveCategoryRouter")
