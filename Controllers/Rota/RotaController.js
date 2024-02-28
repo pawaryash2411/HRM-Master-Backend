@@ -5,23 +5,30 @@ const userModel = require("../../Models/User/userModel");
 
 const postData = async (req, res) => {
   try {
-    const { rota, userId } = req.body;
-    const user = await userModel.findById(userId);
-    const exists = await rotaModal.findOne({ employeeid: userId });
-    console.log(exists, rota, userId);
-    if (!exists) {
-      await rotaModal.create({
-        employeeid: userId,
-        employeename: user.name,
-        rota: [{ ...rota }],
-      });
-      return res.status(201).json({
-        success: true,
-        message: "Rota Data Added successfully",
-      });
+    const { shift, dirtyUserIds, dirtyDates } = req.body;
+    const userIds = JSON.parse(dirtyUserIds);
+    const dates = JSON.parse(dirtyDates);
+    for (const userId of userIds) {
+      const user = await userModel.findById(userId);
+      const exists = await rotaModal.findOne({ employeeid: userId });
+      const rotas = dates.map((el) => ({
+        date: el,
+        shift,
+      }));
+      if (!exists) {
+        await rotaModal.create({
+          employeeid: userId,
+          employeename: user.name,
+          rota: rotas,
+        });
+        return res.status(201).json({
+          success: true,
+          message: "Rota Data Added successfully",
+        });
+      }
+      rotas.forEach((rota) => exists.rota.push(rota));
+      await exists.save();
     }
-    exists.rota.push({ ...rota });
-    await exists.save();
 
     res.status(201).json({
       success: true,
@@ -44,7 +51,7 @@ const getData = async (req, res) => {
     isSuperAdmin = true;
   }
   try {
-    const rotaData = await rotaModal.find().populate("employeeid");
+    const rotaData = await rotaModal.find().populate("employeeid rota.shift");
     const filtered = isSuperAdmin
       ? rotaData.filter((el) => el.employeeid)
       : rotaData.filter(
