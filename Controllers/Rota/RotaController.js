@@ -5,7 +5,7 @@ const userModel = require("../../Models/User/userModel");
 
 const postData = async (req, res) => {
   try {
-    const { shift, dirtyUserIds, dirtyDates } = req.body;
+    const { shift, userIds: dirtyUserIds, dates: dirtyDates } = req.body;
     const userIds = JSON.parse(dirtyUserIds);
     const dates = JSON.parse(dirtyDates);
     for (const userId of userIds) {
