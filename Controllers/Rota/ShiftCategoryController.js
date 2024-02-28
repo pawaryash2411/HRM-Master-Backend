@@ -12,7 +12,7 @@ const postData = async (req, res) => {
             checkOutTime,
             overnight
         } = req.body;
-        const trainerData = await ShiftCategoryModel.create({
+        const newData = await ShiftCategoryModel.create({
             adminId,
             categoryName,
             allowCheckInTime,
@@ -24,7 +24,7 @@ const postData = async (req, res) => {
 
         res.status(201).json({
             success: true,
-            trainerData,
+            newData,
             message: "Shift Category Created successfully"
         });
     } catch (error) {
@@ -34,10 +34,10 @@ const postData = async (req, res) => {
 
 const getAllData = async (req, res) => {
     try {
-        const trainerAllData = await ShiftCategoryModel.find();
+        const allData = await ShiftCategoryModel.find();
         res.status(200).json({
             success: true,
-            trainerAllData,
+            allData,
             message: "All Shift Category Fetched successfully"
         });
     } catch (error) {
