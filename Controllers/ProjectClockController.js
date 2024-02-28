@@ -6,13 +6,14 @@ const ProjectReportModel = require("../Models/ProjectReportModel");
 
 const postProjectClock = async (req, res) => {
   try {
-    const { id: userid } = req.user;
-    const { projectid } = req.body;
-    const user = await userModel.findById(userid);
-    if (!user) {
-      throw new Error("False");
+    const { projectId, machineId, time } = req.body;
+
+    const finalUser = await userModel.findOne({ card_no: machineId });
+    if (!finalUser) {
+      throw new Error("No employee found for that QR");
     }
-    const { time } = req.body;
+    if (!finalUser.hourly_pay_grade)
+      throw new Error("You are not hourly employee");
     const headers = req?.headers;
     const userAgent = headers["sec-ch-ua"];
     const browserName = userAgent
@@ -28,17 +29,17 @@ const postProjectClock = async (req, res) => {
     const isMobile = headers["sec-ch-ua-mobile"] === "?1" ? true : false;
 
     const newData = await ProjectClockModel.create({
-      userid,
+      userid: finalUser._id,
       time,
-      projectid,
+      projectid: projectId,
       browserName,
       platform,
       isMobile,
     });
     await res.status(200).json(newData);
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    // console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 const putProjectClock = async (req, res) => {
