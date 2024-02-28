@@ -8,7 +8,6 @@ const ProjectsSchema = mongoose.Schema(
     },
     cost: {
       type: String,
-      required: true,
     },
     startDate: {
       type: String,

@@ -21,13 +21,10 @@ const postData = async (req, res) => {
           employeename: user.name,
           rota: rotas,
         });
-        return res.status(201).json({
-          success: true,
-          message: "Rota Data Added successfully",
-        });
+      } else {
+        rotas.forEach((rota) => exists.rota.push(rota));
+        await exists.save();
       }
-      rotas.forEach((rota) => exists.rota.push(rota));
-      await exists.save();
     }
 
     res.status(201).json({

@@ -4,12 +4,11 @@ const userModel = require("../Models/User/userModel");
 
 const postData = async (req, res) => {
   try {
-    const { title, cost, startDate, endDate, priority, summary, employeeId } =
+    const { title, startDate, endDate, priority, summary, employeeId } =
       req.body;
     const admin = await AdminModel.findById(req.user.id);
     const ProjectData = await db.create({
       title,
-      cost,
       startDate,
       endDate,
       branch_id: admin.branch_id,
@@ -44,10 +43,10 @@ const getAllData = async (req, res) => {
     const ProjectsAllData = await db.find({ branch_id }).populate("employeeId");
     const filteredProjects = user
       ? ProjectsAllData.filter((el) =>
-        el.employeeId.some(
-          (employee) => String(employee._id) === String(user._id)
+          el.employeeId.some(
+            (employee) => String(employee._id) === String(user._id)
+          )
         )
-      )
       : ProjectsAllData;
     res.status(200).json({
       success: true,
@@ -78,21 +77,13 @@ const getSingleData = async (req, res) => {
 const updateData = async (req, res) => {
   try {
     const { id } = req.params;
-    const {
-      title,
-      cost,
-      startDate,
-      endDate,
-      priority,
-      summary,
-      employeeId,
-    } = req.body;
+    const { title, startDate, endDate, priority, summary, employeeId } =
+      req.body;
 
     const updatedData = await db.findByIdAndUpdate(
       id,
       {
         title,
-        cost,
         startDate,
         endDate,
         priority,
