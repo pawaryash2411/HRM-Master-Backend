@@ -27,7 +27,11 @@ const userReport = async (req, res) => {
       projectid: projectId,
       userid: req.user.id,
     });
-    res.status(200).json({ report });
+
+    const refinedClocks = report.clock.map((temp) => temp.totaltime);
+    const total = addTime(refinedClocks);
+
+    res.status(200).json({ report, total });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -39,13 +43,16 @@ const adminReport = async (req, res) => {
     const { projectId } = req.params;
     const projects = await ProjectReportModel.find({
       projectid: projectId,
-    }).populate("userid");
+    }).populate({ path: "userid", populate: { path: "hourly_pay_grade" } });
+    let totalCost = 0;
+    console.log(projects);
     const clocks = projects.map((el) => {
       const refinedClocks = el.clock.map((temp) => temp.totaltime);
       const total = addTime(refinedClocks);
+      totalCost += total.hours * el.userid.hourly_pay_grade.hourly_rate;
       return { user: el.userid.name, total };
     });
-    res.json({ clocks });
+    res.json({ clocks, totalCost });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

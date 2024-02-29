@@ -3,17 +3,31 @@ const axios = require("axios");
 const userModel = require("../Models/User/userModel");
 const ProjectClockModel = require("../Models/ProjectClockModel");
 const ProjectReportModel = require("../Models/ProjectReportModel");
+const { calculateTimeDifference } = require("./Clock/ClockIn-OutCtrl");
+const ProjectsModel = require("../Models/ProjectsModel");
 
 const postProjectClock = async (req, res) => {
   try {
     const { projectId, machineId, time } = req.body;
 
     const finalUser = await userModel.findOne({ card_no: machineId });
+    const project = await ProjectsModel.findById(projectId);
+    console.log(project.employeeId, finalUser);
+    if (
+      !project.employeeId.some((el) => String(el) === String(finalUser._id))
+    ) {
+      throw new Error("Sorry you are not assigned to this project");
+    }
     if (!finalUser) {
       throw new Error("No employee found for that QR");
     }
     if (!finalUser.hourly_pay_grade)
       throw new Error("You are not hourly employee");
+    const exists = await ProjectClockModel.findOne({
+      projectid: projectId,
+      userid: finalUser._id,
+    });
+    if (exists) throw new Error("You have already started this job");
     const headers = req?.headers;
     const userAgent = headers["sec-ch-ua"];
     const browserName = userAgent
@@ -44,33 +58,38 @@ const postProjectClock = async (req, res) => {
 };
 const putProjectClock = async (req, res) => {
   try {
-    const { id: userid } = req.user;
-    const { clockouttime, totaltime } = req.body;
+    const { clockouttime, projectid, machineId } = req.body;
 
-    const user = await userModel.findById(userid);
-
+    const user = await userModel.findOne({ card_no: machineId });
+    if (!user) throw new Error("No user found for that qr.");
     const branch_id = user.branch_id;
 
     // Find the user data based on userid or adminid
     const userdata = await ProjectClockModel.findOne({
-      userid,
+      userid: user._id,
+      projectid,
     });
 
     if (!userdata) {
-      return res.status(404).json({ error: "User not found" });
+      throw new Error("Please start this project first.");
     }
+    if (!user.hourly_pay_grade) throw new Error("You are not hourly employee");
 
-    const { time, projectid, browserName, platform, isMobile } = userdata;
-
+    const { time, browserName, platform, isMobile } = userdata;
+    const { hours, minutes, seconds } = calculateTimeDifference(
+      time,
+      clockouttime
+    );
+    const totaltime = `${hours}:${minutes}:${seconds}`;
     // Find or create the UserTimeRegistorData
     let projectRegistorData = await ProjectReportModel.findOne({
-      userid,
+      userid: user._id,
       projectid,
     });
 
     if (!projectRegistorData) {
       projectRegistorData = new ProjectReportModel({
-        userid,
+        userid: user._id,
         projectid,
         branch_id,
         clock: [],
@@ -90,7 +109,8 @@ const putProjectClock = async (req, res) => {
 
     // Remove the user data
     await ProjectClockModel.findOneAndDelete({
-      userid,
+      userid: user._id,
+      projectid,
     });
 
     return res
@@ -98,7 +118,7 @@ const putProjectClock = async (req, res) => {
       .json({ success: true, mainData: projectRegistorData });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: error.message });
   }
 };
 

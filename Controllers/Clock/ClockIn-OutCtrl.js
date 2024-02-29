@@ -548,5 +548,6 @@ module.exports = {
   getsingleAdmin,
   putdataAdmin,
   postdataClockIn,
+  calculateTimeDifference,
   postClockInOut,
 };

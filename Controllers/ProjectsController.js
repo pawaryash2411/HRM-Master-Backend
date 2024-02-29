@@ -41,6 +41,7 @@ const getAllData = async (req, res) => {
       branch_id = user.branch_id;
     }
     const ProjectsAllData = await db.find({ branch_id }).populate("employeeId");
+    console.log(ProjectsAllData);
     const filteredProjects = user
       ? ProjectsAllData.filter((el) =>
           el.employeeId.some(

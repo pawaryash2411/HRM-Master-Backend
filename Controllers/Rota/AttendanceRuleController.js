@@ -91,51 +91,6 @@ const checkRule = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-// const checkRotaAdmin = async (req, res) => {
-//   const { id } = req.params;
-//   try {
-//     const rotaData = await attendanceRuleModel
-//       .findOne({ employeeid: id })
-//       .populate("employeeid");
-//     res.status(200).json({
-//       success: true,
-//       rotaData: {
-//         rota: rotaData?.rota,
-//         shift: rotaData?.employeeid?.attendense_calculation,
-//       },
-//       message: "Rota Data Fetched successfully",
-//     });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-// const filterData = async (req, res) => {
-//   try {
-//     const { employeename, starttime, endtime } = req.query;
-
-//     const filter = {};
-//     if (employeename) {
-//       filter.employeename = employeename;
-//     }
-//     if (starttime) {
-//       filter.starttime = { $gte: new Date(starttime) };
-//     }
-//     if (endtime) {
-//       filter.endtime = { $lte: new Date(endtime) };
-//     }
-
-//     const rotaData = await attendanceRuleModel.find(filter);
-
-//     res.status(200).json({
-//       success: true,
-//       rotaData,
-//       message: "Filtered Rota Data Fetched successfully",
-//     });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
 
 const updateData = async (req, res) => {
   try {
