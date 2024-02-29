@@ -29,7 +29,7 @@ const postData = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "Rota Data Added successfully",
+      message: "Rule Data Added successfully",
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -54,8 +54,8 @@ const getData = async (req, res) => {
     const filtered = isSuperAdmin
       ? rotaData.filter((el) => el.employeeid)
       : rotaData.filter(
-          (el) => String(el.employeeid?.branch_id) === String(admin.branch_id)
-        );
+        (el) => String(el.employeeid?.branch_id) === String(admin.branch_id)
+      );
 
     res.status(200).json({
       success: true,
@@ -85,7 +85,7 @@ const checkRule = async (req, res) => {
         rule: filtered,
         shift: true,
       },
-      message: "Rota Data Fetched successfully",
+      message: "Rule Data Fetched successfully",
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -107,7 +107,7 @@ const updateData = async (req, res) => {
     res.status(201).json({
       success: true,
       updatedData,
-      message: "Rota Data Updated successfully",
+      message: "Rule Data Updated successfully",
     });
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -125,7 +125,7 @@ const deleteData = async (req, res) => {
     res.status(200).json({
       success: true,
       deletedData,
-      message: "Rota Data Deleted successfully",
+      message: "Rule Data Deleted successfully",
     });
   } catch (error) {
     res.status(404).json({ message: error.message });
