@@ -39,6 +39,6 @@ const leaveSchema = mongoose.Schema(
       ref: "user",
     },
   },
-  { timestamps: true }
+  { timestamps: true, strictPopulate: false }
 );
 module.exports = mongoose.model("leave", leaveSchema);
