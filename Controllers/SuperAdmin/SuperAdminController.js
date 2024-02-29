@@ -1,35 +1,30 @@
 const SuperAdminModel = require("../../Models/SuperAdmin/SuperAdminModel");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
-const cloudinary = require("cloudinary").v2;
 
 const registerSuperAdmin = async (req, res) => {
   try {
     const { email, password, defaultRoles, expiryDate, allowedDevices } =
       req.body;
-    const { mimetype, buffer } = req.file;
-    cloudinary.config({
-      cloud_name: process.env.CLOUD_NAME,
-      api_key: process.env.API_KEY,
-      api_secret: process.env.SECRET_KEY,
-    });
 
-    // const url = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
-
-    const imageData = await cloudinary.uploader.upload(buffer, { resource_type: 'logo' });;
 
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "Please enter a valid email" });
     }
 
+    const imageData = req.uploadedImageUrl;
+    console.log("Sidhu", imageData);
+    
     if (!imageData) {
-      return res.status(403).json({ success: false, message: "Image not found!!" })
+      return res.status(403).json({ success: false, message: 'Image upload failed' });
     }
 
     const userExists = await SuperAdminModel.findOne({ email });
+
     if (userExists) {
       return res.status(400).json({ message: "User already exists" });
     }
+
 
     const newAdmin = await SuperAdminModel.create({
       email,
@@ -37,7 +32,7 @@ const registerSuperAdmin = async (req, res) => {
       defaultRoles: JSON.parse(defaultRoles),
       expiryDate,
       allowedDevices,
-      logo: imageData.secure_url
+      logo: imageData
     });
     res
       .status(200)
