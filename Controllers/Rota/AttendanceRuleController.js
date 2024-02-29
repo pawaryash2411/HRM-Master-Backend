@@ -1,28 +1,28 @@
 const AdminModel = require("../../Models/Admin/AdminModel");
-const rotaModal = require("../../Models/Rota/RotaModel");
+const attendanceRuleModel = require("../../Models/Rota/AttendanceRuleModel");
 const SuperAdminModel = require("../../Models/SuperAdmin/SuperAdminModel");
 const userModel = require("../../Models/User/userModel");
 
 const postData = async (req, res) => {
   try {
-    const { shift, userIds: dirtyUserIds, dates: dirtyDates } = req.body;
+    const { ruleCategory, userIds: dirtyUserIds, dates: dirtyDates } = req.body;
     const userIds = JSON.parse(dirtyUserIds);
     const dates = JSON.parse(dirtyDates);
     for (const userId of userIds) {
       const user = await userModel.findById(userId);
-      const exists = await rotaModal.findOne({ employeeid: userId });
-      const rotas = dates.map((el) => ({
+      const exists = await attendanceRuleModel.findOne({ employeeid: userId });
+      const rules = dates.map((el) => ({
         date: el,
-        shift,
+        ruleCategory,
       }));
       if (!exists) {
-        await rotaModal.create({
+        await attendanceRuleModel.create({
           employeeid: userId,
           employeename: user.name,
-          rota: rotas,
+          rules,
         });
       } else {
-        rotas.forEach((rota) => exists.rota.push(rota));
+        rules.forEach((rule) => exists.rules.push(rule));
         await exists.save();
       }
     }
@@ -48,7 +48,9 @@ const getData = async (req, res) => {
     isSuperAdmin = true;
   }
   try {
-    const rotaData = await rotaModal.find().populate("employeeid rota.shift");
+    const rotaData = await attendanceRuleModel
+      .find()
+      .populate("employeeid rules.ruleCategory");
     const filtered = isSuperAdmin
       ? rotaData.filter((el) => el.employeeid)
       : rotaData.filter(
@@ -58,27 +60,29 @@ const getData = async (req, res) => {
     res.status(200).json({
       success: true,
       rotaData: filtered,
-      message: "Rota Data Fetched successfully",
+      message: "Rules Data Fetched successfully",
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-const checkRota = async (req, res) => {
+const checkRule = async (req, res) => {
   const { date } = req.params;
   const { id } = req.user;
   try {
-    const rotaData = await rotaModal
+    const rotaData = await attendanceRuleModel
       .findOne({ employeeid: id })
-      .populate("employeeid rota.shift");
-    const filtered = rotaData?.rota?.find((el) => date === el.shift.date);
+      .populate("employeeid rules.ruleCategory");
+    const filtered = rotaData?.rules?.find(
+      (el) => date === el.ruleCategory.date
+    );
     if (!filtered) {
       throw new Error("NO rota");
     }
     res.status(200).json({
       success: true,
-      rotaData: {
-        rota: filtered,
+      ruleData: {
+        rule: filtered,
         shift: true,
       },
       message: "Rota Data Fetched successfully",
@@ -87,61 +91,60 @@ const checkRota = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-const checkRotaAdmin = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const rotaData = await rotaModal
-      .findOne({ employeeid: id })
-      .populate("employeeid");
-    res.status(200).json({
-      success: true,
-      rotaData: {
-        rota: rotaData?.rota,
-        shift: rotaData?.employeeid?.attendense_calculation,
-      },
-      message: "Rota Data Fetched successfully",
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+// const checkRotaAdmin = async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     const rotaData = await attendanceRuleModel
+//       .findOne({ employeeid: id })
+//       .populate("employeeid");
+//     res.status(200).json({
+//       success: true,
+//       rotaData: {
+//         rota: rotaData?.rota,
+//         shift: rotaData?.employeeid?.attendense_calculation,
+//       },
+//       message: "Rota Data Fetched successfully",
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
-const filterData = async (req, res) => {
-  try {
-    const { employeename, starttime, endtime } = req.query;
+// const filterData = async (req, res) => {
+//   try {
+//     const { employeename, starttime, endtime } = req.query;
 
-    const filter = {};
-    if (employeename) {
-      filter.employeename = employeename;
-    }
-    if (starttime) {
-      filter.starttime = { $gte: new Date(starttime) };
-    }
-    if (endtime) {
-      filter.endtime = { $lte: new Date(endtime) };
-    }
+//     const filter = {};
+//     if (employeename) {
+//       filter.employeename = employeename;
+//     }
+//     if (starttime) {
+//       filter.starttime = { $gte: new Date(starttime) };
+//     }
+//     if (endtime) {
+//       filter.endtime = { $lte: new Date(endtime) };
+//     }
 
-    const rotaData = await rotaModal.find(filter);
+//     const rotaData = await attendanceRuleModel.find(filter);
 
-    res.status(200).json({
-      success: true,
-      rotaData,
-      message: "Filtered Rota Data Fetched successfully",
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+//     res.status(200).json({
+//       success: true,
+//       rotaData,
+//       message: "Filtered Rota Data Fetched successfully",
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 const updateData = async (req, res) => {
   try {
     const { id } = req.params;
-    const { shift } = req.body;
-    console.log(shift);
-    const updatedData = await rotaModal.findByIdAndUpdate(
+    const { rules } = req.body;
+    const updatedData = await attendanceRuleModel.findByIdAndUpdate(
       id,
       {
-        rota: JSON.parse(shift),
+        rules: JSON.parse(rules),
       },
       { new: true }
     );
@@ -159,9 +162,9 @@ const updateData = async (req, res) => {
 const deleteData = async (req, res) => {
   try {
     const { id } = req.params;
-    const { rota } = req.body;
-    const deletedData = await rotaModal.findByIdAndUpdate(id, {
-      rota: JSON.parse(rota),
+    const { rules } = req.body;
+    const deletedData = await attendanceRuleModel.findByIdAndUpdate(id, {
+      rules: JSON.parse(rules),
     });
 
     res.status(200).json({
@@ -177,9 +180,7 @@ const getsingledata = async (req, res) => {
   try {
     const id = req.user.id;
     console.log(id);
-    const data = await rotaModal
-      .findOne({ employeeid: id })
-      .populate("rota.shift");
+    const data = await attendanceRuleModel.findOne({ employeeid: id });
 
     if (data) {
       res.status(200).json({
@@ -204,8 +205,6 @@ module.exports = {
   getData,
   updateData,
   deleteData,
-  checkRota,
-  filterData,
-  checkRotaAdmin,
+  checkRule,
   getsingledata,
 };

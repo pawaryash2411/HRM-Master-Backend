@@ -6,6 +6,7 @@ const UserTimeRegistor = require("../../Models/User/UserTimeRegistor");
 const userModel = require("../../Models/User/userModel");
 const AdminModel = require("../../Models/Admin/AdminModel");
 const RotaModel = require("../../Models/Rota/RotaModel");
+const AttendanceRuleModel = require("../../Models/Rota/AttendanceRuleModel");
 const apiKey = "AIzaSyBpcBi67uEbAIQTdShuxektx1E_v38CTHI";
 const address = "tajmahal";
 const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
@@ -150,6 +151,13 @@ const putdata = async (req, res) => {
       isShiftEmployee = true;
       const rotaData = await RotaModel.findOne({ employeeid: userId });
       nowRota = rotaData.rota.find(
+        (el) => el.date === clockouttime.split("T").at(0)
+      );
+    } else {
+      const ruleData = await AttendanceRuleModel.findOne({
+        employeeid: userId,
+      });
+      nowRota = ruleData.rules.find(
         (el) => el.date === clockouttime.split("T").at(0)
       );
     }
