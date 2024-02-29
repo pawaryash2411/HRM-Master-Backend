@@ -7,7 +7,6 @@ const postData = async (req, res) => {
       categoryName,
       allowCheckInTime,
       allowCheckOutTime,
-
       overnight,
     } = req.body;
     const newData = await RuleCategoryModel.create({
@@ -15,7 +14,6 @@ const postData = async (req, res) => {
       categoryName,
       allowCheckInTime,
       allowCheckOutTime,
-
       overnight,
     });
 
@@ -61,7 +59,6 @@ const updateData = async (req, res) => {
         categoryName,
         allowCheckInTime,
         allowCheckOutTime,
-
         overnight,
       },
       { new: true }
