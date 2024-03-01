@@ -48,18 +48,18 @@ const getData = async (req, res) => {
     isSuperAdmin = true;
   }
   try {
-    const rotaData = await attendanceRuleModel
+    const rules = await attendanceRuleModel
       .find()
       .populate("employeeid rules.ruleCategory");
     const filtered = isSuperAdmin
-      ? rotaData.filter((el) => el.employeeid)
-      : rotaData.filter(
-        (el) => String(el.employeeid?.branch_id) === String(admin.branch_id)
-      );
+      ? rules.filter((el) => el.employeeid)
+      : rules.filter(
+          (el) => String(el.employeeid?.branch_id) === String(admin.branch_id)
+        );
 
     res.status(200).json({
       success: true,
-      rotaData: filtered,
+      rules: filtered,
       message: "Rules Data Fetched successfully",
     });
   } catch (error) {

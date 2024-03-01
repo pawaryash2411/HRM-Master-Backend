@@ -12,6 +12,25 @@ const address = "tajmahal";
 const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
   address
 )}&key=${apiKey}`;
+function calculateTimeDifference(time1, time2) {
+  // Parse the time strings into Date objects
+  const date1 = new Date(time1);
+  const date2 = new Date(time2);
+  console.log(date1, date2);
+  // Calculate the time difference in milliseconds
+  const timeDifference = Math.abs(date2 - date1);
+
+  // Convert the time difference to hours, minutes, and seconds
+  const hours = Math.floor(timeDifference / 3600000); // 1 hour = 3600000 milliseconds
+  const minutes = Math.floor((timeDifference % 3600000) / 60000); // 1 minute = 60000 milliseconds
+  const seconds = Math.floor((timeDifference % 60000) / 1000); // 1 second = 1000 milliseconds
+
+  return {
+    hours,
+    minutes,
+    seconds,
+  };
+}
 
 const getlocation = (req, res) => {
   fetch(apiUrl)
@@ -257,7 +276,7 @@ const postdataAdmin = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-const postdataClockIn = async (req, res) => {
+const postdataQR = async (req, res) => {
   try {
     let adminid;
     const { machineId, time } = req.body;
@@ -317,25 +336,91 @@ const postdataClockIn = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-function calculateTimeDifference(time1, time2) {
-  // Parse the time strings into Date objects
-  const date1 = new Date(time1);
-  const date2 = new Date(time2);
-  console.log(date1, date2);
-  // Calculate the time difference in milliseconds
-  const timeDifference = Math.abs(date2 - date1);
+const putdataQR = async (req, res) => {
+  try {
+    const { clockouttime, machineId } = req.body;
 
-  // Convert the time difference to hours, minutes, and seconds
-  const hours = Math.floor(timeDifference / 3600000); // 1 hour = 3600000 milliseconds
-  const minutes = Math.floor((timeDifference % 3600000) / 60000); // 1 minute = 60000 milliseconds
-  const seconds = Math.floor((timeDifference % 60000) / 1000); // 1 second = 1000 milliseconds
+    const finalUser = await userModel.findOne({ card_no: machineId });
+    const branch_id = finalUser.branch_id;
+    // if (!user) {
+    //   finalUser = await AdminModel.findById(userId);
+    //   branch_id = finalUser.branch_id;
+    // } else {
+    //   finalUser = user;
+    //   branch_id = user.branch_id;
+    // }
+    // if (finalUser.role == undefined) {
+    //   adminid = userId;
+    //   userid = null;
+    // } else {
+    //   userid = userId;
+    //   adminid = user.adminId;
+    // }
+    // Find the user data based on userid or adminid
+    const userdata = await db.findOne({
+      userid: finalUser._id,
+    });
 
-  return {
-    hours,
-    minutes,
-    seconds,
-  };
-}
+    if (!userdata) {
+      return res.status(404).json({ error: "Clock in data not found" });
+    }
+
+    const { time, browserName, platform, isMobile } = userdata;
+
+    // Find or create the UserTimeRegistorData
+    let userTimeRegistorData = await UserTimeRegistor.findOne({
+      userid: finalUser._id,
+    });
+    let isShiftEmployee = false,
+      nowRota;
+    if (user.shift) {
+      isShiftEmployee = true;
+      const rotaData = await RotaModel.findOne({ employeeid: finalUser._id });
+      if (!rotaData) throw new Error("You dont't have a shift.");
+      nowRota = rotaData.rota.find(
+        (el) => el.date === clockouttime.split("T").at(0)
+      );
+    } else {
+      const ruleData = await AttendanceRuleModel.findOne({
+        employeeid: finalUser._id,
+      });
+      if (!ruleData) throw new Error("You are not supposed to work today??");
+      nowRota = ruleData.rules.find(
+        (el) => el.date === clockouttime.split("T").at(0)
+      );
+    }
+    if (!userTimeRegistorData) {
+      userTimeRegistorData = new UserTimeRegistor({
+        userid: finalUser._id,
+        branch_id,
+        isShiftEmployee,
+        clock: [],
+      });
+    }
+
+    userTimeRegistorData.userid = finalUser._id;
+    userTimeRegistorData.isShiftEmployee = isShiftEmployee;
+    userTimeRegistorData.clock.push({
+      clockInDetails: { time, browserName, platform, isMobile },
+      clockouttime,
+      shiftDetail: nowRota,
+      totaltime,
+    });
+
+    await userTimeRegistorData.save();
+
+    // Remove the user data
+    await db.findOneAndDelete({
+      userid: finalUser._id,
+    });
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 const putdataAdmin = async (req, res) => {
   try {
     let userid;
@@ -547,7 +632,8 @@ module.exports = {
   postdataAdmin,
   getsingleAdmin,
   putdataAdmin,
-  postdataClockIn,
+  postdataQR,
+  putdataQR,
   calculateTimeDifference,
   postClockInOut,
 };
