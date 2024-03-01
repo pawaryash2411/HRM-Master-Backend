@@ -66,6 +66,7 @@ app.use("/api/task", require("./Routes/TasksRouter"));
 app.use("/api/client", require("./Routes/ClientRouter"));
 app.use("/api/taxtype", require("./Routes/TaxTypeRouter"));
 app.use("/api/register", require("./Routes/RegisterRouter"));
+app.use("/api/attendance-setting", require("./Routes/Planning/AttendanceSettingRouter"));
 app.use(
   "/api/usertimeregister",
   require("./Routes/User/UserTimeRegisterRoute")
