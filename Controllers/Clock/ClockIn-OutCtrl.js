@@ -168,18 +168,38 @@ const putdata = async (req, res) => {
       nowRota;
     if (user.shift) {
       isShiftEmployee = true;
-      const rotaData = await RotaModel.findOne({ employeeid: userId });
-      nowRota = rotaData.rota.find(
+      const rotaData = await RotaModel.findOne({ employeeid: userId }).populate(
+        "rota.shift"
+      );
+      temp = rotaData?.rota?.find(
         (el) => el.date === clockouttime.split("T").at(0)
       );
+      console.log(temp);
+      if (temp) {
+        nowRota = {
+          date: temp.date,
+          allowCheckInTime: temp.shift.allowCheckInTime,
+          allowCheckOutTime: temp.shift.allowCheckOutTime,
+          overnight: temp.shift.overnight,
+        };
+      }
     } else {
       const ruleData = await AttendanceRuleModel.findOne({
         employeeid: userId,
-      });
-      nowRota = ruleData.rules.find(
+      }).populate("rules.ruleCategory");
+      temp = ruleData.rules?.find(
         (el) => el.date === clockouttime.split("T").at(0)
       );
+      if (temp) {
+        nowRota = {
+          date: temp.date,
+          allowCheckInTime: temp.ruleCategory.allowCheckInTime,
+          allowCheckOutTime: temp.ruleCategory.allowCheckOutTime,
+          overnight: temp.ruleCategory.overnight,
+        };
+      }
     }
+    console.log(nowRota, "now");
     if (!userTimeRegistorData) {
       userTimeRegistorData = new UserTimeRegistor({
         userid,
@@ -276,6 +296,7 @@ const postdataAdmin = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+// TODO: REjuvenate nowRota logic and incorporate non-shift employee
 const postdataQR = async (req, res) => {
   try {
     let adminid;
@@ -553,23 +574,36 @@ const getsingleAdmin = async (req, res) => {
 
 const postClockInOut = async (req, res) => {
   try {
-    let userid;
-    let adminid;
     const { id: userId } = req.params;
-    const rotaData = await RotaModel.findOne({ employeeid: userId });
-    const nowRota = rotaData.rota.find(
-      (el) => el.date === clockouttime.split("T").at(0)
-    );
-    console.log(nowRota);
-
-    let finalUser;
+    const { time, clockouttime, shiftId, remarks } = req.body;
     const user = await userModel.findById(userId);
     if (!user) {
       throw new Error("User doesnt exist");
     }
-    const branch_id = user.branch_id;
+    let nowRota;
+    if (user.shift) {
+      const rotaData = await RotaModel.findOne({ employeeid: userId }).populate(
+        "rota.shift"
+      );
+      const {
+        date,
+        shift: { allowCheckInTime, allowCheckOutTime, overnight },
+      } = rotaData.rota.find((el) => String(el._id) === String(shiftId));
+      nowRota = { date, allowCheckInTime, allowCheckOutTime, overnight };
+    }
+    if (!user.shift) {
+      const rotaData = await AttendanceRuleModel.findOne({
+        employeeid: userId,
+      }).populate("rules.ruleCategory");
+      const {
+        date,
+        ruleCategory: { allowCheckInTime, allowCheckOutTime, overnight },
+      } = rotaData.rules.find((el) => String(el._id) === String(shiftId));
+      nowRota = { date, allowCheckInTime, allowCheckOutTime, overnight };
+    }
+    console.log("nowRota", nowRota);
 
-    const { time, clockouttime } = req.body;
+    const branch_id = user.branch_id;
 
     const headers = req?.headers;
     // Extract browser name
@@ -589,18 +623,18 @@ const postClockInOut = async (req, res) => {
 
     // Find or create the UserTimeRegistorData
     let userTimeRegistorData = await UserTimeRegistor.findOne({
-      userid,
+      userid: userId,
     });
 
     if (!userTimeRegistorData) {
       userTimeRegistorData = new UserTimeRegistor({
-        userid,
+        userid: userId,
         branch_id,
         clock: [],
       });
     }
 
-    userTimeRegistorData.userid = userid;
+    userTimeRegistorData.userid = userId;
     userTimeRegistorData.branch_id = branch_id;
     const { hours, minutes, seconds } = calculateTimeDifference(
       time,

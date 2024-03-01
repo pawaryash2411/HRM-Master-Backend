@@ -16,7 +16,7 @@ const UserTimeRegistorSchema = mongoose.Schema(
       ref: "branch",
     },
     isShiftEmployee: Boolean,
-
+    remarks: String,
     clock: [
       {
         clockInDetails: {
@@ -35,10 +35,9 @@ const UserTimeRegistorSchema = mongoose.Schema(
         },
         shiftDetail: {
           date: String,
-          starttime: String,
-          endtime: String,
-          check_in: String,
-          check_out: String,
+          allowCheckInTime: String,
+          allowCheckOutTime: String,
+          overnight: Boolean,
         },
       },
     ],

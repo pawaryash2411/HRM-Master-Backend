@@ -71,7 +71,7 @@ const checkRota = async (req, res) => {
     const rotaData = await rotaModal
       .findOne({ employeeid: id })
       .populate("employeeid rota.shift");
-    const filtered = rotaData?.rota?.find((el) => date === el.shift.date);
+    const filtered = rotaData?.rota?.find((el) => date === el.date);
     if (!filtered) {
       throw new Error("NO rota");
     }
