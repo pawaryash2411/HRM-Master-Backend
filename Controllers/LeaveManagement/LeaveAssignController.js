@@ -36,7 +36,7 @@ const postData = async (req, res) => {
         const employeeData = JSON.parse(employees)
         const { id: adminId } = req.user;
 
-        const mainAdmin = adminModel.find((data) => data?._id === adminId);
+        const mainAdmin = adminModel.findOne({ adminId });
 
         const createdData = await db.create({
             employees: employeeData,
@@ -61,7 +61,7 @@ const updateData = async (req, res) => {
         const { employees, startDate, endDate } = req.body;
 
         const { id: adminId } = req.user;
-        const mainAdmin = adminModel.find((data) => data?._id === adminId);
+        const mainAdmin = adminModel.findOne({ adminId });
 
         const updatedData = await db.findByIdAndUpdate(
             id, {
