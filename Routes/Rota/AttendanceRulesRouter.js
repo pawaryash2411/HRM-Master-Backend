@@ -15,7 +15,7 @@ router.get("/rota-single", requireAuth, getsingledata);
 router.get("/:date", requireAuth, checkRule);
 // router.get("/admin/:id", requireAuth, checkRotaAdmin);
 // router.get("/filter", filterData);
-router.post("/", postData);
+router.post("/", requireAuth, postData);
 router.put("/:id", updateData);
 router.post("/delete/:id", deleteData);
 
