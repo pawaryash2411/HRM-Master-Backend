@@ -73,11 +73,10 @@ const checkRule = async (req, res) => {
     const rotaData = await attendanceRuleModel
       .findOne({ employeeid: id })
       .populate("employeeid rules.ruleCategory");
-    const filtered = rotaData?.rules?.find(
-      (el) => date === el.ruleCategory.date
-    );
+    console.log(rotaData);
+    const filtered = rotaData?.rules?.find((el) => date === el.date);
     if (!filtered) {
-      throw new Error("NO rota");
+      throw new Error("NO rule");
     }
     res.status(200).json({
       success: true,
