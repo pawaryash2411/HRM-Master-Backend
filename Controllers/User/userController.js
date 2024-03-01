@@ -157,8 +157,9 @@ const updateuser = async (req, res) => {
 
   let picture;
   if (req.file) {
-    const dataUrl = `data:${req.file.mimetype
-      };base64,${req.file.buffer.toString("base64")}`;
+    const dataUrl = `data:${
+      req.file.mimetype
+    };base64,${req.file.buffer.toString("base64")}`;
     const result = await cloudinary.uploader.upload(dataUrl);
     picture = result.secure_url;
   }
@@ -295,6 +296,9 @@ const loginUser = async (req, res) => {
           });
         }
       }
+      if (!admin.branch_id?.superadmin_id) {
+        throw new Error("Super admin account doesnt exist");
+      }
       const expired =
         new Date(admin.branch_id.superadmin_id.expiryDate) < new Date();
       if (expired) {
@@ -312,8 +316,16 @@ const loginUser = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
+    if (!user.branch_id?.superadmin_id) {
+      throw new Error("Super admin account doesnt exist");
+    }
+    const expired =
+      new Date(user.branch_id.superadmin_id.expiryDate) < new Date();
+    if (expired) {
+      throw new Error("License Expired. Please consult administrator.");
+    }
     const token = createToken(user._id);
-    console.log("datatoken", token);
+
     res.status(200).json({ user, token, role: "user" });
   } catch (error) {
     res.status(500).json({ message: error.message });

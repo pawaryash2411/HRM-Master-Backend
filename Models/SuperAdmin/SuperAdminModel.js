@@ -12,12 +12,13 @@ const superSchema = mongoose.Schema(
       select: false,
     },
     logo: {
-      type: String
+      type: String,
     },
     defaultRoles: [{ type: String }],
     expiryDate: String,
     allowedDevices: Number,
     loggedIps: [{ type: String }],
+    branches: [{ type: mongoose.Schema.Types.ObjectId, ref: "branch" }],
   },
 
   {

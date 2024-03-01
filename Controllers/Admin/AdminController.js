@@ -90,7 +90,6 @@ const registerAdmin = async (req, res) => {
   }
 };
 
-
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "1d",
@@ -182,6 +181,11 @@ const addbranch = async (req, res) => {
     });
 
     let data = await branchdata.save();
+    await SuperAdminModel.findByIdAndUpdate(
+      req.user.id,
+      { $push: { branches: data._id } },
+      { new: true }
+    );
 
     res.status(200).send({
       success: true,
@@ -222,7 +226,12 @@ const updateBranch = async (req, res) => {
 const deleteBranch = async (req, res) => {
   try {
     const { id } = req.params;
-    await branchModel.findByIdAndDelete(id);
+    const data = await branchModel.findOneAndDelete({ _id: id });
+    await SuperAdminModel.findByIdAndUpdate(
+      req.user.id,
+      { $pull: { branches: data._id } },
+      { new: true }
+    );
     res.status(200).json({ message: "Deleted succesfully" });
   } catch (error) {
     res
@@ -270,8 +279,9 @@ const updateAdmin = async (req, res) => {
   }
   let picture;
   if (req.file) {
-    const dataUrl = `data:${req.file.mimetype
-      };base64,${req.file.buffer.toString("base64")}`;
+    const dataUrl = `data:${
+      req.file.mimetype
+    };base64,${req.file.buffer.toString("base64")}`;
     const result = await cloudinary.uploader.upload(dataUrl);
     picture = result.secure_url;
   }

@@ -35,8 +35,8 @@ router.post("/login", loginadmin);
 
 router.post("/addbranch", requireAuth, addbranch);
 router.get("/branch", requireAuth, getBranch);
-router.put("/branch/:id", updateBranch);
-router.delete("/branch/:id", deleteBranch);
+router.put("/branch/:id", requireAuth, updateBranch);
+router.delete("/branch/:id", requireAuth, deleteBranch);
 
 router.get("/getalldata", requireAuth, getadmin);
 // router.post("/createadmin", createadmin);
