@@ -1,9 +1,10 @@
 const db = require("../../Models/LeaveManagement/LeaveAssignModel");
 const userModel = require("../../Models/User/userModel");
+const adminModel = require("../../Models/Admin/AdminModel");
 
 const getAllData = async (req, res) => {
     try {
-        allData = await db.find();
+        allData = await db.find().populate("employees");
         res.status(200).json({
             success: true,
             allData,
@@ -14,20 +15,36 @@ const getAllData = async (req, res) => {
     }
 };
 
+const getSingleData = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const allData = await db.findOne({ id });
+        res.status(200).json({
+            success: true,
+            allData,
+            message: "Single Leave Assigned Data Fetched successfully",
+        });
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+};
+
+
 const postData = async (req, res) => {
     try {
-        const { adminId, employees, startDate, endDate } = req.body;
+        const { employees, startDate, endDate } = req.body;
         const employeeData = JSON.parse(employees)
+        const { id: adminId } = req.user;
 
-        const allUsers = await userModel.find();
-        console.log(allUsers);
-
-        const userData = allUsers.filter((user) =>
-            employeeData.includes(user?._id.toString()));
+        const mainAdmin = adminModel.find((data) => data?._id === adminId);
 
         const createdData = await db.create({
-            adminId, employees: userData, startDate, endDate
+            employees: employeeData,
+            startDate,
+            endDate,
+            branch_id: mainAdmin.branch_id?._id
         });
+
         res.status(201).json({
             success: true,
             createdData,
@@ -41,11 +58,18 @@ const postData = async (req, res) => {
 const updateData = async (req, res) => {
     try {
         const { id } = req.params;
-        const { adminId, employees, startDate, endDate } = req.body;
-        const allUsers = await userModel.find();
-        const userData = allUsers.filter(user => employees.includes(user._id.toString()));
+        const { employees, startDate, endDate } = req.body;
+
+        const { id: adminId } = req.user;
+        const mainAdmin = adminModel.find((data) => data?._id === adminId);
+
         const updatedData = await db.findByIdAndUpdate(
-            id, { adminId, employees: userData, startDate, endDate },
+            id, {
+            employees,
+            startDate,
+            endDate,
+            branch_id: mainAdmin.branch_id?._id
+        },
             { new: true }
         );
 
@@ -80,4 +104,5 @@ module.exports = {
     getAllData,
     updateData,
     deleteData,
+    getSingleData
 };

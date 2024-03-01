@@ -6,7 +6,14 @@ const LeaveAssignSchema = mongoose.Schema(
             type: String,
             require: true
         },
-        employees: [],
+        employees: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user",
+        }],
+        branch_id: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "branch",
+        }],
         startDate: {
             type: String,
         },
