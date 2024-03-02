@@ -38,6 +38,8 @@ const UserTimeRegistorSchema = mongoose.Schema(
           allowCheckInTime: String,
           allowCheckOutTime: String,
           overnight: Boolean,
+          checkInTime: String,
+          checkOutTime: String,
         },
       },
     ],

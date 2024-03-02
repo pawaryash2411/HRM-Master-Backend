@@ -55,7 +55,7 @@ const getlocation = (req, res) => {
   fetch(apiUrl)
     .then((response) => response.json())
     .then((data) => {
-      if (data.status === "OK") {
+      if (data.status === "OK ") {
         const location = data.results[0].geometry.location;
         console.log("Latitude:", location.lat);
         console.log("Longitude:", location.lng);
@@ -200,6 +200,8 @@ const putdata = async (req, res) => {
           allowCheckInTime: temp.shift.allowCheckInTime,
           allowCheckOutTime: temp.shift.allowCheckOutTime,
           overnight: temp.shift.overnight,
+          checkInTime: temp.shift.checkInTime,
+          checkOutTime: temp.shift.checkOutTime,
         };
       }
     } else {
@@ -438,6 +440,8 @@ const putdataQR = async (req, res) => {
           allowCheckInTime: temp.shift.allowCheckInTime,
           allowCheckOutTime: temp.shift.allowCheckOutTime,
           overnight: temp.shift.overnight,
+          checkInTime: temp.shift.checkInTime,
+          checkOutTime: temp.shift.checkOutTime,
         };
       }
     } else {
@@ -638,9 +642,22 @@ const postClockInOut = async (req, res) => {
       );
       const {
         date,
-        shift: { allowCheckInTime, allowCheckOutTime, overnight },
+        shift: {
+          allowCheckInTime,
+          allowCheckOutTime,
+          overnight,
+          checkInTime,
+          checkOutTime,
+        },
       } = rotaData.rota.find((el) => String(el._id) === String(shiftId));
-      nowRota = { date, allowCheckInTime, allowCheckOutTime, overnight };
+      nowRota = {
+        date,
+        allowCheckInTime,
+        allowCheckOutTime,
+        overnight,
+        checkInTime,
+        checkOutTime,
+      };
     }
     if (!user.shift) {
       const rotaData = await AttendanceRuleModel.findOne({
