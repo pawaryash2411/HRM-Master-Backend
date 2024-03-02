@@ -12,6 +12,25 @@ const address = "tajmahal";
 const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
   address
 )}&key=${apiKey}`;
+
+function updateTimeWithToday(isoString, referenceDate, overNight) {
+  const previousDate = new Date(isoString);
+  const currentTime = previousDate.toTimeString().substring(0, 8); // Extracting time HH:mm:ss from previous date
+
+  const today = new Date(referenceDate); // Current date
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1; // Months are zero-based
+  const day = overNight ? today.getDate() + 1 : today.getDate();
+
+  // Constructing the new date with today's date and the time from the previous date
+  const newDate = new Date(
+    `${year}-${month.toString().padStart(2, "0")}-${day
+      .toString()
+      .padStart(2, "0")}T${currentTime}`
+  );
+
+  return newDate;
+}
 function calculateTimeDifference(time1, time2) {
   // Parse the time strings into Date objects
   const date1 = new Date(time1);
@@ -296,32 +315,62 @@ const postdataAdmin = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-// TODO: REjuvenate nowRota logic and incorporate non-shift employee
 const postdataQR = async (req, res) => {
   try {
     let adminid;
     const { machineId, time } = req.body;
 
-    const finalUser = await userModel.findOne({ card_no: machineId });
-    if (!finalUser) {
+    const user = await userModel.findOne({ card_no: machineId });
+    if (!user) {
       throw new Error("Not valid");
     }
-    const rotaData = await RotaModel.findOne({ employeeid: finalUser._id });
-
-    const filtered = rotaData?.rota?.find((el) => date === el.date);
-    if (!filtered) {
-      throw new Error("No shift found");
-    }
+    const userId = user._id;
     const currentTime = new Date();
-    // Define check-in and check-out times
-    const checkInTime = new Date(filtered.check_in);
-    const checkOutTime = new Date(filtered.check_out);
-    if (!(currentTime >= checkInTime && currentTime <= checkOutTime)) {
-      throw new Error("No shift");
+    const already = await db.findOne({ userid: user._id });
+    if (already) {
+      throw new Error("Already clocked in");
     }
-    console.log(finalUser.role);
-    // console.log(userid, finalUser);
-    // console.log(time, userid);
+    if (user.shift) {
+      const rotaData = await RotaModel.findOne({ employeeid: userId }).populate(
+        "rota.shift"
+      );
+      temp = rotaData?.rota?.find((el) => el.date === time.split("T").at(0));
+      if (!temp) throw new Error("No shift today");
+      const checkInTime = updateTimeWithToday(
+        temp.shift.allowCheckInTime,
+        time
+      );
+      const checkOutTime = updateTimeWithToday(
+        temp.shift.allowCheckOutTime,
+        time,
+        temp.shift.overnight
+      );
+      console.log(currentTime, checkOutTime, checkInTime);
+      if (!(currentTime >= checkInTime && currentTime <= checkOutTime)) {
+        throw new Error("No shift");
+      }
+    } else {
+      const ruleData = await AttendanceRuleModel.findOne({
+        employeeid: userId,
+      }).populate("rules.ruleCategory");
+      temp = ruleData.rules?.find((el) => el.date === time.split("T").at(0));
+      if (!temp) throw new Error("Not assigned to work today");
+      const checkInTime = updateTimeWithToday(
+        temp.ruleCategory.allowCheckInTime,
+        time
+      );
+      const checkOutTime = updateTimeWithToday(
+        temp.ruleCategory.allowCheckOutTime,
+        time,
+        temp.ruleCategory.overnight
+      );
+      if (!(currentTime >= checkInTime && currentTime <= checkOutTime)) {
+        throw new Error("You missed today's checkin time. Please confirm it.");
+      }
+    }
+
+    // Define check-in and check-out times
+
     const headers = req?.headers;
     // Extract browser name
     // console.log(headers);
@@ -338,13 +387,8 @@ const postdataQR = async (req, res) => {
     // Check if it's a mobile device
     const isMobile = headers["sec-ch-ua-mobile"] === "?1" ? true : false;
 
-    const already = await db.findOne({ userid: finalUser._id });
-    if (already) {
-      throw new Error("Already clocked in");
-    }
-
     const newData = await db.create({
-      userid: finalUser._id,
+      userid: user._id,
       adminid,
       time,
       browserName,
@@ -363,27 +407,12 @@ const putdataQR = async (req, res) => {
 
     const finalUser = await userModel.findOne({ card_no: machineId });
     const branch_id = finalUser.branch_id;
-    // if (!user) {
-    //   finalUser = await AdminModel.findById(userId);
-    //   branch_id = finalUser.branch_id;
-    // } else {
-    //   finalUser = user;
-    //   branch_id = user.branch_id;
-    // }
-    // if (finalUser.role == undefined) {
-    //   adminid = userId;
-    //   userid = null;
-    // } else {
-    //   userid = userId;
-    //   adminid = user.adminId;
-    // }
-    // Find the user data based on userid or adminid
     const userdata = await db.findOne({
       userid: finalUser._id,
     });
 
     if (!userdata) {
-      return res.status(404).json({ error: "Clock in data not found" });
+      throw new Error("You are not clocked in curerntly");
     }
 
     const { time, browserName, platform, isMobile } = userdata;
@@ -394,21 +423,39 @@ const putdataQR = async (req, res) => {
     });
     let isShiftEmployee = false,
       nowRota;
-    if (user.shift) {
+    if (finalUser.shift) {
       isShiftEmployee = true;
-      const rotaData = await RotaModel.findOne({ employeeid: finalUser._id });
+      const rotaData = await RotaModel.findOne({
+        employeeid: finalUser._id,
+      }).populate("rota.shift");
       if (!rotaData) throw new Error("You dont't have a shift.");
-      nowRota = rotaData.rota.find(
+      temp = rotaData.rota.find(
         (el) => el.date === clockouttime.split("T").at(0)
       );
+      if (temp) {
+        nowRota = {
+          date: temp.date,
+          allowCheckInTime: temp.shift.allowCheckInTime,
+          allowCheckOutTime: temp.shift.allowCheckOutTime,
+          overnight: temp.shift.overnight,
+        };
+      }
     } else {
       const ruleData = await AttendanceRuleModel.findOne({
         employeeid: finalUser._id,
-      });
+      }).populate("rules.ruleCategory");
       if (!ruleData) throw new Error("You are not supposed to work today??");
-      nowRota = ruleData.rules.find(
+      temp = ruleData.rules.find(
         (el) => el.date === clockouttime.split("T").at(0)
       );
+      if (temp) {
+        nowRota = {
+          date: temp.date,
+          allowCheckInTime: temp.ruleCategory.allowCheckInTime,
+          allowCheckOutTime: temp.ruleCategory.allowCheckOutTime,
+          overnight: temp.ruleCategory.overnight,
+        };
+      }
     }
     if (!userTimeRegistorData) {
       userTimeRegistorData = new UserTimeRegistor({
@@ -418,14 +465,18 @@ const putdataQR = async (req, res) => {
         clock: [],
       });
     }
-
+    const { hours, minutes, seconds } = calculateTimeDifference(
+      time,
+      clockouttime
+    );
+    console.log(nowRota);
     userTimeRegistorData.userid = finalUser._id;
     userTimeRegistorData.isShiftEmployee = isShiftEmployee;
     userTimeRegistorData.clock.push({
       clockInDetails: { time, browserName, platform, isMobile },
       clockouttime,
       shiftDetail: nowRota,
-      totaltime,
+      totaltime: `${hours}:${minutes}:${seconds}`,
     });
 
     await userTimeRegistorData.save();
@@ -438,7 +489,7 @@ const putdataQR = async (req, res) => {
     return res.status(200).json({ success: true });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: error.message });
   }
 };
 
