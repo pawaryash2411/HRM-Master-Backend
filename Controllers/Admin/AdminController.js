@@ -144,7 +144,6 @@ const getadmin = async (req, res) => {
       .populate("leave branch_id monthly_pay_grade hourly_pay_grade");
     const finalAdminData = admindata.filter((admin) =>
       branch.some((singleBranch) => {
-        console.log(singleBranch);
         return String(singleBranch._id) === String(admin.branch_id?._id);
       })
     );
