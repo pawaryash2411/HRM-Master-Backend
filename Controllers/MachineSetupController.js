@@ -1,5 +1,12 @@
 const MachineSetupModel = require("../Models/MachineSetupModel");
 const ZKLib = require("zklib-birigu");
+const RotaModel = require("../Models/Rota/RotaModel");
+const db = require("../Models/Clock/Clockin-OutModel");
+const {
+  updateTimeWithToday,
+  calculateTimeDifference,
+} = require("./Clock/ClockIn-OutCtrl");
+const UserTimeRegistor = require("../Models/User/UserTimeRegistor");
 
 const postData = async (req, res) => {
   try {
@@ -136,9 +143,149 @@ const connectMachine = async (req, res) => {
 
     // You can also read realtime log by getRealTimelogs function
 
-    await zkInstance.getRealTimeLogs((data) => {
+    await zkInstance.getRealTimeLogs(async (data) => {
       // do something when some checkin
-      console.log("realtime", data);
+      try {
+        const { userId: machineId, attTime } = data;
+        const user = await userModel.findOne({ user_id: machineId });
+        console.log(user);
+        if (!user) {
+          throw new Error("Not valid");
+        }
+        const userId = user._id;
+        const currentTime = new Date(attTime);
+        const alreadyClockedIn = await db.findOne({ userid: user._id });
+
+        if (!alreadyClockedIn) {
+          if (user.shift) {
+            const rotaData = await RotaModel.findOne({
+              employeeid: userId,
+            }).populate("rota.shift");
+            temp = rotaData?.rota?.find(
+              (el) => el.date === time.split("T").at(0)
+            );
+            if (!temp) throw new Error("No shift today");
+            const checkInTime = updateTimeWithToday(
+              temp.shift.allowCheckInTime,
+              time
+            );
+            const checkOutTime = updateTimeWithToday(
+              temp.shift.allowCheckOutTime,
+              currentTime,
+              temp.shift.overnight
+            );
+            console.log(currentTime, checkOutTime, checkInTime);
+            if (!(currentTime >= checkInTime && currentTime <= checkOutTime)) {
+              throw new Error("No shift");
+            }
+          } else {
+            const ruleData = await AttendanceRuleModel.findOne({
+              employeeid: userId,
+            }).populate("rules.ruleCategory");
+            temp = ruleData.rules?.find(
+              (el) => el.date === time.split("T").at(0)
+            );
+            if (!temp) throw new Error("Not assigned to work today");
+            const checkInTime = updateTimeWithToday(
+              temp.ruleCategory.allowCheckInTime,
+              time
+            );
+            const checkOutTime = updateTimeWithToday(
+              temp.ruleCategory.allowCheckOutTime,
+              time,
+              temp.ruleCategory.overnight
+            );
+            if (!(currentTime >= checkInTime && currentTime <= checkOutTime)) {
+              throw new Error(
+                "You missed today's checkin time. Please confirm it."
+              );
+            }
+          }
+          await db.create({
+            userid: user._id,
+            time: currentTime.toISOString(),
+            browserName: "ZK device",
+            platform: "ZK device",
+            isMobile: false,
+          });
+        }
+        if (alreadyClockedIn) {
+          const { time, browserName, platform, isMobile } = alreadyClockedIn;
+
+          // Find or create the UserTimeRegistorData
+          let userTimeRegistorData = await UserTimeRegistor.findOne({
+            userid: user._id,
+          });
+          let isShiftEmployee = false,
+            nowRota;
+          if (user.shift) {
+            isShiftEmployee = true;
+            const rotaData = await RotaModel.findOne({
+              employeeid: user._id,
+            }).populate("rota.shift");
+            if (!rotaData) throw new Error("You dont't have a shift.");
+            temp = rotaData.rota.find(
+              (el) => el.date === clockouttime.split("T").at(0)
+            );
+            if (temp) {
+              nowRota = {
+                date: temp.date,
+                allowCheckInTime: temp.shift.allowCheckInTime,
+                allowCheckOutTime: temp.shift.allowCheckOutTime,
+                overnight: temp.shift.overnight,
+                checkInTime: temp.shift.checkInTime,
+                checkOutTime: temp.shift.checkOutTime,
+              };
+            }
+          } else {
+            const ruleData = await AttendanceRuleModel.findOne({
+              employeeid: finalUser._id,
+            }).populate("rules.ruleCategory");
+            if (!ruleData)
+              throw new Error("You are not supposed to work today??");
+            temp = ruleData.rules.find(
+              (el) => el.date === clockouttime.split("T").at(0)
+            );
+            if (temp) {
+              nowRota = {
+                date: temp.date,
+                allowCheckInTime: temp.ruleCategory.allowCheckInTime,
+                allowCheckOutTime: temp.ruleCategory.allowCheckOutTime,
+                overnight: temp.ruleCategory.overnight,
+              };
+            }
+          }
+          if (!userTimeRegistorData) {
+            userTimeRegistorData = new UserTimeRegistor({
+              userid: finalUser._id,
+              branch_id,
+              isShiftEmployee,
+              clock: [],
+            });
+          }
+          const { hours, minutes, seconds } = calculateTimeDifference(
+            time,
+            clockouttime
+          );
+          userTimeRegistorData.userid = user._id;
+          userTimeRegistorData.isShiftEmployee = isShiftEmployee;
+          userTimeRegistorData.clock.push({
+            clockInDetails: { time, browserName, platform, isMobile },
+            clockouttime,
+            shiftDetail: nowRota,
+            totaltime: `${hours}:${minutes}:${seconds}`,
+          });
+
+          await userTimeRegistorData.save();
+
+          // Remove the user data
+          await db.findOneAndDelete({
+            userid: finalUser._id,
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
     });
   } catch (error) {
     console.log(error);

@@ -737,5 +737,6 @@ module.exports = {
   postdataQR,
   putdataQR,
   calculateTimeDifference,
+  updateTimeWithToday,
   postClockInOut,
 };
