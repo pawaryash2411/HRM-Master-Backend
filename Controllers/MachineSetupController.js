@@ -146,7 +146,7 @@ const connectMachine = async (req, res) => {
 
     // You can also read realtime log by getRealTimelogs function
 
-    await zkInstance.getRealTimeLogs(async (data) => {
+    await zkInstance.getRealTimeLogs((data) => {
       // do something when some checkin
       console.log(data);
       // try {
