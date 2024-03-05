@@ -137,9 +137,6 @@ const connectMachine = async (req, res) => {
     console.log(n, "device name");
     // Get users in machine
 
-    const users = await zkInstance.getUsers();
-    console.log(users);
-
     // Create new user: setUser(uid, userid, name, password, role = 0, cardno = 0)
 
     // await zkInstance.setUser(12, "9", "testing", "111", 0, 0);
@@ -307,6 +304,12 @@ const disconnectMachine = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const getUserData = async (req, res) => {
+  const zkInstance = await connectMachineHelper();
+  await zkInstance.createSocket();
+  const users = await zkInstance.getUsers();
+  return res.json({ users: users.data });
+};
 
 module.exports = {
   postData,
@@ -316,4 +319,5 @@ module.exports = {
   deleteData,
   connectMachineHelper,
   disconnectMachine,
+  getUserData,
 };

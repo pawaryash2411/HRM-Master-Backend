@@ -6,6 +6,7 @@ const {
   deleteData,
   connectMachine,
   disconnectMachine,
+  getUserData,
 } = require("../Controllers/MachineSetupController");
 const { requireAuth } = require("../Middlewares/requireAuth");
 const router = express.Router();
@@ -16,5 +17,6 @@ router.put("/:id", updateData);
 router.delete("/:id", deleteData);
 router.get("/connect", connectMachine);
 router.get("/disconnect", disconnectMachine);
+router.get("/users", getUserData);
 
 module.exports = router;
