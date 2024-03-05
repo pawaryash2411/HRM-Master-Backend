@@ -126,15 +126,8 @@ const connectMachine = async (req, res) => {
 
     await zkInstance.createSocket();
 
-    // Get general info like logCapacity, user counts, logs count
-    // It's really useful to check the status of device
-
-    console.log("execute", await zkInstance.getInfo());
-
     res.status(200).json({ message: "succesful" });
 
-    const n = await zkInstance.getDeviceName();
-    console.log(n, "device name");
     // Get users in machine
 
     // Create new user: setUser(uid, userid, name, password, role = 0, cardno = 0)
