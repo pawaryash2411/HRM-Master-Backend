@@ -17,7 +17,7 @@ const LeaveAssignSchema = mongoose.Schema(
             type: String,
         },
         endDate: {
-            type: Number,
+            type: String,
         },
     },
     { timestamps: true }
