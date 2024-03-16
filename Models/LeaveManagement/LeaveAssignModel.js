@@ -23,4 +23,4 @@ const LeaveAssignSchema = mongoose.Schema(
     { timestamps: true }
 );
 
-module.exports = mongoose.model("leave-assign", LeaveAssignSchema);
+module.exports = mongoose.model("leave-alloted", LeaveAssignSchema);
