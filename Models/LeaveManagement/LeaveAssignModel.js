@@ -4,7 +4,6 @@ const LeaveAssignSchema = mongoose.Schema(
     {
         adminId: {
             type: String,
-            require: true
         },
         employees: [{
             type: mongoose.Schema.Types.ObjectId,

@@ -1,5 +1,5 @@
 const db = require("../../Models/LeaveManagement/LeaveAssignModel");
-const userModel = require("../../Models/User/userModel");
+// const userModel = require("../../Models/User/userModel");
 const adminModel = require("../../Models/Admin/AdminModel");
 
 const getAllData = async (req, res) => {
@@ -8,7 +8,7 @@ const getAllData = async (req, res) => {
         res.status(200).json({
             success: true,
             allData,
-            message: "All Leave Assigned Data Fetched successfully",
+            message: "All Leave Alloted Data Fetched successfully",
         });
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -22,7 +22,7 @@ const getSingleData = async (req, res) => {
         res.status(200).json({
             success: true,
             allData,
-            message: "Single Leave Assigned Data Fetched successfully",
+            message: "Single Leave Alloted Data Fetched successfully",
         });
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -48,7 +48,7 @@ const postData = async (req, res) => {
         res.status(201).json({
             success: true,
             createdData,
-            message: "Leave Assigned successfully",
+            message: "Leave Alloted successfully",
         });
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -76,7 +76,7 @@ const updateData = async (req, res) => {
         res.status(200).json({
             success: true,
             updatedData,
-            message: "Leave Assigned Updated successfully",
+            message: "Alloted Leave Updated successfully",
         });
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -92,7 +92,7 @@ const deleteData = async (req, res) => {
         res.status(200).json({
             success: true,
             deletedData,
-            message: "Leave Assigned Deleted successfully",
+            message: "Alloted Leave Deleted successfully",
         });
     } catch (error) {
         res.status(404).json({ message: error.message });
