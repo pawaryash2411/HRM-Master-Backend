@@ -36,7 +36,9 @@ const postData = async (req, res) => {
         const employeeData = JSON.parse(employees)
         const { id: adminId } = req.user;
 
-        const mainAdmin = adminModel.findOne({ adminId });
+        const mainAdmin = await adminModel.findOne({ _id: adminId });
+        console.log(mainAdmin);
+        console.log("mainAdmin.branch_id", mainAdmin.branch_id)
 
         const createdData = await db.create({
             employees: employeeData,
@@ -59,16 +61,17 @@ const updateData = async (req, res) => {
     try {
         const { id } = req.params;
         const { employees, startDate, endDate } = req.body;
-
+        const employeeData = JSON.parse(employees)
         const { id: adminId } = req.user;
-        const mainAdmin = adminModel.findOne({ adminId });
+        const mainAdmin = await adminModel.findOne({ adminId });
+        console.log(mainAdmin)
 
         const updatedData = await db.findByIdAndUpdate(
             id, {
-            employees,
+            employees: employeeData,
             startDate,
             endDate,
-            branch_id: mainAdmin.branch_id?._id
+            branch_id: mainAdmin?.branch_id?._id
         },
             { new: true }
         );

@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.get("/", getAllData)
 router.post("/", requireAuth, postData)
-router.put("/:id", updateData)
+router.put("/:id", requireAuth, updateData)
 router.delete("/:id", deleteData)
 router.get("/:id", getSingleData)
 
