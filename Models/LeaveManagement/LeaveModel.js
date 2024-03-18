@@ -5,8 +5,7 @@ const leaveSchema = mongoose.Schema(
   {
     leave_type: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "leaveCategory",
-      required: true,
+      ref: "leaveCategory"
     },
     subject: {
       type: String,
