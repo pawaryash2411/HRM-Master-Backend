@@ -13,8 +13,7 @@ const registerSuperAdmin = async (req, res) => {
     }
 
     const imageData = req.uploadedImageUrl;
-    console.log("Sidhu", imageData);
-    
+
     if (!imageData) {
       return res.status(403).json({ success: false, message: 'Image upload failed' });
     }
@@ -89,6 +88,7 @@ const loginsuperadmin = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
     const token = createToken(superAdmin._id);
+
     if (!ip || ip.length === 0) {
       return res.status(200).json({ admin, token, role: "Super Admin" });
     }

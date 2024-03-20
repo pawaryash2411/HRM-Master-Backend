@@ -54,8 +54,8 @@ const getData = async (req, res) => {
     const filtered = isSuperAdmin
       ? rules.filter((el) => el.employeeid)
       : rules.filter(
-          (el) => String(el.employeeid?.branch_id) === String(admin.branch_id)
-        );
+        (el) => String(el.employeeid?.branch_id) === String(admin.branch_id)
+      );
 
     res.status(200).json({
       success: true,

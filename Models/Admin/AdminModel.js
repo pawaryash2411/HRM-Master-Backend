@@ -58,6 +58,13 @@ const userSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "payrollhourly",
     },
+    expiry_date: {
+      type: String,
+    },
+    allowed_devices: {
+      type: Number,
+    },
+    logged_ips: [{ type: String }],
     leave: [
       {
         type: mongoose.Schema.Types.ObjectId,

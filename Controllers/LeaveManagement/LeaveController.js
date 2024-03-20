@@ -17,7 +17,7 @@ const getalldata = async (req, res) => {
     const admin = await AdminModel.findById(req.user.id);
     const data = await db.find({}).populate("user_id");
     const filteredData = data.filter(
-      (el) => String(el.user_id.branch_id) === String(admin.branch_id)
+      (el) => String(el.user_id?.branch_id) === String(admin?.branch_id)
     );
     res.status(200).json(filteredData);
   } catch (error) {

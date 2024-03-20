@@ -24,6 +24,8 @@ const registerAdmin = async (req, res) => {
     password,
     monthly_pay_grade,
     hourly_pay_grade,
+    expiry_date,
+    allowed_devices,
     branch_id,
   } = req.body;
 
@@ -66,6 +68,8 @@ const registerAdmin = async (req, res) => {
       email,
       password,
       branch_id: finalBranch,
+      expiry_date,
+      allowed_devices,
       monthly_pay_grade,
       hourly_pay_grade,
     };
@@ -98,6 +102,7 @@ const createToken = (id) => {
 
 const loginadmin = async (req, res) => {
   const { email, password } = req.body;
+  const adminIp = req.headers["x-forwarded-for"]?.split(",")?.at(0);
   try {
     if (!email || !password) {
       return res.status(400).json({ message: "Please enter all fields" });
@@ -112,8 +117,26 @@ const loginadmin = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
     const token = createToken(admin._id);
-    console.log("datatoken", token);
-    res.status(200).json({ admin, token });
+    if (!adminIp || adminIp?.length === 0) {
+      return res.status(200).json({ admin, token, role: "Admin" });
+    }
+
+    const alreadyPresent = admin.logged_ips.some((el) => el === ip);
+
+    if (alreadyPresent)
+      return res.status(200).json({ admin, token, role: "Admin" });
+
+    if (!alreadyPresent) {
+      const allowed = superAdmin?.allowed_devices;
+
+      if (allowed >= admin?.logged_ips?.length) {
+        throw new Error("Reached max limit");
+      } else {
+        admin.logged_ips.push(adminIp);
+        await admin.save();
+        return res.status(200).json({ admin, token, role: "Admin" });
+      }
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -266,6 +289,8 @@ const updateAdmin = async (req, res) => {
     password,
     monthly_pay_grade,
     hourly_pay_grade,
+    expiry_date,
+    allowed_devices,
     location,
     branch_id,
   } = req.body;
@@ -278,9 +303,8 @@ const updateAdmin = async (req, res) => {
   }
   let picture;
   if (req.file) {
-    const dataUrl = `data:${
-      req.file.mimetype
-    };base64,${req.file.buffer.toString("base64")}`;
+    const dataUrl = `data:${req.file.mimetype
+      };base64,${req.file.buffer.toString("base64")}`;
     const result = await cloudinary.uploader.upload(dataUrl);
     picture = result.secure_url;
   }
@@ -314,6 +338,8 @@ const updateAdmin = async (req, res) => {
           access: refinedAccess,
           picture,
           joindate,
+          expiry_date,
+          allowed_devices,
           monthly_pay_grade,
           hourly_pay_grade,
           email,
