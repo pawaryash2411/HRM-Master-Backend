@@ -6,8 +6,8 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const uploadedcloudinaryImages = require('../Middlewares/singleImgUpload')
 
-const { loginSuperAdmin} =
- require('../Controllers/SuperAdminController')
+const { loginSuperAdmin } =
+    require('../Controllers/MasterController')
 
 // const {requireAuth} = require('../../Middlewares/requireAuth')
 

@@ -27,7 +27,7 @@ app.use(cookieParser());
 
 // super admin
 app.use("/api/language", require("./Routes/LanguageRouter"));
-app.use("/api/superadmin", require("./Routes/SuperAdminRouter"));
+app.use("/api/superadmin", require("./Routes/MasterRouter"));
 app.use("/api/user", require("./Routes/User/userRouter"));
 app.use("/api/admin", require("./Routes/Admin/AdminRouter"));
 app.use("/api/superAdmin", require("./Routes/SuperAdmin/SuperAdminRouter"));
@@ -36,6 +36,8 @@ app.use(
   require("./Routes/Planning/DpartmntDesigntionRoute")
 );
 app.use("/api/designation", require("./Routes/Planning/DesignationRoute"));
+app.use("/api/staff-roles", require("./Routes/User/StaffRoleRoute"));
+app.use("/api/admin-roles", require("./Routes/User/AdminRoleRoute"));
 app.use("/api/leave", require("./Routes/LeaveManagement/LeaveRouter"));
 app.use("/api/leave-assign", require("./Routes/LeaveManagement/LeaveAssignRouter"));
 app.use("/api/clock", require("./Routes/Clock/ClockIn-OutRoute"));

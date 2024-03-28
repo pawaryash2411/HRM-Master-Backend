@@ -51,6 +51,7 @@ const getuser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 const getusers = async (req, res) => {
   const { id } = req.user;
   const admin = await AdminModel.findById(id);
@@ -157,9 +158,8 @@ const updateuser = async (req, res) => {
 
   let picture;
   if (req.file) {
-    const dataUrl = `data:${
-      req.file.mimetype
-    };base64,${req.file.buffer.toString("base64")}`;
+    const dataUrl = `data:${req.file.mimetype
+      };base64,${req.file.buffer.toString("base64")}`;
     const result = await cloudinary.uploader.upload(dataUrl);
     picture = result.secure_url;
   }
@@ -234,16 +234,13 @@ const loginUser = async (req, res) => {
           .json({ message: "Super admin password invalid" });
       }
     }
-    const user = await db
-      .findOne({ email })
-      .select("+password")
-      .populate({
-        path: "branch_id leave",
-        populate: {
-          path: "superadmin_id",
-        },
-      });
-    console.log(user);
+    const user = await db.findOne({ email }).select("+password").populate({
+      path: "branch_id leave",
+      populate: {
+        path: "superadmin_id",
+      },
+    });
+
     if (!user) {
       const admin = await AdminModel.findOne({ email }).populate({
         path: "branch_id leave",
@@ -251,28 +248,28 @@ const loginUser = async (req, res) => {
           path: "superadmin_id",
         },
       });
+
+
       if (!admin) {
         const superAdmin = await SuperAdminModel.findOne({ email }).select(
           "+password"
         );
+
         if (!superAdmin) {
           return res.status(400).json({ message: "User does not exist" });
         }
-        console.log(superAdmin);
+
         const isMatch = await bcrypt.compare(password, superAdmin.password);
+
         if (!isMatch) {
           return res.status(400).json({ message: "Invalid credentials" });
         }
-        if (new Date(superAdmin.expiryDate) < new Date()) {
-          return res.status(400).json({ message: "License expired" });
-        }
-        const token = createToken(superAdmin._id);
-        // if (!ip || ip.length === 0) {
-        //   return res
-        //     .status(200)
-        //     .json({ user: superAdmin, token, role: "Super Admin" });
-        // }
 
+        if (new Date(superAdmin.expiryDate) < new Date()) {
+          return res.status(400).json({ message: "License expired!!" });
+        }
+
+        const token = createToken(superAdmin._id);
         const alreadyPresent = superAdmin.loggedIps.findIndex(
           (el) => el === identificationToken
         );

@@ -19,6 +19,14 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    cardNo: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      required: true,
+    },
     present_address: {
       type: String,
       required: true,
