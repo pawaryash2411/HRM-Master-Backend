@@ -294,7 +294,7 @@ const loginUser = async (req, res) => {
         }
       }
       if (!admin.branch_id?.superadmin_id) {
-        throw new Error("Super admin account doesnt exist");
+        throw new Error("Super admin account doesn't exist");
       }
       const expired =
         new Date(admin.branch_id.superadmin_id.expiryDate) < new Date();
@@ -314,7 +314,7 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
     if (!user.branch_id?.superadmin_id) {
-      throw new Error("Super admin account doesnt exist");
+      throw new Error("Super admin account doesn't exist");
     }
     const expired =
       new Date(user.branch_id.superadmin_id.expiryDate) < new Date();
